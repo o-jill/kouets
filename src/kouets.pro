@@ -1,0 +1,34 @@
+QT       += core gui
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TARGET = kouets
+TEMPLATE = app
+
+SOURCES += kouetsapp.cpp\
+    main.cpp \
+    mainwindow.cpp
+
+HEADERS += kouetsapp.h \
+    mainwindow.h
+
+FORMS += \
+    mainwindow.ui
+
+
+win32 {
+    RC_FILE = kouets.rc
+    LIBS += -lole32
+#    LIBS += -luser32 -lshell32 -lole32
+    DEFINES += _CRT_SECURE_NO_WARNINGS WINDOWS
+    QMAKE_LFLAGS += /map
+}
+
+# Create our custom updatever target.
+#win32:updatever.commands =pushd .&&cd ../src&&copy version.cpp +&&popd
+#QMAKE_EXTRA_TARGETS += updatever
+
+#updateverhook.depends = updatever
+#CONFIG(debug,debug|release):updateverhook.target = Makefile.Debug
+#CONFIG(release,debug|release):updateverhook.target = Makefile.Release
+#QMAKE_EXTRA_TARGETS += updateverhook
