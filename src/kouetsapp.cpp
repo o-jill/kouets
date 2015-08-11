@@ -16,7 +16,7 @@
  * コンストラクタ
  */
 KouetsApp::KouetsApp(int &argc, char**argv)
-    :QApplication(argc, argv)
+    :QApplication(argc, argv), updated_(0)
 {
     prepareAppDataPath();
 
@@ -44,8 +44,6 @@ KouetsApp::KouetsApp(int &argc, char**argv)
  */
 KouetsApp::~KouetsApp()
 {
-    //SaveIni();
-
     CoUninitialize();
 }
 
@@ -60,18 +58,29 @@ int KouetsApp::LoadIni()
 
     QSettings stg(GetIniPath(), QSettings::IniFormat);
 
-    // read something
+    QVariant var = stg.value("program");
+    programPath_ = var.toString();
+    var = stg.value("commandline");
+    cmdLine_ = var.toString();
+
+    updated_ = 0;
 
     return ret;
 }
 
 int KouetsApp::SaveIni()
 {
+    if (!updated_)
+        return 0;
+
     int ret = 0;
 
     QSettings stg(GetIniPath(), QSettings::IniFormat);
 
-    // write something
+    stg.setValue("program", programPath_);
+    stg.setValue("commandline", cmdLine_);
+
+    updated_ = 0;
 
     return ret;
 }
