@@ -3,6 +3,8 @@
 
 #include <QtGui>
 
+#include "projectfile.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -29,6 +31,7 @@ private:
     bool initated_;
     QProcess *process_;
     QTextEdit *pte_;
+    ProjectFile prj_;
 };
 
 #endif // MAINWINDOW_H

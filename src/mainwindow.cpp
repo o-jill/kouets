@@ -5,6 +5,7 @@
 
 
 #include "kouetsapp.h"
+#include "projectfile.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), pte_(NULL), process_(NULL),
@@ -19,6 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     process_ = new QProcess(this);
     connect(process_, SIGNAL(finished(int)), this, SLOT(onProcessFinished(int)));
+
+    // QStringList column;
+    // column << fname << status << errors;
 }
 
 MainWindow::~MainWindow()
@@ -53,7 +57,14 @@ void MainWindow::on_actionOpen_triggered()
 
     if (path.length() == 0)
         return;
-
+#if 0
+    QTreeWidgetItem *item = new QTreeWidgetItem;
+    item->setText(0, path);
+    item->setText(1, "ready");
+    item->setText(2, "not yet");
+    ui->treeWidget->insertTopLevelItem(0, item);
+#endif
+#if 1
     KouetsApp *app = reinterpret_cast<KouetsApp*>(qApp);
 
     QString cmdline = app->GetCmdLine();
@@ -81,14 +92,40 @@ void MainWindow::on_actionOpen_triggered()
     } else {
         pte_ = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
     }
+    ui->tabWidget->setCurrentWidget(pte_);
+#endif
 }
 
 void MainWindow::onProcessFinished(int code)
 {
     QString output = process_->readAllStandardError();
-    pte_->setText(output);
+    QTextStream ts(&output);
+    QString result;
+    for (;;) {
+        QString line = ts.readLine();
+        if (line.length() == 0)
+            break;
+        qDebug() << line;
+        QRegExp reg1("(.+)\\(([0-9]+)\\):(.+) (\\[.+\\]) (\\[[0-9]+\\])");
+        QRegExp reg2("(\\D+): (\\d+)");
+        if (reg1.indexIn(line) >= 0) {
+            result += "<B>" + reg1.cap(1) + "</B>";
+            result += "(<FONT COLOR='RED'>" + reg1.cap(2) + "</FONT>):";
+            result += "<STRONG>"+reg1.cap(3)+"</STRONG> ";
+            result += "<FONT COLOR='BLUE'>" + reg1.cap(4) + "</FONT> ";
+            result += "<FONT COLOR='GREEN'>" + reg1.cap(5) + "</FONT>";
+            result += "<BR>";
+        } else if (reg2.indexIn(line) >= 0) {
+            result += reg2.cap(1);
+            result += ": <FONT COLOR='RED'>" + reg2.cap(2) + "</FONT>";
+        } else {
+            result += line;
+            result += "<BR>";
+        }
+    }
+    pte_->setText(result);
 
-    // qDebug() << output;
+    // qDebug() << result;
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)

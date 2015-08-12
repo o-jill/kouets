@@ -7,10 +7,12 @@ TEMPLATE = app
 
 SOURCES += kouetsapp.cpp\
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    projectfile.cpp
 
 HEADERS += kouetsapp.h \
-    mainwindow.h
+    mainwindow.h \
+    projectfile.h
 
 FORMS += \
     mainwindow.ui
