@@ -1,13 +1,13 @@
 ----------------
 
 # what's Kouets?
-Kouets will be an automatic source code checking tool like fly-make.
+Kouets will be an automatic source code checking tool's front-end.
 
 # what you need to other
-* some lint program
+* some lint program such as [google's c++ lint program](https://github.com/google/styleguide)
 
 # License
-Source code will be Public Domain.
+Source code is under Public Domain.
 But executable binaries will be GPL because of Qt :sweat: .
 
 
