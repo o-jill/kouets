@@ -23,7 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ptimer_update_, SIGNAL(timeout()), this, SLOT(onTimerUpdate()));
 
     process_ = new QProcess(this);
-    connect(process_, SIGNAL(finished(int)), this, SLOT(onProcessFinished(int)));
+    connect(process_, SIGNAL(finished(int)),
+            this, SLOT(onProcessFinished(int)));
 }
 
 MainWindow::~MainWindow()
@@ -59,7 +60,6 @@ void MainWindow::on_actionOpen_triggered()
     if (path.length() == 0)
         return;
 
-#if 1
     if (prj_.Open(path) <= 0) {
         return;
     }
@@ -73,24 +73,23 @@ void MainWindow::on_actionOpen_triggered()
         QString str = ui->tabWidget->tabText(idx);
         if (str.startsWith(":"))
             continue;
-        QTextEdit*pte = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
+        QTextEdit*pte =
+                reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
         ui->tabWidget->removeTab(idx);
         delete pte;
     }
 
-    for (int i = 0 ; i <= prj_.size() ; ++i) {
+    for (int i = 0 ; i < prj_.size() ; ++i) {
         QTreeWidgetItem *item = new QTreeWidgetItem;
         QString s = prj_.at(i);
         item->setText(0, s);
         item->setText(1, "ready");
         item->setText(2, "not yet");
-        ui->treeWidget->insertTopLevelItem(prj_.size(), item);
-        prj_.Add(s);
+        ui->treeWidget->addTopLevelItem(item);
     }
     curfile_ = 0;
 
     ptimer_update_->start();
-#endif;
 }
 
 void MainWindow::onProcessFinished(int code)
@@ -170,6 +169,10 @@ QString MainWindow::Decorate(QString &str)
         result += str;
         result += "<BR>";
     }
+#if 1
+    qDebug() << str;
+    qDebug() << result;
+#endif
     return result;
 }
 
@@ -204,7 +207,7 @@ void MainWindow::onTimerUpdate()
     int idx;
     for (idx = 0 ; idx < count ; ++idx) {
         QString s = ui->tabWidget->tabText(idx);
-        if(s.compare(tabname, Qt::CaseInsensitive) == 0)
+        if (s.compare(tabname, Qt::CaseInsensitive) == 0)
             break;
     }
     if (idx == count) {
@@ -223,7 +226,9 @@ void MainWindow::on_actionSave_triggered()
         ptimer_update_->stop();
     }
 
-    QString path = QFileDialog::getSaveFileName(this, "choose a file", QString(), "kouets(*.kouets);;All files(*.*)");
+    QString path = QFileDialog::getSaveFileName(
+                this, "choose a file", QString(),
+                "kouets(*.kouets);;All files(*.*)");
 
     if (path.length() == 0)
         return;

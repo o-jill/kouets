@@ -45,7 +45,7 @@ int ProjectFile::Save(const QString &path)
 int ProjectFile::Remove(QString path)
 {
     int sz = pathlist_.size();
-    for (int i = 0 ; i < sz ; ++i ) {
+    for (int i = 0 ; i < sz ; ++i) {
         if (path.compare(pathlist_[i]) == 0) {
             pathlist_.removeAt(i);
             return 1;
