@@ -60,7 +60,9 @@ void MainWindow::on_actionOpen_triggered()
         return;
 
 #if 1
-    prj_.Open(path);
+    if (prj_.Open(path) <= 0) {
+        return;
+    }
 
     ui->treeWidget->clear();
 
@@ -76,7 +78,7 @@ void MainWindow::on_actionOpen_triggered()
         delete pte;
     }
 
-    for (int i = 0 ; i != prj_.size() ; ++i) {
+    for (int i = 0 ; i <= prj_.size() ; ++i) {
         QTreeWidgetItem *item = new QTreeWidgetItem;
         QString s = prj_.at(i);
         item->setText(0, s);
@@ -85,38 +87,10 @@ void MainWindow::on_actionOpen_triggered()
         ui->treeWidget->insertTopLevelItem(prj_.size(), item);
         prj_.Add(s);
     }
+    curfile_ = 0;
+
+    ptimer_update_->start();
 #endif;
-#if 0
-    KouetsApp *app = reinterpret_cast<KouetsApp*>(qApp);
-
-    QString cmdline = app->GetCmdLine();
-    cmdline += " ";
-    cmdline += path;
-
-    // qDebug() << "program:" << app->GetProgramPath();
-    // qDebug() << "path:" << cmdline;
-
-    process_->setNativeArguments(cmdline);
-    process_->start(app->GetProgramPath());
-
-    QFileInfo fi(path);
-    QString tabname = fi.fileName();
-    int count = ui->tabWidget->count();
-    int idx;
-    for (idx = 0 ; idx < count ; ++idx) {
-        QString s = ui->tabWidget->tabText(idx);
-        if(s.compare(tabname, Qt::CaseInsensitive) == 0)
-            break;
-    }
-    if (idx == count) {
-        pte_ = new QTextEdit(this);
-        pte_->setReadOnly(true);
-        ui->tabWidget->addTab(pte_, tabname);
-    } else {
-        pte_ = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
-    }
-    ui->tabWidget->setCurrentWidget(pte_);
-#endif
 }
 
 void MainWindow::onProcessFinished(int code)
@@ -134,8 +108,13 @@ void MainWindow::onProcessFinished(int code)
         result += Decorate(line);
     }
     pte_->setText(result);
+    ++curfile_;
+    if (curfile_ == prj_.size())
+        curfile_ = 0;
 
     // qDebug() << result;
+
+    ptimer_update_->start();
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
@@ -165,6 +144,11 @@ void MainWindow::on_actionAdd_triggered()
         ui->treeWidget->insertTopLevelItem(prj_.size(), item);
         prj_.Add(*it);
     }
+    if (ptimer_update_->isActive()) {
+        //
+    } else {
+        ptimer_update_->start();
+    }
 }
 
 QString MainWindow::Decorate(QString &str)
@@ -191,11 +175,54 @@ QString MainWindow::Decorate(QString &str)
 
 void MainWindow::onTimerUpdate()
 {
-    // nothing to do yet
+    ptimer_update_->stop();
+
+    KouetsApp *app = reinterpret_cast<KouetsApp*>(qApp);
+
+    if (!prj_.isUpdated(curfile_)) {
+        ++curfile_;
+        if (curfile_ == prj_.size())
+            curfile_ = 0;
+        ptimer_update_->start();
+        return;
+    }
+    QString path = prj_.at(curfile_);
+
+    QString cmdline = app->GetCmdLine();
+    cmdline += " ";
+    cmdline += path;
+
+    // qDebug() << "program:" << app->GetProgramPath();
+    // qDebug() << "path:" << cmdline;
+
+    process_->setNativeArguments(cmdline);
+    process_->start(app->GetProgramPath());
+
+    QFileInfo fi(path);
+    QString tabname = fi.fileName();
+    int count = ui->tabWidget->count();
+    int idx;
+    for (idx = 0 ; idx < count ; ++idx) {
+        QString s = ui->tabWidget->tabText(idx);
+        if(s.compare(tabname, Qt::CaseInsensitive) == 0)
+            break;
+    }
+    if (idx == count) {
+        pte_ = new QTextEdit(this);
+        pte_->setReadOnly(true);
+        ui->tabWidget->addTab(pte_, tabname);
+    } else {
+        pte_ = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
+    }
+    ui->tabWidget->setCurrentWidget(pte_);
 }
 
 void MainWindow::on_actionSave_triggered()
 {
+    if (ptimer_update_->isActive()) {
+        ptimer_update_->stop();
+    }
+
     QString path = QFileDialog::getSaveFileName(this, "choose a file", QString(), "kouets(*.kouets);;All files(*.*)");
 
     if (path.length() == 0)
@@ -203,4 +230,6 @@ void MainWindow::on_actionSave_triggered()
 
     if (prj_.size() > 0)
         prj_.Save(path);
+
+    ptimer_update_->start();
 }

@@ -16,6 +16,8 @@ int ProjectFile::Open(const QString &path)
         if (ba[0] == '#') {
             continue;
         }
+
+        ba[ba.size()-1] = '\0';
         QFileInfo fi(ba);
         if (fi.isFile()) {
             pathlist_.push_back(fi.absoluteFilePath());
