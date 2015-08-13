@@ -34,3 +34,6 @@ win32 {
 #CONFIG(debug,debug|release):updateverhook.target = Makefile.Debug
 #CONFIG(release,debug|release):updateverhook.target = Makefile.Release
 #QMAKE_EXTRA_TARGETS += updateverhook
+
+RESOURCES += \
+    kouets.qrc

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>rsc/add24.png</file>
+        <file>rsc/open24.png</file>
+        <file>rsc/save4.png</file>
+    </qresource>
+</RCC>
