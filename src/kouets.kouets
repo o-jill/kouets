@@ -1,0 +1,9 @@
+# kouets project file
+#
+../src/kouetsapp.cpp
+../src/kouetsapp.h
+../src/main.cpp
+../src/mainwindow.cpp
+../src/mainwindow.h
+../src/projectfile.cpp
+../src/projectfile.h
