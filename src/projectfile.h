@@ -11,12 +11,13 @@ public:
 
     void Add(QString path) {
         pathlist_.push_back(path);
+        updatedlist_.push_back(QDateTime());
     }
 
     int Remove(QString path);
 
-    int Open(QFile &file);
-    int Save(QFile &file);
+    int Open(const QString &path);
+    int Save(const QString &path);
 
     int size() {return pathlist_.size();}
     QString at(int idx) {
@@ -35,8 +36,10 @@ public:
         pathlist_.sort();
     }
 
+    bool isUpdated(int idx);
 private:
     QStringList pathlist_;
+    QVector<QDateTime> updatedlist_;
 };
 
 #endif
