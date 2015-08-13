@@ -155,6 +155,11 @@ QString MainWindow::Decorate(QString &str)
     QString result;
     QRegExp reg1("(.+)\\(([0-9]+)\\):(.+) (\\[.+\\]) (\\[[0-9]+\\])");
     QRegExp reg2("(\\D+): (\\d+)");
+
+    str.replace("<", "&lt;");
+    str.replace(">", "&gt;");
+    // str.replace("&", "&amp;");  // it may not be needed...
+
     if (reg1.indexIn(str) >= 0) {
         result += "<B>" + reg1.cap(1) + "</B>";
         result += "(<FONT COLOR='RED'>" + reg1.cap(2) + "</FONT>):";
@@ -169,7 +174,7 @@ QString MainWindow::Decorate(QString &str)
         result += str;
         result += "<BR>";
     }
-#if 1
+#if 0
     qDebug() << str;
     qDebug() << result;
 #endif
