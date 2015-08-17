@@ -9,6 +9,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), pte_(NULL), process_(NULL),
+    curfile_(0),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
