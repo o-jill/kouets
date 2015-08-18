@@ -61,8 +61,13 @@ void MainWindow::on_actionOpen_triggered()
     if (path.length() == 0)
         return;
 
+    OpenProjectFile(path);
+}
+
+int MainWindow::OpenProjectFile(const QString &path)
+{
     if (prj_.Open(path) <= 0) {
-        return;
+        return 0;
     }
 
     ui->treeWidget->clear();
@@ -91,6 +96,7 @@ void MainWindow::on_actionOpen_triggered()
     curfile_ = 0;
 
     ptimer_update_->start();
+    return 1;
 }
 
 void MainWindow::onProcessFinished(int code)
@@ -272,4 +278,59 @@ void MainWindow::on_actionSave_triggered()
         prj_.Save(path);
 
     ptimer_update_->start();
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+    if (e->mimeData()->hasFormat("text/uri-list")) {
+        e->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent *e)
+{
+    QList<QUrl> flist = e->mimeData()->urls();
+    if (flist.size() == 0) {
+        return;
+    }
+
+    QList<QUrl>::iterator it;
+    if (flist.size() == 1) {
+        QFileInfo fi(flist.at(0).toLocalFile());
+        // if project file
+        if (fi.suffix() == "kouets") {
+            // a
+            OpenProjectFile(flist.at(0).toLocalFile());
+        } else {
+            // add a dropped file.
+            for (it = flist.begin() ; it != flist.end() ; ++it) {
+                QTreeWidgetItem *item = new QTreeWidgetItem;
+                item->setText(0, it->toLocalFile());
+                item->setText(1, "ready");
+                item->setText(2, "not yet");
+                ui->treeWidget->addTopLevelItem(item);
+                prj_.Add(it->toLocalFile());
+            }
+            if (ptimer_update_->isActive()) {
+                //
+            } else {
+                ptimer_update_->start();
+            }
+        }
+    } else {
+        // add dropped files.
+        for (it = flist.begin() ; it != flist.end() ; ++it) {
+            QTreeWidgetItem *item = new QTreeWidgetItem;
+            item->setText(0, it->toLocalFile());
+            item->setText(1, "ready");
+            item->setText(2, "not yet");
+            ui->treeWidget->addTopLevelItem(item);
+            prj_.Add(it->toLocalFile());
+        }
+        if (ptimer_update_->isActive()) {
+            //
+        } else {
+            ptimer_update_->start();
+        }
+    }
 }

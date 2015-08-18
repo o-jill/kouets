@@ -17,6 +17,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void dragEnterEvent(QDragEnterEvent *);
+    void dropEvent(QDropEvent *e);
+
 private slots:
     void on_toolButton_clicked();
     void on_lineEdit_cmdline_textChanged(const QString &arg1);
@@ -29,6 +33,7 @@ private slots:
 
 private:
     QString Decorate(QString &str, int &nerr);
+    int OpenProjectFile(const QString &path);
 
 private:
     Ui::MainWindow *ui;
