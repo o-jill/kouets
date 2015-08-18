@@ -25,11 +25,11 @@ private slots:
     void on_tabWidget_tabCloseRequested(int index);
     void on_actionAdd_triggered();
     void onTimerUpdate();
-
     void on_actionSave_triggered();
 
 private:
-    QString Decorate(QString &str);
+    QString Decorate(QString &str, int &nerr);
+
 private:
     Ui::MainWindow *ui;
     QTimer *ptimer_update_;

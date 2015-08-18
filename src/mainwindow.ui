@@ -41,6 +41,12 @@
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <widget class="QTreeWidget" name="treeWidget">
+          <property name="textElideMode">
+           <enum>Qt::ElideLeft</enum>
+          </property>
+          <property name="allColumnsShowFocus">
+           <bool>true</bool>
+          </property>
           <property name="columnCount">
            <number>3</number>
           </property>

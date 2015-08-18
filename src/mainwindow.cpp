@@ -101,11 +101,12 @@ void MainWindow::onProcessFinished(int code)
     QString output = process_->readAllStandardError();
     QTextStream ts(&output);
     QString result;
+    int nerrors = -1;
     for (;;) {
         QString line = ts.readLine();
         if (line.length() == 0)
             break;
-        result += Decorate(line);
+        result += Decorate(line, nerrors);
     }
     pte_->setText(result);
     ++curfile_;
@@ -113,6 +114,17 @@ void MainWindow::onProcessFinished(int code)
         curfile_ = 0;
 
     // qDebug() << result;
+
+    if (pitem_) {
+        pitem_->setText(1, "done");
+        if (nerrors < 0) {
+            pitem_->setText(2, "error...");
+        } else {
+            if (pitem_) {
+                pitem_->setText(2, QString("%1").arg(nerrors));
+            }
+        }
+    }
 
     ptimer_update_->start();
 }
@@ -141,7 +153,7 @@ void MainWindow::on_actionAdd_triggered()
         item->setText(0, *it);
         item->setText(1, "ready");
         item->setText(2, "not yet");
-        ui->treeWidget->insertTopLevelItem(prj_.size(), item);
+        ui->treeWidget->addTopLevelItem(item);
         prj_.Add(*it);
     }
     if (ptimer_update_->isActive()) {
@@ -151,7 +163,13 @@ void MainWindow::on_actionAdd_triggered()
     }
 }
 
-QString MainWindow::Decorate(QString &str)
+/**
+ * @brief Decorate text from google C++ lint program(cpplint.py)
+ * @param str input text line.
+ * @param nerr number of errors, if str contains the number. otherwise not changed.
+ * @return decorated string
+ */
+QString MainWindow::Decorate(QString &str, int &nerr)
 {
     QString result;
     QRegExp reg1("(.+)\\(([0-9]+)\\):(.+) (\\[.+\\]) (\\[[0-9]+\\])");
@@ -171,6 +189,7 @@ QString MainWindow::Decorate(QString &str)
     } else if (reg2.indexIn(str) >= 0) {
         result += reg2.cap(1);
         result += ": <FONT COLOR='RED'>" + reg2.cap(2) + "</FONT>";
+        nerr = reg2.cap(2).toInt();
     } else {
         result += str;
         result += "<BR>";
@@ -224,6 +243,16 @@ void MainWindow::onTimerUpdate()
         pte_ = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
     }
     ui->tabWidget->setCurrentWidget(pte_);
+    count = ui->treeWidget->topLevelItemCount();
+    pitem_ = NULL;
+    for (idx = 0 ; idx < count ; ++idx) {
+        QTreeWidgetItem *pi = ui->treeWidget->topLevelItem(idx);
+        if (pi->text(0) == fi.absoluteFilePath()) {
+            pitem_ = pi;
+            pi->setText(1, "running");
+            break;
+        }
+    }
 }
 
 void MainWindow::on_actionSave_triggered()
