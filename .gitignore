@@ -1,1 +1,6 @@
 build-*
+debug
+release
+src/kouets.pro.user
+src/kouetshash.cpp
+src/kouetshash.h
