@@ -31,11 +31,16 @@ win32 {
 }
 
 # Create source about git commit hash
-updategithash.target = kouetshash.cpp
-updategithash.depends = ../.git/refs/dev  # for dev branch
-#updategithash.depends = ../.git/refs/master  # for master branch
+updategithash.target = ../src/kouetshash.cpp
+updategithash.depends = ../.git/refs/heads/dev  # for dev branch
+#updategithash.depends = ../.git/refs/heads/master  # for master branch
 win32:updategithash.commands =pushd .&&cd ../src&&gen_git_hash.bat H kouetshash&&gen_git_hash.bat CPP kouetshash&&popd
 QMAKE_EXTRA_TARGETS += updategithash
+
+#updategithashhook.depends = updategithash
+#CONFIG(debug,debug|release):updategithashhook.target = Makefile.Debug
+#CONFIG(release,debug|release):updategithashhook.target = Makefile.Release
+#QMAKE_EXTRA_TARGETS += updategithashhook
 
 
 # Create our custom updatever target.
