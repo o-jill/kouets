@@ -7,7 +7,8 @@ int ProjectFile::Open(const QString &path)
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly|QIODevice::Text))
         return -1;
-    QDir::setCurrent(path);
+    QFileInfo pfi(path);
+    QDir::setCurrent(pfi.absolutePath());
     for ( ; ; ) {
         QByteArray ba = file.readLine();
         if (ba.size() == 0)
