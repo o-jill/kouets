@@ -32,7 +32,6 @@ private slots:
     void on_actionSave_triggered();
 
 private:
-    QString Decorate(QString &str, int &nerr);
     int OpenProjectFile(const QString &path);
 
 private:

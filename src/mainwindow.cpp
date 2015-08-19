@@ -7,6 +7,7 @@
 #include "kouetsapp.h"
 #include "projectfile.h"
 #include "kouetshash.h"
+#include "decorate.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), pte_(NULL), process_(NULL),
@@ -110,13 +111,13 @@ void MainWindow::onProcessFinished(int code)
     QString output = process_->readAllStandardError();
     QTextStream ts(&output);
     QString result;
+
     int nerrors = -1;
-    for (;;) {
-        QString line = ts.readLine();
-        if (line.length() == 0)
-            break;
-        result += Decorate(line, nerrors);
-    }
+
+    DecorateGCppVs7 dec;
+    result = dec.Decorate(&ts);
+    nerrors = dec.ErrorNum();
+
     pte_->setText(result);
     ++curfile_;
     if (curfile_ == prj_.size())
@@ -170,44 +171,6 @@ void MainWindow::on_actionAdd_triggered()
     } else {
         ptimer_update_->start();
     }
-}
-
-/**
- * @brief Decorate text from google C++ lint program(cpplint.py)
- * @param str input text line.
- * @param nerr number of errors, if str contains the number. otherwise not changed.
- * @return decorated string
- */
-QString MainWindow::Decorate(QString &str, int &nerr)
-{
-    QString result;
-    QRegExp reg1("(.+)\\(([0-9]+)\\):(.+) (\\[.+\\]) (\\[[0-9]+\\])");
-    QRegExp reg2("(\\D+): (\\d+)");
-
-    str.replace("<", "&lt;");
-    str.replace(">", "&gt;");
-    // str.replace("&", "&amp;");  // it may not be needed...
-
-    if (reg1.indexIn(str) >= 0) {
-        result += "<B>" + reg1.cap(1) + "</B>";
-        result += "(<FONT COLOR='RED'>" + reg1.cap(2) + "</FONT>):";
-        result += "<STRONG>"+reg1.cap(3)+"</STRONG> ";
-        result += "<FONT COLOR='BLUE'>" + reg1.cap(4) + "</FONT> ";
-        result += "<FONT COLOR='GREEN'>" + reg1.cap(5) + "</FONT>";
-        result += "<BR>";
-    } else if (reg2.indexIn(str) >= 0) {
-        result += reg2.cap(1);
-        result += ": <FONT COLOR='RED'>" + reg2.cap(2) + "</FONT>";
-        nerr = reg2.cap(2).toInt();
-    } else {
-        result += str;
-        result += "<BR>";
-    }
-#if 0
-    qDebug() << str;
-    qDebug() << result;
-#endif
-    return result;
 }
 
 void MainWindow::onTimerUpdate()

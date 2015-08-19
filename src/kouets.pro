@@ -5,13 +5,15 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = kouets
 TEMPLATE = app
 
-SOURCES += kouetsapp.cpp \
+SOURCES += decorate.cpp \
+    kouetsapp.cpp \
     kouetshash.cpp \
     main.cpp \
     mainwindow.cpp \
     projectfile.cpp
 
-HEADERS += kouetsapp.h \
+HEADERS += decorate.h \
+    kouetsapp.h \
     kouetshash.h \
     mainwindow.h \
     projectfile.h
