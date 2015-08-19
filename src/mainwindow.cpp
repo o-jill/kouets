@@ -210,6 +210,7 @@ void MainWindow::onTimerUpdate()
     if (idx == count) {
         pte_ = new QTextEdit(this);
         pte_->setReadOnly(true);
+        pte_->setWordWrapMode(QTextOption::NoWrap);
         ui->tabWidget->addTab(pte_, tabname);
     } else {
         pte_ = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
