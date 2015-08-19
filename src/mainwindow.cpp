@@ -6,6 +6,7 @@
 
 #include "kouetsapp.h"
 #include "projectfile.h"
+#include "kouetshash.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), pte_(NULL), process_(NULL),
@@ -26,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     process_ = new QProcess(this);
     connect(process_, SIGNAL(finished(int)),
             this, SLOT(onProcessFinished(int)));
+
+    setWindowTitle(QString("Kouets [%1 %2]").arg(branchname).arg(commithash));
 }
 
 MainWindow::~MainWindow()

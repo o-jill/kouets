@@ -5,12 +5,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = kouets
 TEMPLATE = app
 
-SOURCES += kouetsapp.cpp\
+SOURCES += kouetsapp.cpp \
+    kouetshash.cpp \
     main.cpp \
     mainwindow.cpp \
     projectfile.cpp
 
 HEADERS += kouetsapp.h \
+    kouetshash.h \
     mainwindow.h \
     projectfile.h
 
@@ -26,6 +28,14 @@ win32 {
     QMAKE_LFLAGS += /map
 }
 
+# Create source about git commit hash
+updategithash.target = kouetshash.cpp
+updategithash.depends = ../.git/refs/dev  # for dev branch
+#updategithash.depends = ../.git/refs/master  # for master branch
+win32:updategithash.commands =pushd .&&cd ../src&&gen_git_hash.bat H kouetshash&&gen_git_hash.bat CPP kouetshash&&popd
+QMAKE_EXTRA_TARGETS += updategithash
+
+
 # Create our custom updatever target.
 #win32:updatever.commands =pushd .&&cd ../src&&copy version.cpp +&&popd
 #QMAKE_EXTRA_TARGETS += updatever
@@ -34,6 +44,7 @@ win32 {
 #CONFIG(debug,debug|release):updateverhook.target = Makefile.Debug
 #CONFIG(release,debug|release):updateverhook.target = Makefile.Release
 #QMAKE_EXTRA_TARGETS += updateverhook
+
 
 RESOURCES += \
     kouets.qrc
