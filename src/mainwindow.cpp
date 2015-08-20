@@ -20,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->lineEdit_pathprogram->setText(app->GetProgramPath());
     ui->lineEdit_cmdline->setText(app->GetCmdLine());
+    ui->checkBox_ActivateProcessedTab->setChecked(
+            app->IsActivateProcessedTab());
 
     ptimer_update_ = new QTimer(this);
     ptimer_update_->setInterval(1000);
@@ -224,7 +226,9 @@ void MainWindow::onTimerUpdate()
     } else {
         pte_ = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
     }
-    ui->tabWidget->setCurrentWidget(pte_);
+    if (app->IsActivateProcessedTab()) {
+        ui->tabWidget->setCurrentWidget(pte_);
+    }
     count = ui->treeWidget->topLevelItemCount();
     pitem_ = NULL;
     for (idx = 0 ; idx < count ; ++idx) {
@@ -308,4 +312,11 @@ void MainWindow::dropEvent(QDropEvent *e)
             ptimer_update_->start();
         }
     }
+}
+
+void MainWindow::on_checkBox_ActivateProcessedTab_clicked(bool checked)
+{
+    KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
+    app->SetActivateProcessedTab(checked);
+    app->SaveIni();
 }

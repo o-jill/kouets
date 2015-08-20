@@ -31,6 +31,8 @@ private slots:
     void onTimerUpdate();
     void on_actionSave_triggered();
 
+    void on_checkBox_ActivateProcessedTab_clicked(bool checked);
+
 private:
     int OpenProjectFile(const QString &path);
 

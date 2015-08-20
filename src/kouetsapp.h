@@ -39,6 +39,12 @@ public:
         cmdLine_ = cmdline;
         updated_ = true;
     }
+    void SetActivateProcessedTab(int b) {
+        if (b == bactivateprocessedtab_)
+            return;
+        bactivateprocessedtab_ = b;
+        updated_ = true;
+    }
 
     int ParseCmdLine(char *str);
 
@@ -50,6 +56,7 @@ public:
 
     QString GetProgramPath() {return programPath_;}
     QString GetCmdLine() {return cmdLine_;}
+    int IsActivateProcessedTab() {return bactivateprocessedtab_;}
 
     QString FileName2Open() {return filename2Open_;}
 private:
@@ -57,7 +64,7 @@ private:
     static void myMessageHandler(QtMsgType type, const char *msg);
 
 protected:
-    //bool winEventFilter(MSG *message, long *result);
+    // bool winEventFilter(MSG *message, long *result);
 
 private:
     QString iniPath_;
@@ -67,6 +74,7 @@ private:
 
     QString programPath_;
     QString cmdLine_;
+    int bactivateprocessedtab_;
     int updated_;
 
     QString filename2Open_;

@@ -16,7 +16,7 @@
  * コンストラクタ
  */
 KouetsApp::KouetsApp(int &argc, char**argv)
-    :QApplication(argc, argv), updated_(0)
+    :QApplication(argc, argv), updated_(0), bactivateprocessedtab_(1)
 {
     prepareAppDataPath();
 
@@ -66,8 +66,10 @@ int KouetsApp::LoadIni()
     programPath_ = var.toString();
     var = stg.value("commandline");
     cmdLine_ = var.toString();
+    var = stg.value("activatetab", 1);
+    bactivateprocessedtab_ = var.toInt();
 
-    updated_ = 0;
+    updated_ = false;
 
     return ret;
 }
@@ -83,8 +85,9 @@ int KouetsApp::SaveIni()
 
     stg.setValue("program", programPath_);
     stg.setValue("commandline", cmdLine_);
+    stg.setValue("activatetab", bactivateprocessedtab_);
 
-    updated_ = 0;
+    updated_ = false;
 
     return ret;
 }
