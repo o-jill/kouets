@@ -45,6 +45,12 @@ public:
         bactivateprocessedtab_ = b;
         updated_ = true;
     }
+    void SetLineWrap(int b) {
+        if (b == blinewrap_)
+            return;
+        blinewrap_ = b;
+        updated_ = true;
+    }
 
     int ParseCmdLine(char *str);
 
@@ -57,6 +63,7 @@ public:
     QString GetProgramPath() {return programPath_;}
     QString GetCmdLine() {return cmdLine_;}
     int IsActivateProcessedTab() {return bactivateprocessedtab_;}
+    int LineWrap() {return blinewrap_;}
 
     QString FileName2Open() {return filename2Open_;}
 private:
@@ -75,6 +82,7 @@ private:
     QString programPath_;
     QString cmdLine_;
     int bactivateprocessedtab_;
+    int blinewrap_;
     int updated_;
 
     QString filename2Open_;

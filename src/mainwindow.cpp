@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_cmdline->setText(app->GetCmdLine());
     ui->checkBox_ActivateProcessedTab->setChecked(
             app->IsActivateProcessedTab());
+    ui->checkBox_LineWrap->setChecked(app->LineWrap());
 
     ptimer_update_ = new QTimer(this);
     ptimer_update_->setInterval(1000);
@@ -221,7 +222,10 @@ void MainWindow::onTimerUpdate()
     if (idx == count) {
         pte_ = new QTextEdit(this);
         pte_->setReadOnly(true);
-        pte_->setWordWrapMode(QTextOption::NoWrap);
+        if (app->LineWrap()) {
+        } else {
+            pte_->setWordWrapMode(QTextOption::NoWrap);
+        }
         ui->tabWidget->addTab(pte_, tabname);
     } else {
         pte_ = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
@@ -320,5 +324,12 @@ void MainWindow::on_checkBox_ActivateProcessedTab_clicked(bool checked)
 {
     KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
     app->SetActivateProcessedTab(checked);
+    app->SaveIni();
+}
+
+void MainWindow::on_checkBox_LineWrap_clicked(bool checked)
+{
+    KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
+    app->SetLineWrap(checked);
     app->SaveIni();
 }

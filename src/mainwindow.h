@@ -33,6 +33,8 @@ private slots:
 
     void on_checkBox_ActivateProcessedTab_clicked(bool checked);
 
+    void on_checkBox_LineWrap_clicked(bool checked);
+
 private:
     int OpenProjectFile(const QString &path);
 
