@@ -32,8 +32,7 @@ win32 {
 
 # Create source about git commit hash
 updategithash.target = ../src/kouetshash.cpp
-updategithash.depends = ../.git/refs/heads/dev  # for dev branch
-#updategithash.depends = ../.git/refs/heads/master  # for master branch
+updategithash.depends = ../.git/index
 win32:updategithash.commands =pushd .&&cd ../src&&gen_git_hash.bat H kouetshash&&gen_git_hash.bat CPP kouetshash&&popd
 QMAKE_EXTRA_TARGETS += updategithash
 
