@@ -74,6 +74,11 @@
             <string># of errors</string>
            </property>
           </column>
+          <column>
+           <property name="text">
+            <string>updated</string>
+           </property>
+          </column>
          </widget>
         </item>
        </layout>

@@ -239,6 +239,8 @@ void MainWindow::onTimerUpdate()
             break;
         }
     }
+    pitem_->setText(3,
+                prj_.lastUpdated(curfile_).toString("yyyy/MM/dd hh:mm:ss"));
 }
 
 void MainWindow::on_actionSave_triggered()
