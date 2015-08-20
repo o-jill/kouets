@@ -30,6 +30,15 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(onProcessFinished(int)));
 
     setWindowTitle(QString("Kouets [%1 %2]").arg(branchname).arg(commithash));
+
+    QString path = app->FileName2Open();
+    if (path.length() != 0) {
+        QFileInfo fi(path);
+        // if project file
+        if (fi.suffix() == "kouets") {
+            OpenProjectFile(fi.absoluteFilePath());
+        }
+    }
 }
 
 MainWindow::~MainWindow()
@@ -266,7 +275,6 @@ void MainWindow::dropEvent(QDropEvent *e)
         QFileInfo fi(flist.at(0).toLocalFile());
         // if project file
         if (fi.suffix() == "kouets") {
-            // a
             OpenProjectFile(flist.at(0).toLocalFile());
         } else {
             // add a dropped file.

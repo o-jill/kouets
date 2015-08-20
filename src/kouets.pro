@@ -24,7 +24,7 @@ FORMS += \
 
 win32 {
     RC_FILE = kouets.rc
-    LIBS += -lole32
+#    LIBS += -lole32
 #    LIBS += -luser32 -lshell32 -lole32
     DEFINES += _CRT_SECURE_NO_WARNINGS WINDOWS
     QMAKE_LFLAGS += /map

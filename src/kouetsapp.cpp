@@ -1,7 +1,7 @@
-/** 
+/**
  * @file kouetsapp.cpp
  * @brief Ç±Ç±Ç…ê‡ñæÇèëÇ≠
- * 
+ *
  */
 
 #include "kouetsapp.h"
@@ -20,8 +20,12 @@ KouetsApp::KouetsApp(int &argc, char**argv)
 {
     prepareAppDataPath();
 
-    CoInitialize(0);
+    // CoInitialize(0);
     QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
+
+    for (int i = 1 ; i < argc ; ++i) {
+        int ret = ParseCmdLine(argv[i]);
+    }
 
     wchar_t temp[MAX_PATH] = L"";
     ExpandEnvironmentStringsW(L"%TEMP%\\", temp, _countof(temp));
@@ -44,7 +48,7 @@ KouetsApp::KouetsApp(int &argc, char**argv)
  */
 KouetsApp::~KouetsApp()
 {
-    CoUninitialize();
+    // CoUninitialize();
 }
 
 /**
@@ -156,4 +160,14 @@ void KouetsApp::myMessageHandler(QtMsgType type, const char *msg)
     if (type == QtFatalMsg) {
         abort();
     }
+}
+
+int KouetsApp::ParseCmdLine(char *str)
+{
+    if (str[0] == '-' || str[0] == '/') {
+        // a
+    } else {
+        filename2Open_ = str;
+    }
+    return 0;
 }
