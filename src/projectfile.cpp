@@ -4,6 +4,9 @@
 
 int ProjectFile::Open(const QString &path)
 {
+    pathlist_.clear();
+    updatedlist_.clear();
+
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly|QIODevice::Text))
         return -1;
