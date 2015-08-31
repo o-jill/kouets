@@ -25,14 +25,14 @@ private slots:
     void on_toolButton_clicked();
     void on_lineEdit_cmdline_textChanged(const QString &arg1);
     void on_actionOpen_triggered();
+    void onReadyReadStdOut();
+    void onReadyReadStdErr();
     void onProcessFinished(int code);
     void on_tabWidget_tabCloseRequested(int index);
     void on_actionAdd_triggered();
     void onTimerUpdate();
     void on_actionSave_triggered();
-
     void on_checkBox_ActivateProcessedTab_clicked(bool checked);
-
     void on_checkBox_LineWrap_clicked(bool checked);
 
 private:

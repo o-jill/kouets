@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     process_ = new QProcess(this);
     connect(process_, SIGNAL(finished(int)),
             this, SLOT(onProcessFinished(int)));
+    connect(process_, SIGNAL(readyReadStandardOutput()), this, SLOT(onReadyReadStdOut()));
+    connect(process_, SIGNAL(readyReadStandardError()), this, SLOT(onReadyReadStdErr()));
 
     setWindowTitle(QString("Kouets [%1 %2]").arg(branchname).arg(commithash));
 
@@ -115,22 +117,57 @@ int MainWindow::OpenProjectFile(const QString &path)
     return 1;
 }
 
+void MainWindow::onReadyReadStdOut()
+{
+    if (pte_ == NULL)
+        return;
+
+    QString output = process_->readAllStandardOutput();
+
+    qDebug() << output;
+}
+
+void MainWindow::onReadyReadStdErr()
+{
+    if (pte_ == NULL)
+        return;
+
+    QString output = process_->readAllStandardError();
+    if (output.length() <= 0) {
+    } else {
+        QTextStream ts(&output);
+        QString result;
+
+        DecorateGCppVs7 dec;
+        result = dec.Decorate(&ts);
+        // nerrors = dec.ErrorNum();
+
+        pte_->setHtml(result);
+    }
+}
+
 void MainWindow::onProcessFinished(int code)
 {
     if (pte_ == NULL)
         return;
 
     QString output = process_->readAllStandardError();
-    QTextStream ts(&output);
-    QString result;
-
     int nerrors = -1;
 
-    DecorateGCppVs7 dec;
-    result = dec.Decorate(&ts);
-    nerrors = dec.ErrorNum();
+    if (output.length() <= 0) {
+        nerrors = 0;
+    } else {
+        QTextStream ts(&output);
+        QString result;
 
-    pte_->setText(result);
+
+        DecorateGCppVs7 dec;
+        result = dec.Decorate(&ts);
+        nerrors = dec.ErrorNum();
+
+        pte_->setText(result);
+    }
+
     ++curfile_;
     if (curfile_ == prj_.size())
         curfile_ = 0;
