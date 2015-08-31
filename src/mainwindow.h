@@ -31,8 +31,11 @@ private slots:
     void onTimerUpdate();
     void on_actionSave_triggered();
 
+    void on_checkBox_ActivateProcessedTab_clicked(bool checked);
+
+    void on_checkBox_LineWrap_clicked(bool checked);
+
 private:
-    QString Decorate(QString &str, int &nerr);
     int OpenProjectFile(const QString &path);
 
 private:

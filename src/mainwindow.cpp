@@ -6,6 +6,8 @@
 
 #include "kouetsapp.h"
 #include "projectfile.h"
+#include "kouetshash.h"
+#include "decorate.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), pte_(NULL), process_(NULL),
@@ -18,6 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->lineEdit_pathprogram->setText(app->GetProgramPath());
     ui->lineEdit_cmdline->setText(app->GetCmdLine());
+    ui->checkBox_ActivateProcessedTab->setChecked(
+            app->IsActivateProcessedTab());
+    ui->checkBox_LineWrap->setChecked(app->LineWrap());
 
     ptimer_update_ = new QTimer(this);
     ptimer_update_->setInterval(1000);
@@ -26,6 +31,17 @@ MainWindow::MainWindow(QWidget *parent) :
     process_ = new QProcess(this);
     connect(process_, SIGNAL(finished(int)),
             this, SLOT(onProcessFinished(int)));
+
+    setWindowTitle(QString("Kouets [%1 %2]").arg(branchname).arg(commithash));
+
+    QString path = app->FileName2Open();
+    if (path.length() != 0) {
+        QFileInfo fi(path);
+        // if project file
+        if (fi.suffix() == "kouets") {
+            OpenProjectFile(fi.absoluteFilePath());
+        }
+    }
 }
 
 MainWindow::~MainWindow()
@@ -107,13 +123,13 @@ void MainWindow::onProcessFinished(int code)
     QString output = process_->readAllStandardError();
     QTextStream ts(&output);
     QString result;
+
     int nerrors = -1;
-    for (;;) {
-        QString line = ts.readLine();
-        if (line.length() == 0)
-            break;
-        result += Decorate(line, nerrors);
-    }
+
+    DecorateGCppVs7 dec;
+    result = dec.Decorate(&ts);
+    nerrors = dec.ErrorNum();
+
     pte_->setText(result);
     ++curfile_;
     if (curfile_ == prj_.size())
@@ -169,44 +185,6 @@ void MainWindow::on_actionAdd_triggered()
     }
 }
 
-/**
- * @brief Decorate text from google C++ lint program(cpplint.py)
- * @param str input text line.
- * @param nerr number of errors, if str contains the number. otherwise not changed.
- * @return decorated string
- */
-QString MainWindow::Decorate(QString &str, int &nerr)
-{
-    QString result;
-    QRegExp reg1("(.+)\\(([0-9]+)\\):(.+) (\\[.+\\]) (\\[[0-9]+\\])");
-    QRegExp reg2("(\\D+): (\\d+)");
-
-    str.replace("<", "&lt;");
-    str.replace(">", "&gt;");
-    // str.replace("&", "&amp;");  // it may not be needed...
-
-    if (reg1.indexIn(str) >= 0) {
-        result += "<B>" + reg1.cap(1) + "</B>";
-        result += "(<FONT COLOR='RED'>" + reg1.cap(2) + "</FONT>):";
-        result += "<STRONG>"+reg1.cap(3)+"</STRONG> ";
-        result += "<FONT COLOR='BLUE'>" + reg1.cap(4) + "</FONT> ";
-        result += "<FONT COLOR='GREEN'>" + reg1.cap(5) + "</FONT>";
-        result += "<BR>";
-    } else if (reg2.indexIn(str) >= 0) {
-        result += reg2.cap(1);
-        result += ": <FONT COLOR='RED'>" + reg2.cap(2) + "</FONT>";
-        nerr = reg2.cap(2).toInt();
-    } else {
-        result += str;
-        result += "<BR>";
-    }
-#if 0
-    qDebug() << str;
-    qDebug() << result;
-#endif
-    return result;
-}
-
 void MainWindow::onTimerUpdate()
 {
     ptimer_update_->stop();
@@ -244,11 +222,17 @@ void MainWindow::onTimerUpdate()
     if (idx == count) {
         pte_ = new QTextEdit(this);
         pte_->setReadOnly(true);
+        if (app->LineWrap()) {
+        } else {
+            pte_->setWordWrapMode(QTextOption::NoWrap);
+        }
         ui->tabWidget->addTab(pte_, tabname);
     } else {
         pte_ = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
     }
-    ui->tabWidget->setCurrentWidget(pte_);
+    if (app->IsActivateProcessedTab()) {
+        ui->tabWidget->setCurrentWidget(pte_);
+    }
     count = ui->treeWidget->topLevelItemCount();
     pitem_ = NULL;
     for (idx = 0 ; idx < count ; ++idx) {
@@ -259,6 +243,8 @@ void MainWindow::onTimerUpdate()
             break;
         }
     }
+    pitem_->setText(3,
+                prj_.lastUpdated(curfile_).toString("yyyy/MM/dd hh:mm:ss"));
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -299,7 +285,6 @@ void MainWindow::dropEvent(QDropEvent *e)
         QFileInfo fi(flist.at(0).toLocalFile());
         // if project file
         if (fi.suffix() == "kouets") {
-            // a
             OpenProjectFile(flist.at(0).toLocalFile());
         } else {
             // add a dropped file.
@@ -333,4 +318,18 @@ void MainWindow::dropEvent(QDropEvent *e)
             ptimer_update_->start();
         }
     }
+}
+
+void MainWindow::on_checkBox_ActivateProcessedTab_clicked(bool checked)
+{
+    KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
+    app->SetActivateProcessedTab(checked);
+    app->SaveIni();
+}
+
+void MainWindow::on_checkBox_LineWrap_clicked(bool checked)
+{
+    KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
+    app->SetLineWrap(checked);
+    app->SaveIni();
 }

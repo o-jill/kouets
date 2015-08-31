@@ -1,7 +1,7 @@
-/** 
+/**
  * @file kouetsapp.cpp
  * @brief ここに説明を書く
- * 
+ *
  */
 
 #include "kouetsapp.h"
@@ -16,12 +16,17 @@
  * コンストラクタ
  */
 KouetsApp::KouetsApp(int &argc, char**argv)
-    :QApplication(argc, argv), updated_(0)
+    :QApplication(argc, argv), updated_(0), bactivateprocessedtab_(1),
+    blinewrap_(0)
 {
     prepareAppDataPath();
 
-    CoInitialize(0);
+    // CoInitialize(0);
     QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
+
+    for (int i = 1 ; i < argc ; ++i) {
+        int ret = ParseCmdLine(argv[i]);
+    }
 
     wchar_t temp[MAX_PATH] = L"";
     ExpandEnvironmentStringsW(L"%TEMP%\\", temp, _countof(temp));
@@ -44,7 +49,7 @@ KouetsApp::KouetsApp(int &argc, char**argv)
  */
 KouetsApp::~KouetsApp()
 {
-    CoUninitialize();
+    // CoUninitialize();
 }
 
 /**
@@ -62,8 +67,12 @@ int KouetsApp::LoadIni()
     programPath_ = var.toString();
     var = stg.value("commandline");
     cmdLine_ = var.toString();
+    var = stg.value("activatetab", 1);
+    bactivateprocessedtab_ = var.toInt();
+    var = stg.value("linewrap", 1);
+    blinewrap_ = var.toInt();
 
-    updated_ = 0;
+    updated_ = false;
 
     return ret;
 }
@@ -79,8 +88,10 @@ int KouetsApp::SaveIni()
 
     stg.setValue("program", programPath_);
     stg.setValue("commandline", cmdLine_);
+    stg.setValue("activatetab", bactivateprocessedtab_);
+    stg.setValue("linewrap", blinewrap_);
 
-    updated_ = 0;
+    updated_ = false;
 
     return ret;
 }
@@ -140,7 +151,7 @@ void KouetsApp::myMessageHandler(QtMsgType type, const char *msg)
     }
 
     // put to a log file.
-    KouetsApp*pApp = ((KouetsApp*)qApp);
+    KouetsApp *pApp = reinterpret_cast<KouetsApp*>(qApp);
     if (pApp != NULL) {
         QString fn = QString(pApp->logPath_);
         QFile outFile(fn);
@@ -156,4 +167,14 @@ void KouetsApp::myMessageHandler(QtMsgType type, const char *msg)
     if (type == QtFatalMsg) {
         abort();
     }
+}
+
+int KouetsApp::ParseCmdLine(char *str)
+{
+    if (str[0] == '-' || str[0] == '/') {
+        // a
+    } else {
+        filename2Open_ = str;
+    }
+    return 0;
 }

@@ -1,7 +1,7 @@
-/** 
+/**
  * @file kouetsapp.h
  * @brief ここに説明を書く
- * 
+ *
  */
 #ifndef __KOUETSAPP_H__
 #define __KOUETSAPP_H__
@@ -22,7 +22,7 @@ public:
 
     int CheckRunning();
 
-    //setter
+    // setter
 
     /// INIファイルのパスを設定する
     void SetIniPath(const QString &path) {iniPath_ = path;}
@@ -39,6 +39,20 @@ public:
         cmdLine_ = cmdline;
         updated_ = true;
     }
+    void SetActivateProcessedTab(int b) {
+        if (b == bactivateprocessedtab_)
+            return;
+        bactivateprocessedtab_ = b;
+        updated_ = true;
+    }
+    void SetLineWrap(int b) {
+        if (b == blinewrap_)
+            return;
+        blinewrap_ = b;
+        updated_ = true;
+    }
+
+    int ParseCmdLine(char *str);
 
     // getter
 
@@ -48,13 +62,16 @@ public:
 
     QString GetProgramPath() {return programPath_;}
     QString GetCmdLine() {return cmdLine_;}
+    int IsActivateProcessedTab() {return bactivateprocessedtab_;}
+    int LineWrap() {return blinewrap_;}
 
+    QString FileName2Open() {return filename2Open_;}
 private:
     void prepareAppDataPath();
     static void myMessageHandler(QtMsgType type, const char *msg);
 
 protected:
-    //bool winEventFilter(MSG *message, long *result);
+    // bool winEventFilter(MSG *message, long *result);
 
 private:
     QString iniPath_;
@@ -64,7 +81,11 @@ private:
 
     QString programPath_;
     QString cmdLine_;
+    int bactivateprocessedtab_;
+    int blinewrap_;
     int updated_;
+
+    QString filename2Open_;
 };
 
 

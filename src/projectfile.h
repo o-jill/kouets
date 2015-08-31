@@ -31,6 +31,9 @@ public:
         QFileInfo fi(pathlist_[idx]);
         return fi.absolutePath();
     }
+    QDateTime lastUpdated(int idx) {
+        return updatedlist_[idx];
+    }
 
     void Sort() {
         pathlist_.sort();
