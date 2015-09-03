@@ -47,6 +47,9 @@ private:
     QTreeWidgetItem *pitem_;
     ProjectFile prj_;
     int curfile_;
+    QString result_;
+    QString remainingtext_;
+    int nerrors_;
 };
 
 #endif // MAINWINDOW_H

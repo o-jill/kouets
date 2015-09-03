@@ -24,6 +24,26 @@ QString DecorateBase::Decorate(QTextStream *ts)
     return result;
 }
 
+/**
+ * @brief DecorateBase::Decorate
+ *
+ * @param sl splitted strings by QString::split("\n").
+ *           the last element will not be processed to concatenate the next input.
+ *
+ * @return decorated string.
+ */
+QString DecorateBase::Decorate(QStringList *sl)
+{
+    QString result;
+    for (int i = 0 ; i < sl->size()-1 ; ++i) {
+        QString line = sl->at(i);
+        if (line.length() == 0)
+            continue;
+        result += decorate(line);
+    }
+    return result;
+}
+
 // == == == == == == == ==
 // DecorateGCppVs7
 // == == == == == == == ==

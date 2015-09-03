@@ -18,6 +18,7 @@ public:
     virtual QString decorate(QString str) = 0;
 
     QString Decorate(QTextStream *ts);
+    QString Decorate(QStringList *sl);
 };
 
 /**
