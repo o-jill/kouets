@@ -31,6 +31,10 @@ MainWindow::MainWindow(QWidget *parent) :
     process_ = new QProcess(this);
     connect(process_, SIGNAL(finished(int)),
             this, SLOT(onProcessFinished(int)));
+    connect(process_, SIGNAL(readyReadStandardOutput()),
+            this, SLOT(onReadyReadStdOut()));
+    connect(process_, SIGNAL(readyReadStandardError()),
+            this, SLOT(onReadyReadStdErr()));
 
     setWindowTitle(QString("Kouets [%1 %2]").arg(branchname).arg(commithash));
 
@@ -115,35 +119,72 @@ int MainWindow::OpenProjectFile(const QString &path)
     return 1;
 }
 
-void MainWindow::onProcessFinished(int code)
+void MainWindow::onReadyReadStdOut()
+{
+    if (pte_ == NULL)
+        return;
+
+    QString output = process_->readAllStandardOutput();
+
+    qDebug() << output;
+}
+
+void MainWindow::onReadyReadStdErr()
 {
     if (pte_ == NULL)
         return;
 
     QString output = process_->readAllStandardError();
-    QTextStream ts(&output);
-    QString result;
+    if (output.length() <= 0) {
+    } else {
+        DecorateGCppVs7 dec;
+        QStringList sl = output.split("\n");
+        sl[0] = remainingtext_+sl[0];
+        remainingtext_ = sl[sl.size()-1];
+        result_ += dec.Decorate(&sl);
+        if (nerrors_ < 0)
+            nerrors_ = dec.ErrorNum();
 
-    int nerrors = -1;
+        pte_->setHtml(result_);
 
-    DecorateGCppVs7 dec;
-    result = dec.Decorate(&ts);
-    nerrors = dec.ErrorNum();
+        // qDebug() << result_;
+    }
+}
 
-    pte_->setText(result);
+void MainWindow::onProcessFinished(int code)
+{
+    if (pte_ == NULL)
+        return;
+
+    QString output = remainingtext_ + process_->readAllStandardError();
+
+    if (output.length() <= 0) {
+        // nerrors = 0;
+    } else {
+        DecorateGCppVs7 dec;
+        QStringList sl = output.split("\n");
+        result_ += dec.Decorate(&sl);
+        if (nerrors_ < 0)
+            nerrors_ = dec.ErrorNum();
+
+        pte_->setHtml(result_);
+
+        // qDebug() << result_;
+
+        result_.clear();
+    }
+
     ++curfile_;
     if (curfile_ == prj_.size())
         curfile_ = 0;
 
-    // qDebug() << result;
-
     if (pitem_) {
         pitem_->setText(1, "done");
-        if (nerrors < 0) {
+        if (nerrors_ < 0) {
             pitem_->setText(2, "error...");
         } else {
             if (pitem_) {
-                pitem_->setText(2, QString("%1").arg(nerrors));
+                pitem_->setText(2, QString("%1").arg(nerrors_));
             }
         }
     }
@@ -230,6 +271,7 @@ void MainWindow::onTimerUpdate()
     } else {
         pte_ = reinterpret_cast<QTextEdit*>(ui->tabWidget->widget(idx));
     }
+    pte_->clear();
     if (app->IsActivateProcessedTab()) {
         ui->tabWidget->setCurrentWidget(pte_);
     }
@@ -245,6 +287,8 @@ void MainWindow::onTimerUpdate()
     }
     pitem_->setText(3,
                 prj_.lastUpdated(curfile_).toString("yyyy/MM/dd hh:mm:ss"));
+    nerrors_ = -1;
+    result_.clear();
 }
 
 void MainWindow::on_actionSave_triggered()
