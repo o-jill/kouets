@@ -35,12 +35,18 @@ private slots:
     void on_checkBox_ActivateProcessedTab_clicked(bool checked);
     void on_checkBox_LineWrap_clicked(bool checked);
 
+    void on_actionRun_triggered();
+
+    void on_actionPause_triggered();
+
 private:
     int OpenProjectFile(const QString &path);
+    void SwitchTimer(int bon);
 
 private:
     Ui::MainWindow *ui;
     QTimer *ptimer_update_;
+    int brunning_;
     bool initated_;
     QProcess *process_;
     QTextEdit *pte_;

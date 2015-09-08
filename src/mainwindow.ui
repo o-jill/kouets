@@ -184,7 +184,11 @@
    </attribute>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
+   <addaction name="separator"/>
    <addaction name="actionAdd"/>
+   <addaction name="separator"/>
+   <addaction name="actionRun"/>
+   <addaction name="actionPause"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -198,7 +202,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="kouets.qrc">
-     <normaloff>:/image/rsc/save4.png</normaloff>:/image/rsc/save4.png</iconset>
+     <normaloff>:/image/rsc/save24.png</normaloff>:/image/rsc/save24.png</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -211,6 +215,24 @@
    </property>
    <property name="text">
     <string>Add</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="icon">
+    <iconset resource="kouets.qrc">
+     <normaloff>:/image/rsc/run24.png</normaloff>:/image/rsc/run24.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="icon">
+    <iconset resource="kouets.qrc">
+     <normaloff>:/image/rsc/pause24.png</normaloff>:/image/rsc/pause24.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pause</string>
    </property>
   </action>
  </widget>

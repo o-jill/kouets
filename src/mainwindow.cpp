@@ -11,7 +11,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), pte_(NULL), process_(NULL),
-    curfile_(0),
+    curfile_(0), brunning_(0),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -75,6 +75,8 @@ void MainWindow::on_lineEdit_cmdline_textChanged(const QString &arg1)
 
 void MainWindow::on_actionOpen_triggered()
 {
+    if (ptimer_update_->isActive())
+        ptimer_update_->stop();
     //
     QString path = QFileDialog::getOpenFileName(this, "choose a file");
 
@@ -115,7 +117,8 @@ int MainWindow::OpenProjectFile(const QString &path)
     }
     curfile_ = 0;
 
-    ptimer_update_->start();
+    SwitchTimer(TRUE);
+
     return 1;
 }
 
@@ -189,7 +192,9 @@ void MainWindow::onProcessFinished(int code)
         }
     }
 
-    ptimer_update_->start();
+    if (brunning_) {
+        ptimer_update_->start();
+    }
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
@@ -219,9 +224,7 @@ void MainWindow::on_actionAdd_triggered()
         ui->treeWidget->addTopLevelItem(item);
         prj_.Add(*it);
     }
-    if (ptimer_update_->isActive()) {
-        //
-    } else {
+    if (brunning_) {
         ptimer_update_->start();
     }
 }
@@ -293,7 +296,8 @@ void MainWindow::onTimerUpdate()
 
 void MainWindow::on_actionSave_triggered()
 {
-    if (ptimer_update_->isActive()) {
+    int timeron = ptimer_update_->isActive();
+    if (timeron) {
         ptimer_update_->stop();
     }
 
@@ -307,7 +311,9 @@ void MainWindow::on_actionSave_triggered()
     if (prj_.size() > 0)
         prj_.Save(path);
 
-    ptimer_update_->start();
+    if (brunning_) {
+        ptimer_update_->start();
+    }
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
@@ -340,10 +346,8 @@ void MainWindow::dropEvent(QDropEvent *e)
                 ui->treeWidget->addTopLevelItem(item);
                 prj_.Add(it->toLocalFile());
             }
-            if (ptimer_update_->isActive()) {
-                //
-            } else {
-                ptimer_update_->start();
+            if (brunning_) {
+                SwitchTimer(TRUE);
             }
         }
     } else {
@@ -356,10 +360,8 @@ void MainWindow::dropEvent(QDropEvent *e)
             ui->treeWidget->addTopLevelItem(item);
             prj_.Add(it->toLocalFile());
         }
-        if (ptimer_update_->isActive()) {
-            //
-        } else {
-            ptimer_update_->start();
+        if (brunning_) {
+            SwitchTimer(TRUE);
         }
     }
 }
@@ -376,4 +378,26 @@ void MainWindow::on_checkBox_LineWrap_clicked(bool checked)
     KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
     app->SetLineWrap(checked);
     app->SaveIni();
+}
+
+void MainWindow::SwitchTimer(int bon)
+{
+    ui->actionRun->setEnabled(bon == 0);
+    ui->actionPause->setEnabled(bon != 0);
+    brunning_ = (bon != 0);
+    if (bon != 0) {
+        ptimer_update_->start();
+    } else {
+        ptimer_update_->stop();
+    }
+}
+
+void MainWindow::on_actionRun_triggered()
+{
+    SwitchTimer(TRUE);
+}
+
+void MainWindow::on_actionPause_triggered()
+{
+    SwitchTimer(FALSE);
 }
