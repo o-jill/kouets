@@ -190,6 +190,7 @@
    <addaction name="actionRun"/>
    <addaction name="actionPause"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="kouets.qrc">

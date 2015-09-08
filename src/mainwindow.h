@@ -18,7 +18,7 @@ public:
     ~MainWindow();
 
 protected:
-    void dragEnterEvent(QDragEnterEvent *);
+    void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
 
 private slots:
@@ -34,19 +34,23 @@ private slots:
     void on_actionSave_triggered();
     void on_checkBox_ActivateProcessedTab_clicked(bool checked);
     void on_checkBox_LineWrap_clicked(bool checked);
-
     void on_actionRun_triggered();
-
     void on_actionPause_triggered();
 
 private:
     int OpenProjectFile(const QString &path);
     void SwitchTimer(int bon);
+    void SetProgressBarPos(int pos);
+    void SetProgressBarRangeMax(int max);
+    void UpdateProgressBarPos();
+    void UpdateProgressBarRangeMax();
+    void SetProgressBarMarquee();
 
 private:
     Ui::MainWindow *ui;
     QTimer *ptimer_update_;
     int brunning_;
+    QProgressBar *pprgs_;
     bool initated_;
     QProcess *process_;
     QTextEdit *pte_;
@@ -58,4 +62,4 @@ private:
     int nerrors_;
 };
 
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H
