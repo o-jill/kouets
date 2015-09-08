@@ -11,7 +11,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), pte_(NULL), process_(NULL),
-    curfile_(0),
+    curfile_(0), brunning_(0),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -35,6 +35,16 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(onReadyReadStdOut()));
     connect(process_, SIGNAL(readyReadStandardError()),
             this, SLOT(onReadyReadStdErr()));
+
+    pprgs_ = new QProgressBar(ui->statusBar);
+    ui->statusBar->addPermanentWidget(pprgs_);
+    pprgs_->setRange(0, 1);
+    pprgs_->setAlignment(Qt::AlignCenter);
+    pprgs_->setFormat("%v / %m");
+    pprgs_->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    QFont f = pprgs_->font();
+    f.setPointSize(f.pointSize()/2);
+    pprgs_->setFont(f);
 
     setWindowTitle(QString("Kouets [%1 %2]").arg(branchname).arg(commithash));
 
@@ -75,6 +85,8 @@ void MainWindow::on_lineEdit_cmdline_textChanged(const QString &arg1)
 
 void MainWindow::on_actionOpen_triggered()
 {
+    if (ptimer_update_->isActive())
+        ptimer_update_->stop();
     //
     QString path = QFileDialog::getOpenFileName(this, "choose a file");
 
@@ -114,8 +126,11 @@ int MainWindow::OpenProjectFile(const QString &path)
         ui->treeWidget->addTopLevelItem(item);
     }
     curfile_ = 0;
+    UpdateProgressBarRangeMax();
+    UpdateProgressBarPos();
 
-    ptimer_update_->start();
+    SwitchTimer(TRUE);
+
     return 1;
 }
 
@@ -153,8 +168,10 @@ void MainWindow::onReadyReadStdErr()
 
 void MainWindow::onProcessFinished(int code)
 {
-    if (pte_ == NULL)
+    if (pte_ == NULL) {
+        UpdateProgressBarRangeMax();
         return;
+    }
 
     QString output = remainingtext_ + process_->readAllStandardError();
 
@@ -174,6 +191,8 @@ void MainWindow::onProcessFinished(int code)
         result_.clear();
     }
 
+    UpdateProgressBarRangeMax();
+    UpdateProgressBarPos();
     ++curfile_;
     if (curfile_ == prj_.size())
         curfile_ = 0;
@@ -189,7 +208,9 @@ void MainWindow::onProcessFinished(int code)
         }
     }
 
-    ptimer_update_->start();
+    if (brunning_) {
+        ptimer_update_->start();
+    }
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
@@ -205,6 +226,9 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
 // ファイルの追加。
 void MainWindow::on_actionAdd_triggered()
 {
+    if (brunning_) {
+        ptimer_update_->stop();
+    }
     //
     QStringList path = QFileDialog::getOpenFileNames(this, "choose a file");
 
@@ -219,9 +243,8 @@ void MainWindow::on_actionAdd_triggered()
         ui->treeWidget->addTopLevelItem(item);
         prj_.Add(*it);
     }
-    if (ptimer_update_->isActive()) {
-        //
-    } else {
+    UpdateProgressBarRangeMax();
+    if (brunning_) {
         ptimer_update_->start();
     }
 }
@@ -232,6 +255,7 @@ void MainWindow::onTimerUpdate()
 
     KouetsApp *app = reinterpret_cast<KouetsApp*>(qApp);
 
+    UpdateProgressBarPos();
     if (!prj_.isUpdated(curfile_)) {
         ++curfile_;
         if (curfile_ == prj_.size())
@@ -239,6 +263,7 @@ void MainWindow::onTimerUpdate()
         ptimer_update_->start();
         return;
     }
+    SetProgressBarMarquee();
     QString path = prj_.at(curfile_);
 
     QString cmdline = app->GetCmdLine();
@@ -293,7 +318,8 @@ void MainWindow::onTimerUpdate()
 
 void MainWindow::on_actionSave_triggered()
 {
-    if (ptimer_update_->isActive()) {
+    int timeron = ptimer_update_->isActive();
+    if (timeron) {
         ptimer_update_->stop();
     }
 
@@ -307,7 +333,9 @@ void MainWindow::on_actionSave_triggered()
     if (prj_.size() > 0)
         prj_.Save(path);
 
-    ptimer_update_->start();
+    if (brunning_) {
+        ptimer_update_->start();
+    }
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
@@ -340,10 +368,9 @@ void MainWindow::dropEvent(QDropEvent *e)
                 ui->treeWidget->addTopLevelItem(item);
                 prj_.Add(it->toLocalFile());
             }
-            if (ptimer_update_->isActive()) {
-                //
-            } else {
-                ptimer_update_->start();
+            UpdateProgressBarRangeMax();
+            if (brunning_) {
+                SwitchTimer(TRUE);
             }
         }
     } else {
@@ -356,10 +383,9 @@ void MainWindow::dropEvent(QDropEvent *e)
             ui->treeWidget->addTopLevelItem(item);
             prj_.Add(it->toLocalFile());
         }
-        if (ptimer_update_->isActive()) {
-            //
-        } else {
-            ptimer_update_->start();
+        UpdateProgressBarRangeMax();
+        if (brunning_) {
+            SwitchTimer(TRUE);
         }
     }
 }
@@ -376,4 +402,58 @@ void MainWindow::on_checkBox_LineWrap_clicked(bool checked)
     KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
     app->SetLineWrap(checked);
     app->SaveIni();
+}
+
+void MainWindow::SwitchTimer(int bon)
+{
+    ui->actionRun->setEnabled(bon == 0);
+    ui->actionPause->setEnabled(bon != 0);
+    brunning_ = (bon != 0);
+    if (bon != 0) {
+        ptimer_update_->start();
+    } else {
+        ptimer_update_->stop();
+    }
+}
+
+void MainWindow::on_actionRun_triggered()
+{
+    SwitchTimer(TRUE);
+}
+
+void MainWindow::on_actionPause_triggered()
+{
+    SwitchTimer(FALSE);
+    UpdateProgressBarRangeMax();
+}
+
+void MainWindow::SetProgressBarPos(int pos)
+{
+    pprgs_->setValue(pos);
+}
+
+/**
+ * @brief MainWindow::SetProgressBarRangeMax
+ * @param max 0:marquee, other:maximum
+ */
+void MainWindow::SetProgressBarRangeMax(int max)
+{
+    pprgs_->setRange(0, max);
+}
+
+void MainWindow::UpdateProgressBarPos()
+{
+    pprgs_->setValue(curfile_);
+}
+
+void MainWindow::UpdateProgressBarRangeMax()
+{
+    if (prj_.size() <= 0)
+        pprgs_->setRange(0, 1);
+    pprgs_->setRange(0, prj_.size());
+}
+
+void MainWindow::SetProgressBarMarquee()
+{
+    pprgs_->setRange(0, 0);
 }
