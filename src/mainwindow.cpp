@@ -461,7 +461,7 @@ void MainWindow::SetProgressBarMarquee()
 void MainWindow::SetWindowTitle(const QString &prjfname)
 {
     QString str = QString("Kouets [%1 %2]").arg(branchname).arg(commithash);
-    if (str.length() > 0) {
+    if (prjfname.length() > 0) {
         str = prjfname + " - " + str;
     }
     setWindowTitle(str);
