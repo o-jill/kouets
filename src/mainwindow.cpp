@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     f.setPointSize(f.pointSize()/2);
     pprgs_->setFont(f);
 
-    setWindowTitle(QString("Kouets [%1 %2]").arg(branchname).arg(commithash));
+    SetWindowTitle("");
 
     QString path = app->FileName2Open();
     if (path.length() != 0) {
@@ -128,7 +128,7 @@ int MainWindow::OpenProjectFile(const QString &path)
     curfile_ = 0;
     UpdateProgressBarRangeMax();
     UpdateProgressBarPos();
-
+    SetWindowTitle(path);
     SwitchTimer(TRUE);
 
     return 1;
@@ -330,8 +330,10 @@ void MainWindow::on_actionSave_triggered()
     if (path.length() == 0)
         return;
 
-    if (prj_.size() > 0)
+    if (prj_.size() > 0) {
         prj_.Save(path);
+        SetWindowTitle(path);
+    }
 
     if (brunning_) {
         ptimer_update_->start();
@@ -456,4 +458,29 @@ void MainWindow::UpdateProgressBarRangeMax()
 void MainWindow::SetProgressBarMarquee()
 {
     pprgs_->setRange(0, 0);
+}
+
+/**
+ * [MainWindow::SetWindowTitle description]
+ * @param prjfname project file name.
+ */
+void MainWindow::SetWindowTitle(const QString &prjfname)
+{
+    QString str = QString("Kouets [%1 %2]").arg(branchname).arg(commithash);
+    if (str.length() > 0) {
+        str = prjfname + " - " + str;
+    }
+    setWindowTitle(str);
+}
+
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+    if (brunning_) {
+        ptimer_update_->stop();
+    }
+    if (process_) {
+        if (process_->state() == QProcess::Running) {
+            process_->terminate();
+        }
+    }
 }

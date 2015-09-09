@@ -20,6 +20,7 @@ public:
 protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
+    void closeEvent(QCloseEvent *e);
 
 private slots:
     void on_toolButton_clicked();
@@ -45,6 +46,7 @@ private:
     void UpdateProgressBarPos();
     void UpdateProgressBarRangeMax();
     void SetProgressBarMarquee();
+    void SetWindowTitle(const QString& str);
 
 private:
     Ui::MainWindow *ui;
