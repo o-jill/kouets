@@ -40,6 +40,9 @@ public:
     }
 
     bool isUpdated(int idx);
+    void resetUpdated(int idx);
+    void resetUpdated(const QString&path);
+    int Find(const QString&path);
 private:
     QStringList pathlist_;
     QVector<QDateTime> updatedlist_;

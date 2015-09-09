@@ -120,9 +120,9 @@ int MainWindow::OpenProjectFile(const QString &path)
     for (int i = 0 ; i < prj_.size() ; ++i) {
         QTreeWidgetItem *item = new QTreeWidgetItem;
         QString s = prj_.at(i);
-        item->setText(0, s);
-        item->setText(1, "ready");
-        item->setText(2, "not yet");
+        item->setText(TREE_COLUMN_PATH, s);
+        item->setText(TREE_COLUMN_STATE, "ready");
+        item->setText(TREE_COLUMN_ERROR, "not yet");
         ui->treeWidget->addTopLevelItem(item);
     }
     curfile_ = 0;
@@ -198,12 +198,12 @@ void MainWindow::onProcessFinished(int code)
         curfile_ = 0;
 
     if (pitem_) {
-        pitem_->setText(1, "done");
+        pitem_->setText(TREE_COLUMN_STATE, "done");
         if (nerrors_ < 0) {
-            pitem_->setText(2, "error...");
+            pitem_->setText(TREE_COLUMN_ERROR, "error...");
         } else {
             if (pitem_) {
-                pitem_->setText(2, QString("%1").arg(nerrors_));
+                pitem_->setText(TREE_COLUMN_ERROR, QString("%1").arg(nerrors_));
             }
         }
     }
@@ -237,9 +237,9 @@ void MainWindow::on_actionAdd_triggered()
 
     for (QStringList::iterator it = path.begin() ; it != path.end() ; ++it) {
         QTreeWidgetItem *item = new QTreeWidgetItem;
-        item->setText(0, *it);
-        item->setText(1, "ready");
-        item->setText(2, "not yet");
+        item->setText(TREE_COLUMN_PATH, *it);
+        item->setText(TREE_COLUMN_STATE, "ready");
+        item->setText(TREE_COLUMN_ERROR, "not yet");
         ui->treeWidget->addTopLevelItem(item);
         prj_.Add(*it);
     }
@@ -278,14 +278,8 @@ void MainWindow::onTimerUpdate()
 
     QFileInfo fi(path);
     QString tabname = fi.fileName();
-    int count = ui->tabWidget->count();
-    int idx;
-    for (idx = 0 ; idx < count ; ++idx) {
-        QString s = ui->tabWidget->tabText(idx);
-        if (s.compare(tabname, Qt::CaseInsensitive) == 0)
-            break;
-    }
-    if (idx == count) {
+    int idx = FindTab(path);
+    if (idx < 0) {
         pte_ = new QTextEdit(this);
         pte_->setReadOnly(true);
         if (app->LineWrap()) {
@@ -300,17 +294,17 @@ void MainWindow::onTimerUpdate()
     if (app->IsActivateProcessedTab()) {
         ui->tabWidget->setCurrentWidget(pte_);
     }
-    count = ui->treeWidget->topLevelItemCount();
+    int count = ui->treeWidget->topLevelItemCount();
     pitem_ = NULL;
     for (idx = 0 ; idx < count ; ++idx) {
         QTreeWidgetItem *pi = ui->treeWidget->topLevelItem(idx);
         if (pi->text(0) == fi.absoluteFilePath()) {
             pitem_ = pi;
-            pi->setText(1, "running");
+            pi->setText(TREE_COLUMN_STATE, "running");
             break;
         }
     }
-    pitem_->setText(3,
+    pitem_->setText(TREE_COLUMN_UPDATED,
                 prj_.lastUpdated(curfile_).toString("yyyy/MM/dd hh:mm:ss"));
     nerrors_ = -1;
     result_.clear();
@@ -364,9 +358,9 @@ void MainWindow::dropEvent(QDropEvent *e)
             // add a dropped file.
             for (it = flist.begin() ; it != flist.end() ; ++it) {
                 QTreeWidgetItem *item = new QTreeWidgetItem;
-                item->setText(0, it->toLocalFile());
-                item->setText(1, "ready");
-                item->setText(2, "not yet");
+                item->setText(TREE_COLUMN_PATH, it->toLocalFile());
+                item->setText(TREE_COLUMN_STATE, "ready");
+                item->setText(TREE_COLUMN_ERROR, "not yet");
                 ui->treeWidget->addTopLevelItem(item);
                 prj_.Add(it->toLocalFile());
             }
@@ -379,9 +373,9 @@ void MainWindow::dropEvent(QDropEvent *e)
         // add dropped files.
         for (it = flist.begin() ; it != flist.end() ; ++it) {
             QTreeWidgetItem *item = new QTreeWidgetItem;
-            item->setText(0, it->toLocalFile());
-            item->setText(1, "ready");
-            item->setText(2, "not yet");
+            item->setText(TREE_COLUMN_PATH, it->toLocalFile());
+            item->setText(TREE_COLUMN_STATE, "ready");
+            item->setText(TREE_COLUMN_ERROR, "not yet");
             ui->treeWidget->addTopLevelItem(item);
             prj_.Add(it->toLocalFile());
         }
@@ -394,14 +388,14 @@ void MainWindow::dropEvent(QDropEvent *e)
 
 void MainWindow::on_checkBox_ActivateProcessedTab_clicked(bool checked)
 {
-    KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
+    KouetsApp *app = reinterpret_cast<KouetsApp*>(qApp);
     app->SetActivateProcessedTab(checked);
     app->SaveIni();
 }
 
 void MainWindow::on_checkBox_LineWrap_clicked(bool checked)
 {
-    KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
+    KouetsApp *app = reinterpret_cast<KouetsApp*>(qApp);
     app->SetLineWrap(checked);
     app->SaveIni();
 }
@@ -482,5 +476,39 @@ void MainWindow::closeEvent(QCloseEvent *e)
         if (process_->state() == QProcess::Running) {
             process_->terminate();
         }
+    }
+}
+
+void MainWindow::on_treeWidget_itemDoubleClicked(
+        QTreeWidgetItem *item, int column)
+{
+    // activate tab
+    QString path = item->text(0);
+    int idx = FindTab(path);
+    if (idx > 0) {
+        ui->tabWidget->setCurrentIndex(idx);
+    } else {
+        prj_.resetUpdated(path);
+        item->setText(TREE_COLUMN_STATE, tr("will be checked"));
+        item->setText(TREE_COLUMN_UPDATED, "-/-/- -:-:-");
+    }
+}
+
+int MainWindow::FindTab(const QString& path)
+{
+    //
+    QFileInfo fi(path);
+    QString s = fi.fileName();
+    int count = ui->tabWidget->count();
+    int idx;
+    for (idx = 0 ; idx < count ; ++idx) {
+        QString tabname = ui->tabWidget->tabText(idx);
+        if (s.compare(tabname, Qt::CaseInsensitive) == 0)
+            break;
+    }
+    if (idx == count) {
+        return -1;
+    } else {
+        return idx;
     }
 }

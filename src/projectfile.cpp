@@ -67,3 +67,26 @@ bool ProjectFile::isUpdated(int idx)
     updatedlist_[idx] = fi.lastModified();
     return ret;
 }
+
+void ProjectFile::resetUpdated(int idx)
+{
+    updatedlist_[idx] = QDateTime();
+}
+
+void ProjectFile::resetUpdated(const QString &path)
+{
+    int idx = Find(path);
+    if (idx >= 0)
+        updatedlist_[idx] = QDateTime();
+}
+
+int ProjectFile::Find(const QString &path)
+{
+    int count = pathlist_.size();
+    int idx;
+    for (idx = 0 ; idx < count ; ++idx) {
+        if (path == pathlist_[idx])
+            return idx;
+    }
+    return -1;
+}

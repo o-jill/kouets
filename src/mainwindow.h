@@ -14,6 +14,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    enum {
+        TREE_COLUMN_PATH = 0,
+        TREE_COLUMN_STATE,
+        TREE_COLUMN_ERROR,
+        TREE_COLUMN_UPDATED,
+        TREE_COLUMN_MAX
+        // TREE_COLUMN_,
+    };
+public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -38,6 +47,8 @@ private slots:
     void on_actionRun_triggered();
     void on_actionPause_triggered();
 
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
+
 private:
     int OpenProjectFile(const QString &path);
     void SwitchTimer(int bon);
@@ -47,6 +58,7 @@ private:
     void UpdateProgressBarRangeMax();
     void SetProgressBarMarquee();
     void SetWindowTitle(const QString& str);
+    int FindTab(const QString& str);
 
 private:
     Ui::MainWindow *ui;
