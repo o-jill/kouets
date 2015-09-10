@@ -14,6 +14,7 @@ SOURCES += decorate.cpp \
     projectfile.cpp
 
 HEADERS += decorate.h \
+    fileconfig.h \
     kouetsapp.h \
     kouetshash.h \
     mainwindow.h \

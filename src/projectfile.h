@@ -6,6 +6,13 @@
 class ProjectFile
 {
 public:
+    enum {
+        FORMAT_UNKNOWN = 0,
+        FORMAT_PLAIN,
+        FORMAT_XML,
+        // FORMAT_JSON,
+    };
+public:
     ProjectFile() {}
     ~ProjectFile() {}
 

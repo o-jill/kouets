@@ -91,6 +91,6 @@ private:
     QString *apppath_;
     QString *cmdline_;
     QString *parser_;
-}
+};
 
 #endif  // __FILECONFIG_H__

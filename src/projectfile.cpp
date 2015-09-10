@@ -2,6 +2,13 @@
 
 #include <QtCore>
 
+#include "projectxml.h"
+
+/**
+ * @brief ProjectFile::Open
+ * @param path
+ * @return -2:unknown format, -1:open error, 0:no content, more than zero:number of files.
+ */
 int ProjectFile::Open(const QString &path)
 {
     pathlist_.clear();
@@ -12,22 +19,41 @@ int ProjectFile::Open(const QString &path)
         return -1;
     QFileInfo pfi(path);
     QDir::setCurrent(pfi.absolutePath());
-    for ( ; ; ) {
-        QByteArray ba = file.readLine();
-        if (ba.size() == 0)
-            break;
-
-        if (ba[0] == '#') {
-            continue;
-        }
-
-        ba[ba.size()-1] = '\0';
-        QFileInfo fi(ba);
-        if (fi.isFile()) {
-            pathlist_.push_back(fi.absoluteFilePath());
-            updatedlist_.push_back(QDateTime());
-        }
+    QByteArray ba = file.readLine();
+    int fileformat = FORMAT_UNKNOWN;
+    switch (ba[0]) {
+    case '#':
+        fileformat = FORMAT_PLAIN;
+        break;
+    case '<':
+        fileformat = FORMAT_XML;
+        break;
+    default:
+        return -2;
     }
+    file.seek(0);
+
+    if (fileformat == FORMAT_PLAIN) {
+        for ( ; ; ) {
+            QByteArray ba = file.readLine();
+            if (ba.size() == 0)
+                break;
+
+            if (ba[0] == '#') {
+                continue;
+            }
+
+            ba[ba.size()-1] = '\0';
+            QFileInfo fi(ba);
+            if (fi.isFile()) {
+                pathlist_.push_back(fi.absoluteFilePath());
+                updatedlist_.push_back(QDateTime());
+            }
+        }
+    } else if (fileformat == FORMAT_XML) {
+        ProjectXML prjxml;
+    }
+
     return pathlist_.size();
 }
 
