@@ -9,3 +9,6 @@ projectfile.cpp
 projectfile.h
 decorate.cpp
 decorate.h
+fileconfig.h
+projectxml.cpp
+projectxml.h
