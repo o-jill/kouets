@@ -22,10 +22,20 @@ public:
         TREE_COLUMN_MAX
         // TREE_COLUMN_,
     };
+    enum {
+        RUN_INIT = -1,
+        RUN_STOP = 0,
+        RUN_RUNNING = 1,
+        RUN_MAX
+    };
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    bool IsRunning() {return (nrunning_ == RUN_RUNNING);}
+    bool IsRunable() {
+        return (nrunning_ == RUN_RUNNING || nrunning_ == RUN_INIT);
+    }
 protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
@@ -63,7 +73,7 @@ private:
 private:
     Ui::MainWindow *ui;
     QTimer *ptimer_update_;
-    int brunning_;
+    int nrunning_;
     QProgressBar *pprgs_;
     bool initated_;
     QProcess *process_;

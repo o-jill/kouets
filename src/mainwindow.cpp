@@ -11,7 +11,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), pte_(NULL), process_(NULL),
-    curfile_(0), brunning_(0),
+    curfile_(0), nrunning_(RUN_INIT),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -208,7 +208,7 @@ void MainWindow::onProcessFinished(int code)
         }
     }
 
-    if (brunning_) {
+    if (IsRunable()) {
         ptimer_update_->start();
     }
 }
@@ -226,7 +226,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
 // ファイルの追加。
 void MainWindow::on_actionAdd_triggered()
 {
-    if (brunning_) {
+    if (IsRunning()) {
         ptimer_update_->stop();
     }
     //
@@ -244,7 +244,7 @@ void MainWindow::on_actionAdd_triggered()
         prj_.Add(*it);
     }
     UpdateProgressBarRangeMax();
-    if (brunning_) {
+    if (IsRunable()) {
         ptimer_update_->start();
     }
 }
@@ -329,7 +329,7 @@ void MainWindow::on_actionSave_triggered()
         SetWindowTitle(path);
     }
 
-    if (brunning_) {
+    if (IsRunable()) {
         ptimer_update_->start();
     }
 }
@@ -365,7 +365,7 @@ void MainWindow::dropEvent(QDropEvent *e)
                 prj_.Add(it->toLocalFile());
             }
             UpdateProgressBarRangeMax();
-            if (brunning_) {
+            if (IsRunable()) {
                 SwitchTimer(TRUE);
             }
         }
@@ -380,7 +380,7 @@ void MainWindow::dropEvent(QDropEvent *e)
             prj_.Add(it->toLocalFile());
         }
         UpdateProgressBarRangeMax();
-        if (brunning_) {
+        if (IsRunable()) {
             SwitchTimer(TRUE);
         }
     }
@@ -404,7 +404,7 @@ void MainWindow::SwitchTimer(int bon)
 {
     ui->actionRun->setEnabled(bon == 0);
     ui->actionPause->setEnabled(bon != 0);
-    brunning_ = (bon != 0);
+    nrunning_ = (bon != 0) ? RUN_RUNNING : RUN_STOP;
     if (bon != 0) {
         ptimer_update_->start();
     } else {
@@ -469,7 +469,7 @@ void MainWindow::SetWindowTitle(const QString &prjfname)
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    if (brunning_) {
+    if (IsRunning()) {
         ptimer_update_->stop();
     }
     if (process_) {
