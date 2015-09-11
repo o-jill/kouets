@@ -39,9 +39,15 @@ public:
     bool readFile(const QString &fileName);
     bool readFile(QFile *pfile);
 
+    bool IsDefaultAppPath() {return bapppath_;}
+    bool IsDefaultCmdLine() {return bcmdline_;}
+    QString AppPath() {return apppath_;}
+    QString CmdLine() {return cmdline_;}
+
     int ItemSize() {return items_.size();}
     FileConfig at(int n) {return items_[n];}
     QVector<FileConfig>* Files() {return &items_;}
+
     void dump();
 protected:
     virtual bool startDocument();
@@ -55,8 +61,10 @@ protected:
     virtual bool fatalError(const QXmlParseException &e);
 
 private:
-    QString defaultapppath_;
-    QString defaultcmdline_;
+    int bapppath_;
+    QString apppath_;
+    int bcmdline_;
+    QString cmdline_;
     int bactivatetab_;
     int bwraplines_;
     QVector<FileConfig> items_;

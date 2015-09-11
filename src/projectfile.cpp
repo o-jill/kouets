@@ -13,6 +13,8 @@ int ProjectFile::Open(const QString &path)
 {
     fc_.clear();
     updatedlist_.clear();
+    bapppath_ = FALSE;
+    bcmdline_ = FALSE;
 
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly|QIODevice::Text))
@@ -57,6 +59,14 @@ int ProjectFile::Open(const QString &path)
 #ifdef _DEBUG
             prjxml.dump();
 #endif
+            bapppath_ = prjxml.IsDefaultAppPath();
+            if (bapppath_)
+                apppath_ = prjxml.AppPath();
+
+            bcmdline_ = prjxml.IsDefaultCmdLine();
+            if (bcmdline_)
+                cmdline_ = prjxml.CmdLine();
+
             Copy(prjxml.Files());
         }
     }
@@ -85,14 +95,33 @@ int ProjectFile::SaveXML(const QString &path)
     if (!file.open(QIODevice::WriteOnly|QIODevice::Text))
         return -1;
     QDir::setCurrent(path);
-#if 0
-    file.write("# kouets project file\n#\n");
+
+    file.write("<?xml version='1.0' encoding='UTF-8' standalone='no'?>\n"
+               "<kouets version='1.0'>\n");
+    file.write(" <config>\n");
+    if (bapppath_)
+        file.write(QString("  <apppath>%1</apppath>\n").arg(apppath_).toUtf8());
+    if (bcmdline_)
+        file.write(QString("  <cmdline>%1</cmdline>\n").arg(apppath_).toUtf8());
+    file.write(" </config>\n");
     QDir dir = QDir::current();
-    for (int i = 0 ; i < pathlist_.size() ; ++i) {
-        file.write(dir.relativeFilePath(pathlist_[i]).toLocal8Bit());
-        file.putChar('\n');
+    for (int i = 0 ; i < size() ; ++i) {
+        file.write(QString(" <item number='%1'>\n").arg(i+1).toUtf8());
+        file.write(QString("  <file>%1</file>\n")
+                    .arg(dir.relativeFilePath(atFilename(i))).toUtf8());
+        if (fc_[i].IsDefaultAppPath())
+            file.write(QString("  <apppath>%1</apppath>\n")
+                    .arg(fc_[i].AppPath()).toUtf8());
+        if (fc_[i].IsDefaultCmdLine())
+            file.write(QString("  <cmdline>%1</cmdline>\n")
+                    .arg(fc_[i].CmdLine()).toUtf8());
+        if (fc_[i].IsDefaultParser())
+            file.write(QString("  <parser>%1</parser>\n")
+                    .arg(fc_[i].Parser()).toUtf8());
+        file.write(" </item>\n");
     }
-#endif
+file.write("</kouets>\n");
+
     return 1;
 }
 

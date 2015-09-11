@@ -15,7 +15,8 @@ public:
         // FORMAT_JSON,
     };
 public:
-    ProjectFile() {}
+    ProjectFile()
+        :bapppath_(FALSE), bcmdline_(FALSE) {}
     ~ProjectFile() {}
 
     void Add(QString path) {
@@ -63,6 +64,12 @@ public:
         }
     }
 
+    bool isUseDefaultAppPath() {return bapppath_;}
+    QString AppPath() {return apppath_;}
+
+    bool isUseDefaultCmdLine() {return bcmdline_;}
+    QString CmdLine() {return cmdline_;}
+
     /*void Sort() {
         pathlist_.sort();
     }*/
@@ -72,7 +79,9 @@ public:
     void resetUpdated(const QString&path);
     int Find(const QString&path);
 private:
+    int bapppath_;
     QString apppath_;
+    int bcmdline_;
     QString cmdline_;
     QVector<FileConfig> fc_;
     QVector<QDateTime> updatedlist_;
