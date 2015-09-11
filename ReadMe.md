@@ -1,12 +1,13 @@
 ----------------
 
-[![custom](https://img.shields.io/badge/github-watch-blue.svg?style=social&label=GitHub)](https://github.com/o-jill/kouets/)
+:octocat: [![custom](https://img.shields.io/badge/github-watch-blue.svg?style=social&label=GitHub)](https://github.com/o-jill/kouets/)
 
 [![downloads](https://img.shields.io/github/downloads/o-jill/kouets/latest/total.svg)](https://github.com/o-jill/kouets/)
 [![release](https://img.shields.io/github/release/o-jill/kouets.svg)](https://github.com/o-jill/kouets/)
-[![tags](https://img.shields.io/github/tag/o-jill/kouets.svg)](https://github.com/o-jill/kouets/)
-[![license](https://img.shields.io/github/license/o-jill/kouets.svg)](https://github.com/o-jill/kouets/)
 
+[![license](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://github.com/o-jill/kouets/)
+
+[![issues](https://img.shields.io/github/issues/o-jill/kouets.svg)](https://github.com/o-jill/kouets/issues/)
 [![Stories in Ready](https://badge.waffle.io/o-jill/kouets.svg?label=ready&title=Ready)](http://waffle.io/o-jill/kouets)
 
 [![Throughput Graph](https://graphs.waffle.io/o-jill/kouets/throughput.svg)](https://waffle.io/o-jill/kouets/metrics)
