@@ -22,6 +22,7 @@ decorate.h
 
 2. XML format
  * tag name are not case sensitive. e.g. <"KOUETS"> and <"kouets"> are same.
+ * to specify < and >, the sentence should be double-quoted.
  * example
 
 ```xml

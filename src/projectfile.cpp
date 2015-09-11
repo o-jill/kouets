@@ -51,7 +51,9 @@ int ProjectFile::Open(const QString &path)
             }
         }
     } else if (fileformat == FORMAT_XML) {
+        file.close();
         ProjectXML prjxml;
+        prjxml.readFile(&file);
     }
 
     return pathlist_.size();

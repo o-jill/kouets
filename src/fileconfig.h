@@ -30,6 +30,10 @@ public:
         }
     }
     ~FileConfig() {
+        Destroy();
+    }
+
+    void Destroy() {
         if (apppath_) {
             delete apppath_;
             apppath_ = NULL;
@@ -42,6 +46,11 @@ public:
             delete parser_;
             parser_ = NULL;
         }
+    }
+
+    void Init() {
+        Destroy();
+        filename_.clear();
     }
 
     void SetFilename(const QString &str) {

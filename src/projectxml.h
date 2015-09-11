@@ -13,10 +13,27 @@
 
 class ProjectXML : public QXmlDefaultHandler
 {
+    enum {
+        TAG_BIT_KOUETS  = 0x80000000u,
+        TAG_BIT_CONFIG  = 0x40000000u,
+        TAG_BIT_ITEM    = 0x20000000u,
+        TAG_BIT_APPPATH = 0x00008000u,
+        TAG_BIT_CMDLINE = 0x00004000u,
+        TAG_BIT_PARSER  = 0x00002000u,
+        // TAG_BIT_,
+
+        TAG_CONFIG_APPPATH = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_APPPATH),
+        TAG_CONFIG_CMDLINE = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_APPPATH),
+
+        TAG_ITEM_APPPATH = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_APPPATH),
+        TAG_ITEM_CMDLINE = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_CMDLINE),
+        TAG_ITEM_PARSER  = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_PARSER),
+    };
 public:
     ProjectXML();
 
     bool readFile(const QString &fileName);
+    bool readFile(QFile *pfile);
 
 protected:
     virtual bool startDocument();
@@ -35,6 +52,7 @@ private:
     int bactivatetab_;
     int bwraplines_;
     QVector<FileConfig> items_;
+    FileConfig fc_;
     int state_;
 };
 
