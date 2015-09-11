@@ -20,11 +20,13 @@ class ProjectXML : public QXmlDefaultHandler
         TAG_BIT_APPPATH = 0x00008000u,
         TAG_BIT_CMDLINE = 0x00004000u,
         TAG_BIT_PARSER  = 0x00002000u,
+        TAG_BIT_FILE    = 0x00001000u,
         // TAG_BIT_,
 
         TAG_CONFIG_APPPATH = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_APPPATH),
         TAG_CONFIG_CMDLINE = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_CMDLINE),
 
+        TAG_ITEM_FILE    = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_FILE),
         TAG_ITEM_APPPATH = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_APPPATH),
         TAG_ITEM_CMDLINE = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_CMDLINE),
         TAG_ITEM_PARSER  = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_PARSER),
@@ -36,6 +38,9 @@ public:
 
     bool readFile(const QString &fileName);
     bool readFile(QFile *pfile);
+
+    int ItemSize() {return items_.size();}
+    FileConfig at(int n) {return items_[n];}
 
     void dump();
 protected:

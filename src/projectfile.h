@@ -3,6 +3,8 @@
 
 #include <QtCore>
 
+#include "fileconfig.h"
+
 class ProjectFile
 {
 public:
@@ -52,6 +54,9 @@ public:
     int Find(const QString&path);
 private:
     QStringList pathlist_;
+    QString apppath_;
+    QString cmdline_;
+    QVector<FileConfig> fc_;
     QVector<QDateTime> updatedlist_;
 };
 

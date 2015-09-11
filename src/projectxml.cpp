@@ -40,6 +40,8 @@ bool ProjectXML::startElement(const QString &namespaceURI,
     } else if (qName.compare("item", Qt::CaseInsensitive) == 0) {
         state_ |= TAG_BIT_ITEM;
         fc_.Init();
+    } else if (qName.compare("file", Qt::CaseInsensitive) == 0) {
+        state_ |= TAG_BIT_FILE;
     } else if (qName.compare("apppath", Qt::CaseInsensitive) == 0) {
         state_ |= TAG_BIT_APPPATH;
     } else if (qName.compare("cmdline", Qt::CaseInsensitive) == 0) {
@@ -61,6 +63,8 @@ bool ProjectXML::endElement(const QString &namespaceURI,
     } else if (qName.compare("item", Qt::CaseInsensitive) == 0) {
         items_.push_back(fc_);
         state_ &= ~TAG_BIT_ITEM;
+    } else if (qName.compare("file", Qt::CaseInsensitive) == 0) {
+        state_ &= ~TAG_BIT_FILE;
     } else if (qName.compare("apppath", Qt::CaseInsensitive) == 0) {
         state_ &= ~TAG_BIT_APPPATH;
     } else if (qName.compare("cmdline", Qt::CaseInsensitive) == 0) {
@@ -77,6 +81,8 @@ bool ProjectXML::characters(const QString &str)
         defaultapppath_ = str.trimmed();
     } else if (state_ == TAG_CONFIG_CMDLINE) {
         defaultcmdline_ = str.trimmed();
+    } else if (state_ == TAG_ITEM_FILE) {
+        fc_.SetFilename(str.trimmed());
     } else if (state_ == TAG_ITEM_APPPATH) {
         fc_.SetAppPath(str.trimmed());
     } else if (state_ == TAG_ITEM_CMDLINE) {

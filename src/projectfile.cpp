@@ -55,6 +55,15 @@ int ProjectFile::Open(const QString &path)
         ProjectXML prjxml;
         if (prjxml.readFile(&file)) {
             prjxml.dump();
+            int count = prjxml.ItemSize();
+            for (int i = 0 ; i < count ; ++i) {
+                FileConfig fc = prjxml.at(i);
+                QFileInfo fi(fc.Filename());
+                if (fi.isFile()) {
+                    pathlist_.push_back(fi.absoluteFilePath());
+                    updatedlist_.push_back(QDateTime());
+                }
+            }
         }
     }
 
