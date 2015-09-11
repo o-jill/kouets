@@ -53,7 +53,9 @@ int ProjectFile::Open(const QString &path)
     } else if (fileformat == FORMAT_XML) {
         file.close();
         ProjectXML prjxml;
-        prjxml.readFile(&file);
+        if (prjxml.readFile(&file)) {
+            prjxml.dump();
+        }
     }
 
     return pathlist_.size();

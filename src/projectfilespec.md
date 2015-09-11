@@ -26,7 +26,7 @@ decorate.h
  * example
 
 ```xml
-<?XML version="1.0" standalone="no" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <kouets version="1.0">
  <config>
   <apppath> C:/path/to/default.exe </apppath> <!-- specify default value -->

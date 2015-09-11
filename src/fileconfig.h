@@ -11,7 +11,8 @@ class FileConfig
 public:
     FileConfig()
         :apppath_(NULL), cmdline_(NULL), parser_(NULL) {}
-    FileConfig(const FileConfig&rhs) {
+    FileConfig(const FileConfig&rhs)
+        :apppath_(NULL), cmdline_(NULL), parser_(NULL) {
         filename_ = rhs.filename_;
         if (rhs.apppath_) {
             SetAppPath(*rhs.apppath_);

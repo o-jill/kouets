@@ -23,11 +23,13 @@ class ProjectXML : public QXmlDefaultHandler
         // TAG_BIT_,
 
         TAG_CONFIG_APPPATH = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_APPPATH),
-        TAG_CONFIG_CMDLINE = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_APPPATH),
+        TAG_CONFIG_CMDLINE = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_CMDLINE),
 
         TAG_ITEM_APPPATH = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_APPPATH),
         TAG_ITEM_CMDLINE = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_CMDLINE),
         TAG_ITEM_PARSER  = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_PARSER),
+
+        TAG_NONE = 0
     };
 public:
     ProjectXML();
@@ -35,6 +37,7 @@ public:
     bool readFile(const QString &fileName);
     bool readFile(QFile *pfile);
 
+    void dump();
 protected:
     virtual bool startDocument();
     virtual bool endDocument();
@@ -44,7 +47,7 @@ protected:
     virtual bool endElement(const QString &namespaceURI,
                     const QString &localName, const QString &qName);
     virtual bool characters(const QString &str);
-    virtual bool fatalError(const QXmlParseException &exception);
+    virtual bool fatalError(const QXmlParseException &e);
 
 private:
     QString defaultapppath_;

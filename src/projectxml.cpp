@@ -9,7 +9,7 @@
 #include <QtXml>
 
 ProjectXML::ProjectXML()
-    :QXmlDefaultHandler()
+    :QXmlDefaultHandler(), state_(TAG_NONE)
 {
 }
 
@@ -35,7 +35,6 @@ bool ProjectXML::startElement(const QString &namespaceURI,
 {
     if (qName.compare("kouets", Qt::CaseInsensitive) == 0) {
         state_ |= TAG_BIT_KOUETS;
-        //
     } else if (qName.compare("config", Qt::CaseInsensitive) == 0) {
         state_ |= TAG_BIT_CONFIG;
     } else if (qName.compare("item", Qt::CaseInsensitive) == 0) {
@@ -75,23 +74,28 @@ bool ProjectXML::endElement(const QString &namespaceURI,
 bool ProjectXML::characters(const QString &str)
 {
     if (state_ == TAG_CONFIG_APPPATH) {
-        defaultapppath_ = str;
+        defaultapppath_ = str.trimmed();
     } else if (state_ == TAG_CONFIG_CMDLINE) {
-        defaultcmdline_ = str;
-    } else if (TAG_ITEM_APPPATH) {
-        fc_.SetAppPath(str);
-    } else if (TAG_ITEM_CMDLINE) {
-        fc_.SetCmdLine(str);
-    } else if (TAG_ITEM_PARSER) {
-        fc_.SetParser(str);
+        defaultcmdline_ = str.trimmed();
+    } else if (state_ == TAG_ITEM_APPPATH) {
+        fc_.SetAppPath(str.trimmed());
+    } else if (state_ == TAG_ITEM_CMDLINE) {
+        fc_.SetCmdLine(str.trimmed());
+    } else if (state_ == TAG_ITEM_PARSER) {
+        fc_.SetParser(str.trimmed());
     } else {
         // nothing to do
     }
+    // qDebug() << "chara:" << str;
     return true;
 }
 
-bool ProjectXML::fatalError(const QXmlParseException &exception)
+bool ProjectXML::fatalError(const QXmlParseException &e)
 {
+    qDebug() << e.message()
+             << QString("@%1:%2").arg(e.lineNumber()).arg(e.columnNumber());
+            // << e.publicId()
+            // << e.systemId();
     return true;
 }
 
@@ -103,4 +107,31 @@ bool ProjectXML::startDocument()
 bool ProjectXML::endDocument()
 {
     return true;
+}
+
+void ProjectXML::dump()
+{
+    qDebug() << "ProjectXML::dump() -- >";
+    qDebug() << "defaultapppath_:" << defaultapppath_;
+    qDebug() << "defaultcmdline_:" << defaultcmdline_;
+    int count = items_.size();
+    for (int i = 0 ; i < count ; ++i) {
+        qDebug() << QString("item[%1]:filename:").arg(i) << items_[i].Filename();
+        if (items_[i].IsDefaultAppPath()) {
+            qDebug() << QString("item[%1]:AppPath:default").arg(i);
+        } else {
+            qDebug() << QString("item[%1]:AppPath:").arg(i) << items_[i].AppPath();
+        }
+        if (items_[i].IsDefaultCmdLine()) {
+            qDebug() << QString("item[%1]:cmdline:default").arg(i);
+        } else {
+            qDebug() << QString("item[%1]:cmdline:").arg(i) << items_[i].CmdLine();
+        }
+        if (items_[i].IsDefaultParser()) {
+            qDebug() << QString("item[%1]:Parser:default").arg(i);
+        } else {
+            qDebug() << QString("item[%1]:Parser:").arg(i) << items_[i].Parser();
+        }
+    }
+    qDebug() << "ProjectXML::dump() -- <";
 }
