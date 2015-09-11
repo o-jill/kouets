@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,12 +10,15 @@ SOURCES += decorate.cpp \
     kouetshash.cpp \
     main.cpp \
     mainwindow.cpp \
+    projectxml.cpp \
     projectfile.cpp
 
 HEADERS += decorate.h \
+    fileconfig.h \
     kouetsapp.h \
     kouetshash.h \
     mainwindow.h \
+    projectxml.h \
     projectfile.h
 
 FORMS += \

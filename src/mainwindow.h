@@ -14,12 +14,32 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    enum {
+        TREE_COLUMN_PATH = 0,
+        TREE_COLUMN_STATE,
+        TREE_COLUMN_ERROR,
+        TREE_COLUMN_UPDATED,
+        TREE_COLUMN_MAX
+        // TREE_COLUMN_,
+    };
+    enum {
+        RUN_INIT = -1,
+        RUN_STOP = 0,
+        RUN_RUNNING = 1,
+        RUN_MAX
+    };
+public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    bool IsRunning() {return (nrunning_ == RUN_RUNNING);}
+    bool IsRunable() {
+        return (nrunning_ == RUN_RUNNING || nrunning_ == RUN_INIT);
+    }
 protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
+    void closeEvent(QCloseEvent *e);
 
 private slots:
     void on_toolButton_clicked();
@@ -37,6 +57,8 @@ private slots:
     void on_actionRun_triggered();
     void on_actionPause_triggered();
 
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
+
 private:
     int OpenProjectFile(const QString &path);
     void SwitchTimer(int bon);
@@ -45,11 +67,13 @@ private:
     void UpdateProgressBarPos();
     void UpdateProgressBarRangeMax();
     void SetProgressBarMarquee();
+    void SetWindowTitle(const QString& str);
+    int FindTab(const QString& str);
 
 private:
     Ui::MainWindow *ui;
     QTimer *ptimer_update_;
-    int brunning_;
+    int nrunning_;
     QProgressBar *pprgs_;
     bool initated_;
     QProcess *process_;
