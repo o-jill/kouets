@@ -119,7 +119,7 @@ int MainWindow::OpenProjectFile(const QString &path)
 
     for (int i = 0 ; i < prj_.size() ; ++i) {
         QTreeWidgetItem *item = new QTreeWidgetItem;
-        QString s = prj_.at(i);
+        QString s = prj_.atFilename(i);
         item->setText(TREE_COLUMN_PATH, s);
         item->setText(TREE_COLUMN_STATE, "ready");
         item->setText(TREE_COLUMN_ERROR, "not yet");
@@ -264,7 +264,7 @@ void MainWindow::onTimerUpdate()
         return;
     }
     SetProgressBarMarquee();
-    QString path = prj_.at(curfile_);
+    QString path = prj_.atFilename(curfile_);
 
     QString cmdline = app->GetCmdLine();
     cmdline += " ";

@@ -7,6 +7,7 @@
 
 #include <QtCore>
 #include <QtXml>
+#include <QDebug>
 
 ProjectXML::ProjectXML()
     :QXmlDefaultHandler(), state_(TAG_NONE)
@@ -122,21 +123,25 @@ void ProjectXML::dump()
     qDebug() << "defaultcmdline_:" << defaultcmdline_;
     int count = items_.size();
     for (int i = 0 ; i < count ; ++i) {
-        qDebug() << QString("item[%1]:filename:").arg(i) << items_[i].Filename();
+        qDebug() << QString("item[%1]:filename:").arg(i)
+                 << items_[i].Filename();
         if (items_[i].IsDefaultAppPath()) {
             qDebug() << QString("item[%1]:AppPath:default").arg(i);
         } else {
-            qDebug() << QString("item[%1]:AppPath:").arg(i) << items_[i].AppPath();
+            qDebug() << QString("item[%1]:AppPath:").arg(i)
+                     << items_[i].AppPath();
         }
         if (items_[i].IsDefaultCmdLine()) {
             qDebug() << QString("item[%1]:cmdline:default").arg(i);
         } else {
-            qDebug() << QString("item[%1]:cmdline:").arg(i) << items_[i].CmdLine();
+            qDebug() << QString("item[%1]:cmdline:").arg(i)
+                     << items_[i].CmdLine();
         }
         if (items_[i].IsDefaultParser()) {
             qDebug() << QString("item[%1]:Parser:default").arg(i);
         } else {
-            qDebug() << QString("item[%1]:Parser:").arg(i) << items_[i].Parser();
+            qDebug() << QString("item[%1]:Parser:").arg(i)
+                     << items_[i].Parser();
         }
     }
     qDebug() << "ProjectXML::dump() -- <";

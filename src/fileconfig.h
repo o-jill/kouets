@@ -6,101 +6,97 @@
 #ifndef __FILECONFIG_H__
 # define __FILECONFIG_H__
 
+#include <QString>
+#include <QDebug>
+
 class FileConfig
 {
 public:
     FileConfig()
-        :apppath_(NULL), cmdline_(NULL), parser_(NULL) {}
-    FileConfig(const FileConfig&rhs)
-        :apppath_(NULL), cmdline_(NULL), parser_(NULL) {
+        :bapppath_(FALSE), bcmdline_(FALSE), bparser_(FALSE) {}
+    FileConfig(const FileConfig &rhs)
+        :bapppath_(FALSE), bcmdline_(FALSE), bparser_(FALSE) {
         filename_ = rhs.filename_;
-        if (rhs.apppath_) {
-            SetAppPath(*rhs.apppath_);
+
+        bapppath_ = rhs.bapppath_;
+        if (bapppath_) {
+            apppath_ = rhs.apppath_;
         } else {
-            apppath_ = NULL;
         }
-        if (rhs.cmdline_) {
-            SetCmdLine(*rhs.cmdline_);
+
+        bcmdline_ = rhs.bcmdline_;
+        if (bcmdline_) {
+            cmdline_ = rhs.cmdline_;
         } else {
-            cmdline_ = NULL;
         }
-        if (rhs.parser_) {
-            SetParser(*rhs.parser_);
+
+        bparser_ = rhs.bparser_;
+        if (bparser_) {
+            parser_ = rhs.parser_;
         } else {
-            parser_ = NULL;
         }
-    }
-    ~FileConfig() {
-        Destroy();
     }
 
-    void Destroy() {
-        if (apppath_) {
-            delete apppath_;
-            apppath_ = NULL;
-        }
-        if (cmdline_) {
-            delete cmdline_;
-            cmdline_ = NULL;
-        }
-        if (parser_) {
-            delete parser_;
-            parser_ = NULL;
-        }
-    }
+    ~FileConfig() {}
 
     void Init() {
-        Destroy();
+        bapppath_ = FALSE;
+        bcmdline_ = FALSE;
+        bparser_ = FALSE;
         filename_.clear();
+        apppath_.clear();
+        cmdline_.clear();
+        parser_.clear();
     }
 
     void SetFilename(const QString &str) {
+        QFileInfo fi(str);
+        filename_ = fi.absoluteFilePath();
+    }
+    void SetFilename_(const QString &str) {
         filename_ = str;
     }
     QString& Filename() {
         return filename_;
     }
     void SetAppPath(const QString &str) {
-        if (apppath_) {
-            delete apppath_;
-        }
-        apppath_ = new QString(str);
+        apppath_ = str;
+        bapppath_ = TRUE;
     }
     bool IsDefaultAppPath() {
-        return (apppath_ == NULL);
+        return bapppath_;
     }
     QString& AppPath() {
-        return *apppath_;
+        return apppath_;
     }
     void SetCmdLine(const QString &str) {
-        if (cmdline_) {
-            delete cmdline_;
-        }
-        cmdline_ = new QString(str);
+        cmdline_ = str;
+        bcmdline_ = TRUE;
     }
     bool IsDefaultCmdLine() {
-        return (cmdline_ == NULL);
+        return bcmdline_;
     }
     QString& CmdLine() {
-        return *cmdline_;
+        return cmdline_;
     }
     void SetParser(const QString &str) {
-        if (parser_) {
-            delete parser_;
-        }
-        parser_ = new QString(str);
+        parser_ = str;
+        bparser_ = TRUE;
     }
     bool IsDefaultParser() {
-        return (parser_ == NULL);
+        return bparser_;
     }
     QString& Parser() {
-        return *parser_;
+        return parser_;
     }
 private:
     QString filename_;
-    QString *apppath_;
-    QString *cmdline_;
-    QString *parser_;
+    QString apppath_;
+    int bapppath_;
+    QString cmdline_;
+    int bcmdline_;
+    QString parser_;
+    int bparser_;
 };
 
 #endif  // __FILECONFIG_H__

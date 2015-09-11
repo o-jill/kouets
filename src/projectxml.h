@@ -41,7 +41,7 @@ public:
 
     int ItemSize() {return items_.size();}
     FileConfig at(int n) {return items_[n];}
-
+    QVector<FileConfig>* Files() {return &items_;}
     void dump();
 protected:
     virtual bool startDocument();

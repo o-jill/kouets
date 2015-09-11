@@ -11,7 +11,7 @@
  */
 int ProjectFile::Open(const QString &path)
 {
-    pathlist_.clear();
+    fc_.clear();
     updatedlist_.clear();
 
     QFile file(path);
@@ -46,7 +46,7 @@ int ProjectFile::Open(const QString &path)
             ba[ba.size()-1] = '\0';
             QFileInfo fi(ba);
             if (fi.isFile()) {
-                pathlist_.push_back(fi.absoluteFilePath());
+                Add(fi.absoluteFilePath());
                 updatedlist_.push_back(QDateTime());
             }
         }
@@ -54,23 +54,17 @@ int ProjectFile::Open(const QString &path)
         file.close();
         ProjectXML prjxml;
         if (prjxml.readFile(&file)) {
+#ifdef _DEBUG
             prjxml.dump();
-            int count = prjxml.ItemSize();
-            for (int i = 0 ; i < count ; ++i) {
-                FileConfig fc = prjxml.at(i);
-                QFileInfo fi(fc.Filename());
-                if (fi.isFile()) {
-                    pathlist_.push_back(fi.absoluteFilePath());
-                    updatedlist_.push_back(QDateTime());
-                }
-            }
+#endif
+            Copy(prjxml.Files());
         }
     }
 
-    return pathlist_.size();
+    return fc_.size();
 }
 
-int ProjectFile::Save(const QString &path)
+int ProjectFile::SavePlainText(const QString &path)
 {
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly|QIODevice::Text))
@@ -78,19 +72,37 @@ int ProjectFile::Save(const QString &path)
     QDir::setCurrent(path);
     file.write("# kouets project file\n#\n");
     QDir dir = QDir::current();
-    for (int i = 0 ; i < pathlist_.size() ; ++i) {
-        file.write(dir.relativeFilePath(pathlist_[i]).toLocal8Bit());
+    for (int i = 0 ; i < fc_.size() ; ++i) {
+        file.write(dir.relativeFilePath(atFilename(i)).toLocal8Bit());
         file.putChar('\n');
     }
     return 1;
 }
 
+int ProjectFile::SaveXML(const QString &path)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly|QIODevice::Text))
+        return -1;
+    QDir::setCurrent(path);
+#if 0
+    file.write("# kouets project file\n#\n");
+    QDir dir = QDir::current();
+    for (int i = 0 ; i < pathlist_.size() ; ++i) {
+        file.write(dir.relativeFilePath(pathlist_[i]).toLocal8Bit());
+        file.putChar('\n');
+    }
+#endif
+    return 1;
+}
+
 int ProjectFile::Remove(QString path)
 {
-    int sz = pathlist_.size();
+    int sz = fc_.size();
     for (int i = 0 ; i < sz ; ++i) {
-        if (path.compare(pathlist_[i]) == 0) {
-            pathlist_.removeAt(i);
+        if (path.compare(atFilename(i)) == 0) {
+            fc_.remove(i);
+            updatedlist_.remove(i);
             return 1;
         }
     }
@@ -99,7 +111,7 @@ int ProjectFile::Remove(QString path)
 
 bool ProjectFile::isUpdated(int idx)
 {
-    QString fname = pathlist_[idx];
+    QString fname = atFilename(idx);
     QFileInfo fi(fname);
     QDateTime before = updatedlist_[idx];
     bool ret = (fi.lastModified() != before);
@@ -121,10 +133,10 @@ void ProjectFile::resetUpdated(const QString &path)
 
 int ProjectFile::Find(const QString &path)
 {
-    int count = pathlist_.size();
+    int count = fc_.size();
     int idx;
     for (idx = 0 ; idx < count ; ++idx) {
-        if (path == pathlist_[idx])
+        if (path == atFilename(idx))
             return idx;
     }
     return -1;
