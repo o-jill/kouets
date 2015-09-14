@@ -189,6 +189,8 @@
    <addaction name="separator"/>
    <addaction name="actionRun"/>
    <addaction name="actionPause"/>
+   <addaction name="separator"/>
+   <addaction name="actionLog"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
@@ -234,6 +236,15 @@
    </property>
    <property name="text">
     <string>Pause</string>
+   </property>
+  </action>
+  <action name="actionLog">
+   <property name="icon">
+    <iconset resource="kouets.qrc">
+     <normaloff>:/image/rsc/log24.png</normaloff>:/image/rsc/log24.png</iconset>
+   </property>
+   <property name="text">
+    <string>Log</string>
    </property>
   </action>
  </widget>

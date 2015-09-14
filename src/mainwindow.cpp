@@ -232,18 +232,18 @@ void MainWindow::on_actionAdd_triggered()
     //
     QStringList path = QFileDialog::getOpenFileNames(this, "choose a file");
 
-    if (path.length() == 0)
-        return;
-
-    for (QStringList::iterator it = path.begin() ; it != path.end() ; ++it) {
-        QTreeWidgetItem *item = new QTreeWidgetItem;
-        item->setText(TREE_COLUMN_PATH, *it);
-        item->setText(TREE_COLUMN_STATE, "ready");
-        item->setText(TREE_COLUMN_ERROR, "not yet");
-        ui->treeWidget->addTopLevelItem(item);
-        prj_.Add(*it);
+    if (path.length() == 0) {
+    } else {
+        for (QStringList::iterator it = path.begin() ; it != path.end() ; ++it) {
+            QTreeWidgetItem *item = new QTreeWidgetItem;
+            item->setText(TREE_COLUMN_PATH, *it);
+            item->setText(TREE_COLUMN_STATE, "ready");
+            item->setText(TREE_COLUMN_ERROR, "not yet");
+            ui->treeWidget->addTopLevelItem(item);
+            prj_.Add(*it);
+        }
+        UpdateProgressBarRangeMax();
     }
-    UpdateProgressBarRangeMax();
     if (IsRunable()) {
         ptimer_update_->start();
     }
@@ -321,12 +321,12 @@ void MainWindow::on_actionSave_triggered()
                 this, "choose a file", QString(),
                 "kouets(*.kouets);;All files(*.*)");
 
-    if (path.length() == 0)
-        return;
-
-    if (prj_.size() > 0) {
-        prj_.Save(path);
-        SetWindowTitle(path);
+    if (path.length() == 0) {
+    } else {
+        if (prj_.size() > 0) {
+            prj_.Save(path);
+            SetWindowTitle(path);
+        }
     }
 
     if (IsRunable()) {
@@ -421,6 +421,46 @@ void MainWindow::on_actionPause_triggered()
 {
     SwitchTimer(FALSE);
     UpdateProgressBarRangeMax();
+}
+
+void  MainWindow::on_actionLog_triggered()
+{
+    int timeron = ptimer_update_->isActive();
+    if (timeron) {
+        ptimer_update_->stop();
+    }
+
+    QString path = QFileDialog::getSaveFileName(
+                this, "choose a file", QString(),
+                "plain text log(*.txt);;html log(*.html);;All files(*.*)");
+
+    if (path.length() == 0) {
+    } else {
+        int curtab = ui->tabWidget->currentIndex();
+        QString tabname = ui->tabWidget->tabText(curtab);
+        if (tabname.startsWith(QChar(':'))) {
+        } else {
+            QTextEdit*pte =
+                reinterpret_cast<QTextEdit*>(ui->tabWidget->currentWidget());
+            if (pte) {
+                QFile file(path);
+                if (file.open(QIODevice::Text|QIODevice::WriteOnly)) {
+                    QFileInfo fi(path);
+                    QString buf;
+                    if (fi.suffix().compare("html", Qt::CaseInsensitive) == 0) {
+                        buf = pte->toHtml();
+                    } else {
+                        buf = pte->toPlainText();
+                    }
+                    file.write(buf.toUtf8());
+                }
+            }
+        }
+    }
+
+    if (IsRunable()) {
+        ptimer_update_->start();
+    }
 }
 
 void MainWindow::SetProgressBarPos(int pos)

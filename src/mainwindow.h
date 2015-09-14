@@ -56,7 +56,7 @@ private slots:
     void on_checkBox_LineWrap_clicked(bool checked);
     void on_actionRun_triggered();
     void on_actionPause_triggered();
-
+    void on_actionLog_triggered();
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
 private:
