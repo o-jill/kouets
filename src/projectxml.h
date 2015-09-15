@@ -1,6 +1,6 @@
 /**
  * @file projectxml.h
- * @brief ‚±‚±‚Éà–¾‚ğ‘‚­
+ * @brief parse xml formatted project file.
  */
 
 #ifndef __PROJECTXML_H__

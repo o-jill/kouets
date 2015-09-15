@@ -223,7 +223,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
     delete pte;
 }
 
-// ファイルの追加。
+// add files.
 void MainWindow::on_actionAdd_triggered()
 {
     if (IsRunning()) {

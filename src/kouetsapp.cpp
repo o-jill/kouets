@@ -1,19 +1,18 @@
 /**
  * @file kouetsapp.cpp
- * @brief ここに説明を書く
+ * @brief application class
  *
  */
 
 #include "kouetsapp.h"
 
-#include <QtCore>
-
 #include <Windows.h>
 
+#include <QtCore>
 
 
 /**
- * コンストラクタ
+ * constructor
  */
 KouetsApp::KouetsApp(int &argc, char**argv)
     :QApplication(argc, argv), updated_(0), bactivateprocessedtab_(1),
@@ -45,7 +44,7 @@ KouetsApp::KouetsApp(int &argc, char**argv)
 }
 
 /**
- * デストラクタ
+ * destructor
  */
 KouetsApp::~KouetsApp()
 {
@@ -53,9 +52,9 @@ KouetsApp::~KouetsApp()
 }
 
 /**
- * 設定ファイルの読み込み
+ * load ini file.
  *
- * @return 設定ファイルが読み込めたかどうか。
+ * @return zero if loaded.
  */
 int KouetsApp::LoadIni()
 {
@@ -98,7 +97,7 @@ int KouetsApp::SaveIni()
 
 
 /**
- * 設定などを保存するフォルダパスの生成
+ * generate path where to store settings.
  *
  * @note %APPDATA%/Kouets/
  *       --> C:\Users\nob-aoki\AppData\Roaming[WinVista/7/8]
@@ -125,12 +124,12 @@ bool hatApp::winEventFilter(MSG *message, long *result)
 #endif
 
 /**
- * qDebug()の出力をファイルにする。
+ * put text by qDebug() to a log file and debug-console.
  *
- * @param type 引数'type'の説明
- * @param *msg 引数'*msg'の説明
+ * @param type message type.
+ * @param msg  debug message.
  *
- * @note ファイル名は"debug_YYYY-MM-DD.log"
+ * @note file name is "debug_YYYY-MM-DD.log".
  */
 void KouetsApp::myMessageHandler(QtMsgType type, const char *msg)
 {
