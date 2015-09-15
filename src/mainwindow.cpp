@@ -234,7 +234,8 @@ void MainWindow::on_actionAdd_triggered()
 
     if (path.length() == 0) {
     } else {
-        for (QStringList::iterator it = path.begin() ; it != path.end() ; ++it) {
+        QStringList::iterator it;
+        for (it = path.begin() ; it != path.end() ; ++it) {
             QTreeWidgetItem *item = new QTreeWidgetItem;
             item->setText(TREE_COLUMN_PATH, *it);
             item->setText(TREE_COLUMN_STATE, "ready");

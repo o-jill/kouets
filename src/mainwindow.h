@@ -34,7 +34,8 @@ public:
 
     bool IsRunning() {return (nrunning_ == RUN_RUNNING);}
     bool IsRunable() {
-        return ((prj_.size() > 0) && (nrunning_ == RUN_RUNNING || nrunning_ == RUN_INIT));
+        return ((prj_.size() > 0)
+                && (nrunning_ == RUN_RUNNING || nrunning_ == RUN_INIT));
     }
 protected:
     void dragEnterEvent(QDragEnterEvent *e);
