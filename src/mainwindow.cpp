@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QtGui>
-
+#include <QtCore>
 
 #include "kouetsapp.h"
 #include "projectfile.h"
@@ -312,6 +312,9 @@ void MainWindow::onTimerUpdate()
 
 void MainWindow::on_actionSave_triggered()
 {
+    if (prj_.size() == 0)
+        return;
+
     int timeron = ptimer_update_->isActive();
     if (timeron) {
         ptimer_update_->stop();
@@ -425,35 +428,53 @@ void MainWindow::on_actionPause_triggered()
 
 void  MainWindow::on_actionLog_triggered()
 {
+    if (prj_.size() == 0 || ui->tabWidget->count() <= 2)
+        return;
+
     int timeron = ptimer_update_->isActive();
     if (timeron) {
         ptimer_update_->stop();
     }
 
-    QString path = QFileDialog::getSaveFileName(
-                this, "choose a file", QString(),
+    int curtab = ui->tabWidget->currentIndex();
+    QString tabname = ui->tabWidget->tabText(curtab);
+    if (tabname.startsWith(QChar(':'))) {
+        if (IsRunable()) {
+            ptimer_update_->start();
+        }
+        return;
+    }
+
+    QDateTime now = QDateTime::currentDateTime();
+    QString path = QString("kouets%1%2%3%4%5%6")
+            .arg(now.date().year(), 4, 10, QChar('0'))
+            .arg(now.date().month(), 2, 10, QChar('0'))
+            .arg(now.date().day(), 2, 10, QChar('0'))
+            .arg(now.time().hour(), 2, 10, QChar('0'))
+            .arg(now.time().minute(), 2, 10, QChar('0'))
+            .arg(now.time().second(), 2, 10, QChar('0'));
+
+    path = QFileDialog::getSaveFileName(
+                this, "choose a file", path,
                 "plain text log(*.txt);;html log(*.html);;All files(*.*)");
 
     if (path.length() == 0) {
     } else {
-        int curtab = ui->tabWidget->currentIndex();
-        QString tabname = ui->tabWidget->tabText(curtab);
-        if (tabname.startsWith(QChar(':'))) {
-        } else {
-            QTextEdit*pte =
-                reinterpret_cast<QTextEdit*>(ui->tabWidget->currentWidget());
-            if (pte) {
-                QFile file(path);
-                if (file.open(QIODevice::Text|QIODevice::WriteOnly)) {
-                    QFileInfo fi(path);
-                    QString buf;
-                    if (fi.suffix().compare("html", Qt::CaseInsensitive) == 0) {
-                        buf = pte->toHtml();
-                    } else {
-                        buf = pte->toPlainText();
-                    }
-                    file.write(buf.toUtf8());
+        curtab = ui->tabWidget->currentIndex();
+        tabname = ui->tabWidget->tabText(curtab);
+        QTextEdit*pte =
+            reinterpret_cast<QTextEdit*>(ui->tabWidget->currentWidget());
+        if (pte) {
+            QFile file(path);
+            if (file.open(QIODevice::Text|QIODevice::WriteOnly)) {
+                QFileInfo fi(path);
+                QString buf;
+                if (fi.suffix().compare("html", Qt::CaseInsensitive) == 0) {
+                    buf = pte->toHtml();
+                } else {
+                    buf = pte->toPlainText();
                 }
+                file.write(buf.toUtf8());
             }
         }
     }
