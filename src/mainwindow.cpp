@@ -194,8 +194,12 @@ void MainWindow::onProcessFinished(int code)
     UpdateProgressBarRangeMax();
     UpdateProgressBarPos();
     ++curfile_;
-    if (curfile_ == prj_.size())
+    if (curfile_ == prj_.size()) {
         curfile_ = 0;
+        if (IsRunOnce()) {
+            SwitchTimer(FALSE);
+        }
+    }
 
     if (pitem_) {
         pitem_->setText(TREE_COLUMN_STATE, "done");
@@ -259,9 +263,14 @@ void MainWindow::onTimerUpdate()
     UpdateProgressBarPos();
     if (!prj_.isUpdated(curfile_)) {
         ++curfile_;
-        if (curfile_ == prj_.size())
+        if (curfile_ == prj_.size()) {
             curfile_ = 0;
-        ptimer_update_->start();
+        }
+        if (IsRunOnce() && curfile_ == 0) {
+            SwitchTimer(FALSE);
+        } else {
+            ptimer_update_->start();
+        }
         return;
     }
     SetProgressBarMarquee();
@@ -419,6 +428,18 @@ void MainWindow::SwitchTimer(int bon)
 void MainWindow::on_actionRun_triggered()
 {
     SwitchTimer(TRUE);
+}
+
+void  MainWindow::on_actionRunOnce_triggered()
+{
+    if (nrunning_ == RUN_RUNONCE)
+        return;
+
+    ui->actionRun->setEnabled(true);
+    ui->actionPause->setEnabled(true);
+    nrunning_ = RUN_RUNONCE;
+    curfile_ = 0;
+    ptimer_update_->start();
 }
 
 void MainWindow::on_actionPause_triggered()

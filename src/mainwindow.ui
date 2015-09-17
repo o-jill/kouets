@@ -188,6 +188,7 @@
    <addaction name="actionAdd"/>
    <addaction name="separator"/>
    <addaction name="actionRun"/>
+   <addaction name="actionRunOnce"/>
    <addaction name="actionPause"/>
    <addaction name="separator"/>
    <addaction name="actionLog"/>
@@ -227,6 +228,15 @@
    </property>
    <property name="text">
     <string>Run</string>
+   </property>
+  </action>
+  <action name="actionRunOnce">
+   <property name="icon">
+    <iconset resource="kouets.qrc">
+     <normaloff>:/image/rsc/runonce24.png</normaloff>:/image/rsc/runonce24.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run Once</string>
    </property>
   </action>
   <action name="actionPause">

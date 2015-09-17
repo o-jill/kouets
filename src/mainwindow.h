@@ -26,17 +26,22 @@ public:
         RUN_INIT = -1,
         RUN_STOP = 0,
         RUN_RUNNING = 1,
+        RUN_RUNONCE = 2,
         RUN_MAX
     };
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    bool IsRunning() {return (nrunning_ == RUN_RUNNING);}
+    bool IsRunning() {
+        return (nrunning_ == RUN_RUNNING || nrunning_ == RUN_RUNONCE);
+    }
     bool IsRunable() {
         return ((prj_.size() > 0)
-                && (nrunning_ == RUN_RUNNING || nrunning_ == RUN_INIT));
+                && (nrunning_ == RUN_RUNNING || nrunning_ == RUN_INIT
+                    || nrunning_ == RUN_RUNONCE));
     }
+    bool IsRunOnce() {return nrunning_ == RUN_RUNONCE;}
 protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
@@ -56,6 +61,7 @@ private slots:
     void on_checkBox_ActivateProcessedTab_clicked(bool checked);
     void on_checkBox_LineWrap_clicked(bool checked);
     void on_actionRun_triggered();
+    void on_actionRunOnce_triggered();
     void on_actionPause_triggered();
     void on_actionLog_triggered();
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
