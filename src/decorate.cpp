@@ -1,6 +1,6 @@
 /**
  * @file decorate.cpp
- * @brief ‚±‚±‚Éà–¾‚ğ‘‚­
+ * @brief decorate lines.
  *
  */
 

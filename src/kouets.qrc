@@ -1,9 +1,11 @@
 <RCC>
     <qresource prefix="/image">
         <file>rsc/add24.png</file>
+        <file>rsc/log24.png</file>
         <file>rsc/open24.png</file>
         <file>rsc/pause24.png</file>
         <file>rsc/run24.png</file>
+        <file>rsc/runonce24.png</file>
         <file>rsc/save24.png</file>
     </qresource>
 </RCC>

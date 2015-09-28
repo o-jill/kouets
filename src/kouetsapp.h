@@ -1,6 +1,6 @@
 /**
  * @file kouetsapp.h
- * @brief ここに説明を書く
+ * @brief application class
  *
  */
 #ifndef __KOUETSAPP_H__
@@ -24,7 +24,7 @@ public:
 
     // setter
 
-    /// INIファイルのパスを設定する
+    /// set ini file path
     void SetIniPath(const QString &path) {iniPath_ = path;}
 
     void SetProgramPath(QString path) {
@@ -56,9 +56,9 @@ public:
 
     // getter
 
-    QString GetIniPath() {return iniPath_;}  //!< @return INIファイルのパス
-    QString GetAppDataPath() {return appDataPath_;}  //!< @return %APPDATA%のパス
-    QString GetTempPath() {return tempPath_;}  //!< @return %TEMP%のパス
+    QString GetIniPath() {return iniPath_;}  //!< @return INI file path
+    QString GetAppDataPath() {return appDataPath_;}  //!< @return %APPDATA% path
+    QString GetTempPath() {return tempPath_;}  //!< @return %TEMP% path
 
     QString GetProgramPath() {return programPath_;}
     QString GetCmdLine() {return cmdLine_;}

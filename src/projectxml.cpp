@@ -1,6 +1,6 @@
 /**
  * @file projectxml.cpp
- * @brief ‚±‚±‚Éà–¾‚ğ‘‚­
+ * @brief parse xml formatted project file.
  */
 
 #include "projectxml.h"

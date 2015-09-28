@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QtGui>
-
+#include <QtCore>
 
 #include "kouetsapp.h"
 #include "projectfile.h"
@@ -194,8 +194,12 @@ void MainWindow::onProcessFinished(int code)
     UpdateProgressBarRangeMax();
     UpdateProgressBarPos();
     ++curfile_;
-    if (curfile_ == prj_.size())
+    if (curfile_ == prj_.size()) {
         curfile_ = 0;
+        if (IsRunOnce()) {
+            SwitchTimer(FALSE);
+        }
+    }
 
     if (pitem_) {
         pitem_->setText(TREE_COLUMN_STATE, "done");
@@ -223,7 +227,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
     delete pte;
 }
 
-// ファイルの追加。
+// add files.
 void MainWindow::on_actionAdd_triggered()
 {
     if (IsRunning()) {
@@ -232,18 +236,19 @@ void MainWindow::on_actionAdd_triggered()
     //
     QStringList path = QFileDialog::getOpenFileNames(this, "choose a file");
 
-    if (path.length() == 0)
-        return;
-
-    for (QStringList::iterator it = path.begin() ; it != path.end() ; ++it) {
-        QTreeWidgetItem *item = new QTreeWidgetItem;
-        item->setText(TREE_COLUMN_PATH, *it);
-        item->setText(TREE_COLUMN_STATE, "ready");
-        item->setText(TREE_COLUMN_ERROR, "not yet");
-        ui->treeWidget->addTopLevelItem(item);
-        prj_.Add(*it);
+    if (path.length() == 0) {
+    } else {
+        QStringList::iterator it;
+        for (it = path.begin() ; it != path.end() ; ++it) {
+            QTreeWidgetItem *item = new QTreeWidgetItem;
+            item->setText(TREE_COLUMN_PATH, *it);
+            item->setText(TREE_COLUMN_STATE, "ready");
+            item->setText(TREE_COLUMN_ERROR, "not yet");
+            ui->treeWidget->addTopLevelItem(item);
+            prj_.Add(*it);
+        }
+        UpdateProgressBarRangeMax();
     }
-    UpdateProgressBarRangeMax();
     if (IsRunable()) {
         ptimer_update_->start();
     }
@@ -258,9 +263,14 @@ void MainWindow::onTimerUpdate()
     UpdateProgressBarPos();
     if (!prj_.isUpdated(curfile_)) {
         ++curfile_;
-        if (curfile_ == prj_.size())
+        if (curfile_ == prj_.size()) {
             curfile_ = 0;
-        ptimer_update_->start();
+        }
+        if (IsRunOnce() && curfile_ == 0) {
+            SwitchTimer(FALSE);
+        } else {
+            ptimer_update_->start();
+        }
         return;
     }
     SetProgressBarMarquee();
@@ -312,6 +322,9 @@ void MainWindow::onTimerUpdate()
 
 void MainWindow::on_actionSave_triggered()
 {
+    if (prj_.size() == 0)
+        return;
+
     int timeron = ptimer_update_->isActive();
     if (timeron) {
         ptimer_update_->stop();
@@ -321,12 +334,12 @@ void MainWindow::on_actionSave_triggered()
                 this, "choose a file", QString(),
                 "kouets(*.kouets);;All files(*.*)");
 
-    if (path.length() == 0)
-        return;
-
-    if (prj_.size() > 0) {
-        prj_.Save(path);
-        SetWindowTitle(path);
+    if (path.length() == 0) {
+    } else {
+        if (prj_.size() > 0) {
+            prj_.Save(path);
+            SetWindowTitle(path);
+        }
     }
 
     if (IsRunable()) {
@@ -417,10 +430,80 @@ void MainWindow::on_actionRun_triggered()
     SwitchTimer(TRUE);
 }
 
+void  MainWindow::on_actionRunOnce_triggered()
+{
+    if (nrunning_ == RUN_RUNONCE)
+        return;
+
+    ui->actionRun->setEnabled(true);
+    ui->actionPause->setEnabled(true);
+    nrunning_ = RUN_RUNONCE;
+    curfile_ = 0;
+    ptimer_update_->start();
+}
+
 void MainWindow::on_actionPause_triggered()
 {
     SwitchTimer(FALSE);
     UpdateProgressBarRangeMax();
+}
+
+void  MainWindow::on_actionLog_triggered()
+{
+    if (prj_.size() == 0 || ui->tabWidget->count() <= 2)
+        return;
+
+    int timeron = ptimer_update_->isActive();
+    if (timeron) {
+        ptimer_update_->stop();
+    }
+
+    int curtab = ui->tabWidget->currentIndex();
+    QString tabname = ui->tabWidget->tabText(curtab);
+    if (tabname.startsWith(QChar(':'))) {
+        if (IsRunable()) {
+            ptimer_update_->start();
+        }
+        return;
+    }
+
+    QDateTime now = QDateTime::currentDateTime();
+    QString path = QString("kouets%1%2%3%4%5%6")
+            .arg(now.date().year(), 4, 10, QChar('0'))
+            .arg(now.date().month(), 2, 10, QChar('0'))
+            .arg(now.date().day(), 2, 10, QChar('0'))
+            .arg(now.time().hour(), 2, 10, QChar('0'))
+            .arg(now.time().minute(), 2, 10, QChar('0'))
+            .arg(now.time().second(), 2, 10, QChar('0'));
+
+    path = QFileDialog::getSaveFileName(
+                this, "choose a file", path,
+                "plain text log(*.txt);;html log(*.html);;All files(*.*)");
+
+    if (path.length() == 0) {
+    } else {
+        curtab = ui->tabWidget->currentIndex();
+        tabname = ui->tabWidget->tabText(curtab);
+        QTextEdit*pte =
+            reinterpret_cast<QTextEdit*>(ui->tabWidget->currentWidget());
+        if (pte) {
+            QFile file(path);
+            if (file.open(QIODevice::Text|QIODevice::WriteOnly)) {
+                QFileInfo fi(path);
+                QString buf;
+                if (fi.suffix().compare("html", Qt::CaseInsensitive) == 0) {
+                    buf = pte->toHtml();
+                } else {
+                    buf = pte->toPlainText();
+                }
+                file.write(buf.toUtf8());
+            }
+        }
+    }
+
+    if (IsRunable()) {
+        ptimer_update_->start();
+    }
 }
 
 void MainWindow::SetProgressBarPos(int pos)

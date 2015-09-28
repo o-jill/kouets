@@ -1,6 +1,6 @@
 /**
  * @file decorate.h
- * @brief ‚±‚±‚Éà–¾‚ğ‘‚­
+ * @brief decorate lines.
  *
  */
 #ifndef __DECORATE_H__

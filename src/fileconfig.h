@@ -1,6 +1,6 @@
 /**
  * @file fileconfig.h
- * @brief ‚±‚±‚Éà–¾‚ğ‘‚­
+ * @brief file configuration.
  */
 
 #ifndef __FILECONFIG_H__
