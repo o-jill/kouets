@@ -10,7 +10,7 @@
 #include "decorate.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), pte_(NULL), process_(NULL),
+    QMainWindow(parent), pte_(NULL), process_(NULL), pitem_(NULL),
     curfile_(0), nrunning_(RUN_INIT),
     ui(new Ui::MainWindow)
 {
@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(onReadyReadStdOut()));
     connect(process_, SIGNAL(readyReadStandardError()),
             this, SLOT(onReadyReadStdErr()));
+    connect(process_, SIGNAL(error(QProcess::ProcessError)),
+            this, SLOT(onProcessError(QProcess::ProcessError)));
+    process_->setProcessChannelMode(QProcess::MergedChannels);
 
     pprgs_ = new QProgressBar(ui->statusBar);
     ui->statusBar->addPermanentWidget(pprgs_);
@@ -142,15 +145,6 @@ void MainWindow::onReadyReadStdOut()
 
     QString output = process_->readAllStandardOutput();
 
-    qDebug() << output;
-}
-
-void MainWindow::onReadyReadStdErr()
-{
-    if (pte_ == NULL)
-        return;
-
-    QString output = process_->readAllStandardError();
     if (output.length() <= 0) {
     } else {
         DecorateGCppVs7 dec;
@@ -165,6 +159,12 @@ void MainWindow::onReadyReadStdErr()
 
         // qDebug() << result_;
     }
+    // qDebug() << output;
+}
+
+void MainWindow::onReadyReadStdErr()
+{
+    // qDebug() << output;
 }
 
 void MainWindow::onProcessFinished(int code)
@@ -215,6 +215,19 @@ void MainWindow::onProcessFinished(int code)
 
     if (IsRunable()) {
         ptimer_update_->start();
+    }
+}
+
+void MainWindow::onProcessError(QProcess::ProcessError err)
+{
+    qDebug() << "onProcessError:" << err << process_->errorString();
+    qDebug() << "GetLastErrorError:" << GetLastError();
+
+    ptimer_update_->stop();
+    UpdateProgressBarRangeMax();
+
+    if (pitem_) {
+        pitem_->setText(TREE_COLUMN_STATE, "process error");
     }
 }
 
@@ -279,16 +292,31 @@ void MainWindow::onTimerUpdate()
     SetProgressBarMarquee();
     QString path = prj_.atPath(curfile_);
     QString fname = prj_.atFilename(curfile_);
+    QString apppath;
+    QString cmdline;
 
-    QString cmdline = app->GetCmdLine();
-    cmdline += " ";
-    cmdline += path;
+    if (prj_.isUseDefaultAppPath()) {
+        apppath = "\"" + app->GetProgramPath() + "\"";
 
-    // qDebug() << "program:" << app->GetProgramPath();
-    // qDebug() << "path:" << cmdline;
+        cmdline = app->GetCmdLine();
+        cmdline += " \"";
+        cmdline += path;
+        cmdline += "\"";
+    } else {
+        apppath = "\"" + prj_.AppPath() + "\"";
+
+        cmdline = prj_.CmdLine();
+        cmdline += " ";
+        //cmdline += " \"";
+        cmdline += path;
+        //cmdline += "\"";
+    }
+
+    // qDebug() << "program:" << apppath;
+    // qDebug() << "cmdline:" << cmdline;
 
     process_->setNativeArguments(cmdline);
-    process_->start(app->GetProgramPath());
+//    process_->start(apppath);
 
     QFileInfo fi(path);
     QString tabname = fname;
@@ -322,6 +350,8 @@ void MainWindow::onTimerUpdate()
                 prj_.lastUpdated(curfile_).toString("yyyy/MM/dd hh:mm:ss"));
     nerrors_ = -1;
     result_.clear();
+
+    process_->start(apppath);
 }
 
 void MainWindow::on_actionSave_triggered()

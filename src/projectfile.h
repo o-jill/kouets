@@ -16,7 +16,7 @@ public:
     };
 public:
     ProjectFile()
-        :bapppath_(FALSE), bcmdline_(FALSE) {}
+        :bapppath_(TRUE), bcmdline_(TRUE) {}
     ~ProjectFile() {}
 
     void Add(QString path) {
@@ -63,6 +63,10 @@ public:
         }
     }
 
+    /**
+     * @retval true  use default program.
+     * @retval false use program specified by AppPath().
+     */
     bool isUseDefaultAppPath() {return bapppath_;}
     QString AppPath() {return apppath_;}
 

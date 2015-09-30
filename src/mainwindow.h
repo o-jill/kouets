@@ -55,6 +55,7 @@ private slots:
     void onReadyReadStdOut();
     void onReadyReadStdErr();
     void onProcessFinished(int code);
+    void onProcessError(QProcess::ProcessError err);
     void on_tabWidget_tabCloseRequested(int index);
     void on_actionAdd_triggered();
     void onTimerUpdate();

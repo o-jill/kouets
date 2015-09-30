@@ -13,8 +13,8 @@ int ProjectFile::Open(const QString &path)
 {
     fc_.clear();
     updatedlist_.clear();
-    bapppath_ = FALSE;
-    bcmdline_ = FALSE;
+    bapppath_ = TRUE;
+    bcmdline_ = TRUE;
 
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly|QIODevice::Text))
@@ -60,11 +60,11 @@ int ProjectFile::Open(const QString &path)
             prjxml.dump();
 #endif
             bapppath_ = prjxml.IsDefaultAppPath();
-            if (bapppath_)
+            if (bapppath_ == 0)
                 apppath_ = prjxml.AppPath();
 
             bcmdline_ = prjxml.IsDefaultCmdLine();
-            if (bcmdline_)
+            if (bcmdline_ == 0)
                 cmdline_ = prjxml.CmdLine();
 
             Copy(prjxml.Files());
