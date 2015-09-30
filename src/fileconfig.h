@@ -17,6 +17,7 @@ public:
     FileConfig(const FileConfig &rhs)
         :bapppath_(FALSE), bcmdline_(FALSE), bparser_(FALSE) {
         filename_ = rhs.filename_;
+        abspath_ = rhs.abspath_;
 
         bapppath_ = rhs.bapppath_;
         if (bapppath_) {
@@ -44,20 +45,28 @@ public:
         bcmdline_ = FALSE;
         bparser_ = FALSE;
         filename_.clear();
+        abspath_.clear();
         apppath_.clear();
         cmdline_.clear();
         parser_.clear();
     }
 
     void SetFilename(const QString &str) {
+        filename_ = str;
         QFileInfo fi(str);
-        filename_ = fi.absoluteFilePath();
+        abspath_ = fi.absoluteFilePath();
     }
     void SetFilename_(const QString &str) {
         filename_ = str;
     }
+    void SetAbsPath_(const QString &str) {
+        abspath_ = str;
+    }
     QString& Filename() {
         return filename_;
+    }
+    QString& AbsPath() {
+        return abspath_;
     }
     void SetAppPath(const QString &str) {
         apppath_ = str;
@@ -91,6 +100,7 @@ public:
     }
 private:
     QString filename_;
+    QString abspath_;
     QString apppath_;
     int bapppath_;
     QString cmdline_;

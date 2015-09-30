@@ -48,7 +48,7 @@ int ProjectFile::Open(const QString &path)
             ba[ba.size()-1] = '\0';
             QFileInfo fi(ba);
             if (fi.isFile()) {
-                Add(fi.absoluteFilePath());
+                Add(QString::fromLocal8Bit(ba));
                 updatedlist_.push_back(QDateTime());
             }
         }
@@ -79,9 +79,12 @@ int ProjectFile::SavePlainText(const QString &path)
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly|QIODevice::Text))
         return -1;
-    QDir::setCurrent(path);
+
     file.write("# kouets project file\n#\n");
-    QDir dir = QDir::current();
+
+    QFileInfo fi(path);
+    QDir dir = fi.absoluteDir();
+
     for (int i = 0 ; i < fc_.size() ; ++i) {
         file.write(dir.relativeFilePath(atFilename(i)).toLocal8Bit());
         file.putChar('\n');
@@ -94,7 +97,6 @@ int ProjectFile::SaveXML(const QString &path)
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly|QIODevice::Text))
         return -1;
-    QDir::setCurrent(path);
 
     file.write("<?xml version='1.0' encoding='UTF-8' standalone='no'?>\n"
                "<kouets version='1.0'>\n");
@@ -104,11 +106,14 @@ int ProjectFile::SaveXML(const QString &path)
     if (bcmdline_)
         file.write(QString("  <cmdline>%1</cmdline>\n").arg(apppath_).toUtf8());
     file.write(" </config>\n");
-    QDir dir = QDir::current();
+
+    QFileInfo fi(path);
+    QDir dir = fi.absoluteDir();
+
     for (int i = 0 ; i < size() ; ++i) {
         file.write(QString(" <item number='%1'>\n").arg(i+1).toUtf8());
         file.write(QString("  <file>%1</file>\n")
-                    .arg(dir.relativeFilePath(atFilename(i))).toUtf8());
+                    .arg(dir.relativeFilePath(atPath(i))).toUtf8());
         if (fc_[i].IsDefaultAppPath())
             file.write(QString("  <apppath>%1</apppath>\n")
                     .arg(fc_[i].AppPath()).toUtf8());

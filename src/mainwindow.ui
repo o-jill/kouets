@@ -54,7 +54,7 @@
            <bool>true</bool>
           </property>
           <property name="columnCount">
-           <number>4</number>
+           <number>5</number>
           </property>
           <attribute name="headerStretchLastSection">
            <bool>false</bool>
@@ -77,6 +77,11 @@
           <column>
            <property name="text">
             <string>updated</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>path</string>
            </property>
           </column>
          </widget>

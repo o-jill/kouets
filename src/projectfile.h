@@ -47,8 +47,7 @@ public:
         return fi.fileName();
     }
     QString atPath(int idx) {
-        QFileInfo fi(atFilename(idx));
-        return fi.absolutePath();
+        return fc_[idx].AbsPath();
     }
     QDateTime lastUpdated(int idx) {
         return updatedlist_[idx];
