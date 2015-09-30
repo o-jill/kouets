@@ -45,12 +45,10 @@ int ProjectFile::Open(const QString &path)
                 continue;
             }
 
-            ba[ba.size()-1] = '\0';
-            QFileInfo fi(ba);
-            if (fi.isFile()) {
-                Add(QString::fromLocal8Bit(ba));
-                updatedlist_.push_back(QDateTime());
-            }
+            ba[ba.size()-1] = '\0';  // remove \n
+
+            Add(QString::fromLocal8Bit(ba));
+            updatedlist_.push_back(QDateTime());
         }
     } else if (fileformat == FORMAT_XML) {
         file.close();

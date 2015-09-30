@@ -306,10 +306,9 @@ void MainWindow::onTimerUpdate()
         apppath = "\"" + prj_.AppPath() + "\"";
 
         cmdline = prj_.CmdLine();
-        cmdline += " ";
-        //cmdline += " \"";
+        cmdline += " \"";
         cmdline += path;
-        //cmdline += "\"";
+        cmdline += "\"";
     }
 
     // qDebug() << "program:" << apppath;
@@ -319,6 +318,30 @@ void MainWindow::onTimerUpdate()
 //    process_->start(apppath);
 
     QFileInfo fi(path);
+
+    int count = ui->treeWidget->topLevelItemCount();
+    pitem_ = NULL;
+    for (int idx = 0 ; idx < count ; ++idx) {
+        QTreeWidgetItem *pi = ui->treeWidget->topLevelItem(idx);
+        if (pi->text(TREE_COLUMN_PATH) == fi.absoluteFilePath()) {
+            pitem_ = pi;
+            pi->setText(TREE_COLUMN_STATE, "running");
+            break;
+        }
+    }
+
+    if (!fi.exists()) {
+        // the file does not exist.
+        pitem_->setText(TREE_COLUMN_STATE, "not exists");
+        pitem_->setText(TREE_COLUMN_UPDATED, "yyyy/MM/dd hh:mm:ss");
+        if (IsRunOnce() && curfile_ == 0) {
+            SwitchTimer(FALSE);
+        } else {
+            ptimer_update_->start();
+        }
+        return;
+    }
+
     QString tabname = fname;
     int idx = FindTab(fname);
     if (idx < 0) {
@@ -335,16 +358,6 @@ void MainWindow::onTimerUpdate()
     pte_->clear();
     if (app->IsActivateProcessedTab()) {
         ui->tabWidget->setCurrentWidget(pte_);
-    }
-    int count = ui->treeWidget->topLevelItemCount();
-    pitem_ = NULL;
-    for (idx = 0 ; idx < count ; ++idx) {
-        QTreeWidgetItem *pi = ui->treeWidget->topLevelItem(idx);
-        if (pi->text(TREE_COLUMN_PATH) == fi.absoluteFilePath()) {
-            pitem_ = pi;
-            pi->setText(TREE_COLUMN_STATE, "running");
-            break;
-        }
     }
     pitem_->setText(TREE_COLUMN_UPDATED,
                 prj_.lastUpdated(curfile_).toString("yyyy/MM/dd hh:mm:ss"));
