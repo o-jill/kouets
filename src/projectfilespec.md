@@ -31,6 +31,7 @@ decorate.h
  <config>
   <apppath> C:/path/to/default.exe </apppath> <!-- specify default value -->
   <cmdline> --some --default --command --option </cmdline> <!-- specify default value -->
+  <parser> cppcheck </parser>
   <!-- activatetab> FALSE </activatetab -->
   <!-- wrapline> TRUE </wrapline -->
   <!-- color1> #FF0000 </color1 -->
