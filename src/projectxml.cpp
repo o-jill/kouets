@@ -10,7 +10,7 @@
 #include <QDebug>
 
 ProjectXML::ProjectXML()
-    :QXmlDefaultHandler(), state_(TAG_NONE), bapppath_(FALSE), bcmdline_(FALSE)
+    :QXmlDefaultHandler(), state_(TAG_NONE), bapppath_(TRUE), bcmdline_(TRUE)
 {
 }
 
@@ -79,10 +79,10 @@ bool ProjectXML::endElement(const QString &namespaceURI,
 bool ProjectXML::characters(const QString &str)
 {
     if (state_ == TAG_CONFIG_APPPATH) {
-        bapppath_ = TRUE;
+        bapppath_ = FALSE;
         apppath_ = str.trimmed();
     } else if (state_ == TAG_CONFIG_CMDLINE) {
-        bcmdline_ = TRUE;
+        bcmdline_ = FALSE;
         cmdline_ = str.trimmed();
     } else if (state_ == TAG_ITEM_FILE) {
         fc_.SetFilename(str.trimmed());

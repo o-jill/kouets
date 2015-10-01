@@ -15,10 +15,11 @@ class MainWindow : public QMainWindow
 
 public:
     enum {
-        TREE_COLUMN_PATH = 0,
+        TREE_COLUMN_NAME = 0,
         TREE_COLUMN_STATE,
         TREE_COLUMN_ERROR,
         TREE_COLUMN_UPDATED,
+        TREE_COLUMN_PATH,
         TREE_COLUMN_MAX
         // TREE_COLUMN_,
     };
@@ -54,6 +55,7 @@ private slots:
     void onReadyReadStdOut();
     void onReadyReadStdErr();
     void onProcessFinished(int code);
+    void onProcessError(QProcess::ProcessError err);
     void on_tabWidget_tabCloseRequested(int index);
     void on_actionAdd_triggered();
     void onTimerUpdate();

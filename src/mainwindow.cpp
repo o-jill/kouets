@@ -10,7 +10,7 @@
 #include "decorate.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), pte_(NULL), process_(NULL),
+    QMainWindow(parent), pte_(NULL), process_(NULL), pitem_(NULL),
     curfile_(0), nrunning_(RUN_INIT),
     ui(new Ui::MainWindow)
 {
@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(onReadyReadStdOut()));
     connect(process_, SIGNAL(readyReadStandardError()),
             this, SLOT(onReadyReadStdErr()));
+    connect(process_, SIGNAL(error(QProcess::ProcessError)),
+            this, SLOT(onProcessError(QProcess::ProcessError)));
+    process_->setProcessChannelMode(QProcess::MergedChannels);
 
     pprgs_ = new QProgressBar(ui->statusBar);
     ui->statusBar->addPermanentWidget(pprgs_);
@@ -88,7 +91,7 @@ void MainWindow::on_actionOpen_triggered()
     if (ptimer_update_->isActive())
         ptimer_update_->stop();
     //
-    QString path = QFileDialog::getOpenFileName(this, "choose a file");
+    QString path = QFileDialog::getOpenFileName(this, "choose a fileto open");
 
     if (path.length() == 0)
         return;
@@ -120,9 +123,10 @@ int MainWindow::OpenProjectFile(const QString &path)
     for (int i = 0 ; i < prj_.size() ; ++i) {
         QTreeWidgetItem *item = new QTreeWidgetItem;
         QString s = prj_.atFilename(i);
-        item->setText(TREE_COLUMN_PATH, s);
+        item->setText(TREE_COLUMN_NAME, s);
         item->setText(TREE_COLUMN_STATE, "ready");
         item->setText(TREE_COLUMN_ERROR, "not yet");
+        item->setText(TREE_COLUMN_PATH, prj_.atPath(i));
         ui->treeWidget->addTopLevelItem(item);
     }
     curfile_ = 0;
@@ -141,15 +145,6 @@ void MainWindow::onReadyReadStdOut()
 
     QString output = process_->readAllStandardOutput();
 
-    qDebug() << output;
-}
-
-void MainWindow::onReadyReadStdErr()
-{
-    if (pte_ == NULL)
-        return;
-
-    QString output = process_->readAllStandardError();
     if (output.length() <= 0) {
     } else {
         DecorateGCppVs7 dec;
@@ -164,6 +159,12 @@ void MainWindow::onReadyReadStdErr()
 
         // qDebug() << result_;
     }
+    // qDebug() << output;
+}
+
+void MainWindow::onReadyReadStdErr()
+{
+    // qDebug() << output;
 }
 
 void MainWindow::onProcessFinished(int code)
@@ -217,6 +218,19 @@ void MainWindow::onProcessFinished(int code)
     }
 }
 
+void MainWindow::onProcessError(QProcess::ProcessError err)
+{
+    qDebug() << "onProcessError:" << err << process_->errorString();
+    qDebug() << "GetLastErrorError:" << GetLastError();
+
+    ptimer_update_->stop();
+    UpdateProgressBarRangeMax();
+
+    if (pitem_) {
+        pitem_->setText(TREE_COLUMN_STATE, "process error");
+    }
+}
+
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
     QString str = ui->tabWidget->tabText(index);
@@ -234,16 +248,18 @@ void MainWindow::on_actionAdd_triggered()
         ptimer_update_->stop();
     }
     //
-    QStringList path = QFileDialog::getOpenFileNames(this, "choose a file");
+    QStringList path =
+                QFileDialog::getOpenFileNames(this, "choose files to add");
 
     if (path.length() == 0) {
     } else {
         QStringList::iterator it;
         for (it = path.begin() ; it != path.end() ; ++it) {
             QTreeWidgetItem *item = new QTreeWidgetItem;
-            item->setText(TREE_COLUMN_PATH, *it);
+            item->setText(TREE_COLUMN_NAME, *it);
             item->setText(TREE_COLUMN_STATE, "ready");
             item->setText(TREE_COLUMN_ERROR, "not yet");
+            item->setText(TREE_COLUMN_PATH, *it);
             ui->treeWidget->addTopLevelItem(item);
             prj_.Add(*it);
         }
@@ -274,21 +290,60 @@ void MainWindow::onTimerUpdate()
         return;
     }
     SetProgressBarMarquee();
-    QString path = prj_.atFilename(curfile_);
+    QString path = prj_.atPath(curfile_);
+    QString fname = prj_.atFilename(curfile_);
+    QString apppath;
+    QString cmdline;
 
-    QString cmdline = app->GetCmdLine();
-    cmdline += " ";
-    cmdline += path;
+    if (prj_.isUseDefaultAppPath()) {
+        apppath = "\"" + app->GetProgramPath() + "\"";
 
-    // qDebug() << "program:" << app->GetProgramPath();
-    // qDebug() << "path:" << cmdline;
+        cmdline = app->GetCmdLine();
+        cmdline += " \"";
+        cmdline += path;
+        cmdline += "\"";
+    } else {
+        apppath = "\"" + prj_.AppPath() + "\"";
+
+        cmdline = prj_.CmdLine();
+        cmdline += " \"";
+        cmdline += path;
+        cmdline += "\"";
+    }
+
+    // qDebug() << "program:" << apppath;
+    // qDebug() << "cmdline:" << cmdline;
 
     process_->setNativeArguments(cmdline);
-    process_->start(app->GetProgramPath());
+//    process_->start(apppath);
 
     QFileInfo fi(path);
-    QString tabname = fi.fileName();
-    int idx = FindTab(path);
+
+    int count = ui->treeWidget->topLevelItemCount();
+    pitem_ = NULL;
+    for (int idx = 0 ; idx < count ; ++idx) {
+        QTreeWidgetItem *pi = ui->treeWidget->topLevelItem(idx);
+        if (pi->text(TREE_COLUMN_PATH) == fi.absoluteFilePath()) {
+            pitem_ = pi;
+            pi->setText(TREE_COLUMN_STATE, "running");
+            break;
+        }
+    }
+
+    if (!fi.exists()) {
+        // the file does not exist.
+        pitem_->setText(TREE_COLUMN_STATE, "not exists");
+        pitem_->setText(TREE_COLUMN_UPDATED, "yyyy/MM/dd hh:mm:ss");
+        if (IsRunOnce() && curfile_ == 0) {
+            SwitchTimer(FALSE);
+        } else {
+            ptimer_update_->start();
+        }
+        return;
+    }
+
+    QString tabname = fname;
+    int idx = FindTab(fname);
     if (idx < 0) {
         pte_ = new QTextEdit(this);
         pte_->setReadOnly(true);
@@ -304,20 +359,12 @@ void MainWindow::onTimerUpdate()
     if (app->IsActivateProcessedTab()) {
         ui->tabWidget->setCurrentWidget(pte_);
     }
-    int count = ui->treeWidget->topLevelItemCount();
-    pitem_ = NULL;
-    for (idx = 0 ; idx < count ; ++idx) {
-        QTreeWidgetItem *pi = ui->treeWidget->topLevelItem(idx);
-        if (pi->text(0) == fi.absoluteFilePath()) {
-            pitem_ = pi;
-            pi->setText(TREE_COLUMN_STATE, "running");
-            break;
-        }
-    }
     pitem_->setText(TREE_COLUMN_UPDATED,
                 prj_.lastUpdated(curfile_).toString("yyyy/MM/dd hh:mm:ss"));
     nerrors_ = -1;
     result_.clear();
+
+    process_->start(apppath);
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -371,9 +418,10 @@ void MainWindow::dropEvent(QDropEvent *e)
             // add a dropped file.
             for (it = flist.begin() ; it != flist.end() ; ++it) {
                 QTreeWidgetItem *item = new QTreeWidgetItem;
-                item->setText(TREE_COLUMN_PATH, it->toLocalFile());
+                item->setText(TREE_COLUMN_NAME, it->toLocalFile());
                 item->setText(TREE_COLUMN_STATE, "ready");
                 item->setText(TREE_COLUMN_ERROR, "not yet");
+                item->setText(TREE_COLUMN_PATH, it->toLocalFile());
                 ui->treeWidget->addTopLevelItem(item);
                 prj_.Add(it->toLocalFile());
             }
@@ -386,9 +434,10 @@ void MainWindow::dropEvent(QDropEvent *e)
         // add dropped files.
         for (it = flist.begin() ; it != flist.end() ; ++it) {
             QTreeWidgetItem *item = new QTreeWidgetItem;
-            item->setText(TREE_COLUMN_PATH, it->toLocalFile());
+            item->setText(TREE_COLUMN_NAME, it->toLocalFile());
             item->setText(TREE_COLUMN_STATE, "ready");
             item->setText(TREE_COLUMN_ERROR, "not yet");
+            item->setText(TREE_COLUMN_PATH, it->toLocalFile());
             ui->treeWidget->addTopLevelItem(item);
             prj_.Add(it->toLocalFile());
         }
@@ -477,7 +526,7 @@ void  MainWindow::on_actionLog_triggered()
             .arg(now.time().second(), 2, 10, QChar('0'));
 
     path = QFileDialog::getSaveFileName(
-                this, "choose a file", path,
+                this, "choose a file to save", path,
                 "plain text log(*.txt);;html log(*.html);;All files(*.*)");
 
     if (path.length() == 0) {
@@ -529,7 +578,8 @@ void MainWindow::UpdateProgressBarRangeMax()
 {
     if (prj_.size() <= 0)
         pprgs_->setRange(0, 1);
-    pprgs_->setRange(0, prj_.size());
+    else
+        pprgs_->setRange(0, prj_.size());
 }
 
 void MainWindow::SetProgressBarMarquee()
@@ -580,8 +630,7 @@ void MainWindow::on_treeWidget_itemDoubleClicked(
 int MainWindow::FindTab(const QString& path)
 {
     //
-    QFileInfo fi(path);
-    QString s = fi.fileName();
+    QString s = path;
     int count = ui->tabWidget->count();
     int idx;
     for (idx = 0 ; idx < count ; ++idx) {
