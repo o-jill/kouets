@@ -16,7 +16,7 @@ public:
     };
 public:
     ProjectFile()
-        :bapppath_(TRUE), bcmdline_(TRUE) {}
+        :bapppath_(TRUE), bcmdline_(TRUE), bparser_(TRUE) {}
     ~ProjectFile() {}
 
     void Add(QString path) {
@@ -73,6 +73,9 @@ public:
     bool isUseDefaultCmdLine() {return bcmdline_;}
     QString CmdLine() {return cmdline_;}
 
+    bool isUseDefaultParser() {return bparser_;}
+    QString Parser() {return parser_;}
+
     /*void Sort() {
         pathlist_.sort();
     }*/
@@ -86,6 +89,8 @@ private:
     QString apppath_;
     int bcmdline_;
     QString cmdline_;
+    int bparser_;
+    QString parser_;
     QVector<FileConfig> fc_;
     QVector<QDateTime> updatedlist_;
 };

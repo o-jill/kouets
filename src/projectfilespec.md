@@ -53,6 +53,7 @@ decorate.h
 
 |   typename   | supports what?                             |
 |:------------:|:-------------------------------------------|
+|     none     | no decoration.                             |
 |cpplint.py_VS7|google c++ lint program with "--output=vs7".|
 
 ----

@@ -25,6 +25,7 @@ class ProjectXML : public QXmlDefaultHandler
 
         TAG_CONFIG_APPPATH = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_APPPATH),
         TAG_CONFIG_CMDLINE = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_CMDLINE),
+        TAG_CONFIG_PARSER  = (TAG_BIT_KOUETS|TAG_BIT_CONFIG|TAG_BIT_PARSER),
 
         TAG_ITEM_FILE    = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_FILE),
         TAG_ITEM_APPPATH = (TAG_BIT_KOUETS|TAG_BIT_ITEM|TAG_BIT_APPPATH),
@@ -41,8 +42,10 @@ public:
 
     bool IsDefaultAppPath() {return bapppath_;}
     bool IsDefaultCmdLine() {return bcmdline_;}
+    bool IsDefaultParser() {return bparser_;}
     QString AppPath() {return apppath_;}
     QString CmdLine() {return cmdline_;}
+    QString Parser() {return parser_;}
 
     int ItemSize() {return items_.size();}
     FileConfig at(int n) {return items_[n];}
@@ -65,6 +68,8 @@ private:
     QString apppath_;
     int bcmdline_;
     QString cmdline_;
+    int bparser_;
+    QString parser_;
     int bactivatetab_;
     int bwraplines_;
     QVector<FileConfig> items_;
