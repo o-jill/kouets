@@ -11,7 +11,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), pte_(NULL), process_(NULL), pitem_(NULL),
-    curfile_(0), nrunning_(RUN_INIT),
+    curfile_(0), nrunning_(RUN_INIT), initfinished_(false),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -49,6 +49,16 @@ MainWindow::MainWindow(QWidget *parent) :
     f.setPointSize(f.pointSize()/2);
     pprgs_->setFont(f);
 
+    for (int i = 0 ; i < decomgr_.Size() ; ++i) {
+        ui->comboBox->addItem(decomgr_.Name(i));
+    }
+
+    QString deconame = app->GetDecoration();
+    if (deconame.length() != 0) {
+        int idx = ui->comboBox->findText(deconame, Qt::MatchFixedString);
+        ui->comboBox->setCurrentIndex(idx);
+    }
+
     SetWindowTitle("");
 
     QString path = app->FileName2Open();
@@ -59,6 +69,8 @@ MainWindow::MainWindow(QWidget *parent) :
             OpenProjectFile(fi.absoluteFilePath());
         }
     }
+
+    initfinished_ = true;
 }
 
 MainWindow::~MainWindow()
@@ -147,14 +159,19 @@ void MainWindow::onReadyReadStdOut()
 
     if (output.length() <= 0) {
     } else {
-        DecorateGCppVs7 dec;
         QStringList sl = output.split("\n");
         sl[0] = remainingtext_+sl[0];
         remainingtext_ = sl[sl.size()-1];
-        result_ += dec.Decorate(&sl);
-        if (nerrors_ < 0)
-            nerrors_ = dec.ErrorNum();
-
+        if (pdeco_ == NULL) {
+            DecorateNone dec;
+            result_ += dec.Decorate(&sl);
+            if (nerrors_ < 0)
+                nerrors_ = dec.ErrorNum();
+        } else {
+            result_ += pdeco_->Decorate(&sl);
+            if (nerrors_ < 0)
+                nerrors_ = pdeco_->ErrorNum();
+        }
         pte_->setHtml(result_);
 
         // qDebug() << result_;
@@ -294,21 +311,27 @@ void MainWindow::onTimerUpdate()
     QString fname = prj_.atFilename(curfile_);
     QString apppath;
     QString cmdline;
+    QString deconame;
 
     if (prj_.isUseDefaultAppPath()) {
         apppath = "\"" + app->GetProgramPath() + "\"";
-
-        cmdline = app->GetCmdLine();
-        cmdline += " \"";
-        cmdline += path;
-        cmdline += "\"";
     } else {
         apppath = "\"" + prj_.AppPath() + "\"";
+    }
 
+    if (prj_.isUseDefaultCmdLine()) {
+        cmdline = app->GetCmdLine();
+    } else {
         cmdline = prj_.CmdLine();
-        cmdline += " \"";
-        cmdline += path;
-        cmdline += "\"";
+    }
+    cmdline += " \"";
+    cmdline += path;
+    cmdline += "\"";
+
+    if (prj_.isUseDefaultParser()) {
+        deconame = app->GetDecoration();
+    } else {
+        deconame = prj_.Parser();
     }
 
     // qDebug() << "program:" << apppath;
@@ -361,6 +384,8 @@ void MainWindow::onTimerUpdate()
     }
     pitem_->setText(TREE_COLUMN_UPDATED,
                 prj_.lastUpdated(curfile_).toString("yyyy/MM/dd hh:mm:ss"));
+
+    pdeco_ = decomgr_.find(deconame);
     nerrors_ = -1;
     result_.clear();
 
@@ -643,4 +668,14 @@ int MainWindow::FindTab(const QString& path)
     } else {
         return idx;
     }
+}
+
+void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
+{
+    if (initfinished_ == false)
+        return;
+
+    KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
+    app->SetDecoration(arg1);
+    app->SaveIni();
 }

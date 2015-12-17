@@ -66,6 +66,8 @@ int KouetsApp::LoadIni()
     programPath_ = var.toString();
     var = stg.value("commandline");
     cmdLine_ = var.toString();
+    var = stg.value("decoration");
+    decoration_ = var.toString();
     var = stg.value("activatetab", 1);
     bactivateprocessedtab_ = var.toInt();
     var = stg.value("linewrap", 1);
@@ -87,6 +89,7 @@ int KouetsApp::SaveIni()
 
     stg.setValue("program", programPath_);
     stg.setValue("commandline", cmdLine_);
+    stg.setValue("decoration", decoration_);
     stg.setValue("activatetab", bactivateprocessedtab_);
     stg.setValue("linewrap", blinewrap_);
 

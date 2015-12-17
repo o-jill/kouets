@@ -39,6 +39,12 @@ public:
         cmdLine_ = cmdline;
         updated_ = true;
     }
+    void SetDecoration(QString deco) {
+        if (decoration_ == deco)
+            return;
+        decoration_ = deco;
+        updated_ = true;
+    }
     void SetActivateProcessedTab(int b) {
         if (b == bactivateprocessedtab_)
             return;
@@ -62,6 +68,7 @@ public:
 
     QString GetProgramPath() {return programPath_;}
     QString GetCmdLine() {return cmdLine_;}
+    QString GetDecoration() {return decoration_;}
     int IsActivateProcessedTab() {return bactivateprocessedtab_;}
     int LineWrap() {return blinewrap_;}
 
@@ -81,6 +88,7 @@ private:
 
     QString programPath_;
     QString cmdLine_;
+    QString decoration_;
     int bactivateprocessedtab_;
     int blinewrap_;
     int updated_;

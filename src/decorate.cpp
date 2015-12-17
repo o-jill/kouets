@@ -48,7 +48,7 @@ QString DecorateBase::Decorate(QStringList *sl)
 // DecorateGCppVs7
 // == == == == == == == ==
 
-QString  DecorateGCppVs7::decorate(QString str)
+QString DecorateGCppVs7::decorate(QString str)
 {
     QString result;
     QRegExp reg1("(.+)\\(([0-9]+)\\):(.+) (\\[.+\\]) (\\[[0-9]+\\])");
@@ -73,6 +73,17 @@ QString  DecorateGCppVs7::decorate(QString str)
         result += str;
         result += "<BR>";
     }
+
+    return result;
+}
+
+QString DecorateNone::decorate(QString str)
+{
+    str.replace("<", "&lt;");
+    str.replace(">", "&gt;");
+
+    QString result = str;
+    result += "<BR>";
 
     return result;
 }

@@ -5,6 +5,8 @@
 
 #include "projectfile.h"
 
+#include "decorate.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -68,6 +70,8 @@ private slots:
     void on_actionLog_triggered();
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
+    void on_comboBox_currentIndexChanged(const QString &arg1);
+
 private:
     int OpenProjectFile(const QString &path);
     void SwitchTimer(int bon);
@@ -92,7 +96,10 @@ private:
     int curfile_;
     QString result_;
     QString remainingtext_;
+    DecorationManager decomgr_;
+    DecorateBase*pdeco_;
     int nerrors_;
+    bool initfinished_;
 };
 
 #endif  // MAINWINDOW_H

@@ -2,6 +2,8 @@
 
 :octocat: [![custom](https://img.shields.io/badge/github-watch-blue.svg?style=social&label=GitHub)](https://github.com/o-jill/kouets/)
 
+[![Coverity Scan Build Status](https://img.shields.io/coverity/scan/6519.svg)](https://scan.coverity.com/projects/o-jill-kouets)
+
 [![downloads](https://img.shields.io/github/downloads/o-jill/kouets/latest/total.svg)](https://github.com/o-jill/kouets/)
 [![release](https://img.shields.io/github/release/o-jill/kouets.svg)](https://github.com/o-jill/kouets/)
 

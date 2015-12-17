@@ -24,6 +24,8 @@ HEADERS += decorate.h \
 FORMS += \
     mainwindow.ui
 
+OTHER_FILES += ..\readme.md \
+    projectfilespec.md
 
 win32 {
     RC_FILE = kouets.rc
