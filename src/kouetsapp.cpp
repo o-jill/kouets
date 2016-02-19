@@ -6,7 +6,11 @@
 
 #include "kouetsapp.h"
 
+#ifdef _WINDOWS
 #include <Windows.h>
+#else
+#include <iostream>
+#endif
 
 #include <QtCore>
 
@@ -26,12 +30,14 @@ KouetsApp::KouetsApp(int &argc, char**argv)
     for (int i = 1 ; i < argc ; ++i) {
         int ret = ParseCmdLine(argv[i]);
     }
-
+#ifdef _WINDOWS
     wchar_t temp[MAX_PATH] = L"";
     ExpandEnvironmentStringsW(L"%TEMP%\\", temp, _countof(temp));
 
     tempPath_ = QString::fromWCharArray(temp);
-
+#else
+    tempPath_ = "/tmp/";  // this should use environment valiable
+#endif
     iniPath_ = appDataPath_+ "Kouets.ini";
 
     logPath_ = QString(qApp->applicationDirPath() + "/qdebug_%1.log").arg(
@@ -105,14 +111,19 @@ int KouetsApp::SaveIni()
  * @note %APPDATA%/Kouets/
  *       --> C:\Users\nob-aoki\AppData\Roaming[WinVista/7/8]
  *       --> C:\Documents and Settings\nob-aoki\Application Data[Win2k/XP]
+ *
+ * @note ~/.Kouets/    on Linux & MacOS
  */
 void KouetsApp::prepareAppDataPath()
 {
+#ifdef _WINDOWS
     wchar_t appdatapath[0x1000];
     ExpandEnvironmentStringsW(L"%APPDATA%\\Kouets\\",
                               appdatapath, _countof(appdatapath));
-
     appDataPath_ = QString::fromWCharArray(appdatapath);
+#else
+    appDataPath_ = "~/.Kouets/";
+#endif
 }
 
 #if 0
@@ -163,8 +174,12 @@ void KouetsApp::myMessageHandler(QtMsgType type, const char *msg)
     }
 
     // put to QtCreator.
+#ifdef _WINDOWS
     OutputDebugStringA(msg);
     OutputDebugStringA("\n");
+#else
+    std::cerr << msg << std::endl;
+#endif
 
     if (type == QtFatalMsg) {
         abort();

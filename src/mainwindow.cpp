@@ -4,6 +4,10 @@
 #include <QtGui>
 #include <QtCore>
 
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
 #include "kouetsapp.h"
 #include "projectfile.h"
 #include "kouetshash.h"
@@ -238,8 +242,9 @@ void MainWindow::onProcessFinished(int code)
 void MainWindow::onProcessError(QProcess::ProcessError err)
 {
     qDebug() << "onProcessError:" << err << process_->errorString();
+#ifdef _WINDOWS
     qDebug() << "GetLastErrorError:" << GetLastError();
-
+#endif
     ptimer_update_->stop();
     UpdateProgressBarRangeMax();
 
@@ -336,8 +341,11 @@ void MainWindow::onTimerUpdate()
 
     // qDebug() << "program:" << apppath;
     // qDebug() << "cmdline:" << cmdline;
-
+#ifdef _WINDOWS
     process_->setNativeArguments(cmdline);
+#else
+    QStringList args = cmdline.split(" ");
+#endif
 //    process_->start(apppath);
 
     QFileInfo fi(path);
@@ -388,8 +396,12 @@ void MainWindow::onTimerUpdate()
     pdeco_ = decomgr_.find(deconame);
     nerrors_ = -1;
     result_.clear();
-
+#ifdef _WINDOWS
     process_->start(apppath);
+#else
+    process_->start(apppath, args);
+
+#endif
 }
 
 void MainWindow::on_actionSave_triggered()
