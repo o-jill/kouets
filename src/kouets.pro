@@ -24,7 +24,7 @@ HEADERS += decorate.h \
 FORMS += \
     mainwindow.ui
 
-OTHER_FILES += ..\readme.md \
+OTHER_FILES += ../readme.md \
     projectfilespec.md
 
 win32 {
@@ -39,7 +39,7 @@ win32 {
 updategithash.target = ../src/kouetshash.cpp
 updategithash.depends = ../.git/index
 win32:updategithash.commands =pushd .&&cd ../src&&gen_git_hash.bat H kouetshash&&gen_git_hash.bat CPP kouetshash&&popd
-unix:updategithash.commands =pushd .&&cd ../src&&./gen_git_hash.sh H kouetshash&&./gen_git_hash.sh CPP kouetshash&&popd
+unix:updategithash.commands =./gen_git_hash.sh H kouetshash&&./gen_git_hash.sh CPP kouetshash
 QMAKE_EXTRA_TARGETS += updategithash
 
 #updategithashhook.depends = updategithash
