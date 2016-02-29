@@ -1,3 +1,8 @@
+env:
+  global:
+#    # COVERITY_SCAN_TOKEN
+    - secure: "aiVUOTAnsbqoIMwyv/YWtpLJWuKryRz129FIK7V9RXRXWM89IzijUIHfalzk6F5pVIRA4755PL/0IKO+Z8Yb0V+mg16oyvuK5aYfUET+yDjHWuwz6wCpIMV8zFa4CsT1qs5bdMkP9HxZhnaAfG6efl85wB3UbkT0I3wj3TAEb1951C8J7INd/xptXMjLf+ik8u6+fdxF/VF0CFx1750RUYs6GcFgRsuaU+QkTRGfLNW/TD3YBW9vrmAHxhWsUW0W+6pVT4szcgxuSHa07jZBnJdu34g9Sc1xBNNkoITivTSh8pq8gumwWe8ajjHwq7UGsQr4KEcLDl7DTj/SgZMqxEJjhyoC6hL2T2duu4cjukQ1oszav8TtmFPAvySVbJ0+9mAFczsMYIXPT/7I4cQkYD8f5KmQ7RLFRl7qiACwOM9yMSFMPVslx4PJPt+rcTbgbvys8hgGcJuUMon3rXmRIKyel3q1dEo+XrCSGw538EvYjK3WBVgZO7+8wOiwWy1kCOeU19K6jIO9Vhx+tPR0zBBnr7RdI+KpRYuYGjVTXVwSLeGGpbmruqUyyr+eZ7Nk0L4yy0tPqMg1QGKBpvlGaR0BFAQ5Q7fXPBbeEZoba62UlzNZWLt+H7IJqdeUXnHCOtATqGayUFKjdImgQb+VkaMUHQgGeKsOm0P2/2RZ0DI="
+
 language: cpp
 compiler: gcc
 before_install:
@@ -5,36 +10,29 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq g++ qt4-qmake libqt4-dev
 script:
-  - gem install travis
-  - travis encrypt COVERITY_SCAN_TOKEN=XyrXewEvipHiztv3wJH34w
   - qmake -qt=qt4 -v ./src/kouets.pro
   - qmake -qt=qt4 ./src/kouets.pro
   - ./src/gen_git_hash.sh H kouetshash
   - ./src/gen_git_hash.sh CPP kouetshash
   - make
 
-#env:
-#  global:
-#    # COVERITY_SCAN_TOKEN
-#    # ** specific to your project **
-#    - secure: "xxx"
-#addons:
-#  coverity_scan:
-#    # GitHub project metadata
-#    # ** specific to your project **
-#    project:
-#      name: o-jill/kouets
-#      version: 1.0
-#      description: Kouets
-#    # Where email notification of build analysis results will be sent
-#    notification_email: nobaokix@gmail.com
-#    # Commands to prepare for build_command
-#    # ** likely specific to your build **
-#    build_command_prepend: qmake -qt=qt4 ./src/kouets.pro
-#    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
-#    # ** likely specific to your build **
-#    build_command: make
-#    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
-#    # Take care in resource usage, and consider the build frequency allowances per
-#    #   https://scan.coverity.com/faq#frequency
-#    branch_pattern: coverity_scan
+addons:
+  coverity_scan:
+    # GitHub project metadata
+    # ** specific to your project **
+    project:
+      name: o-jill/kouets
+      version: 1.0
+      description: Kouets
+    # Where email notification of build analysis results will be sent
+    notification_email: nobaokix@gmail.com
+    # Commands to prepare for build_command
+    # ** likely specific to your build **
+    build_command_prepend: qmake -qt=qt4 ./src/kouets.pro
+    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
+    # ** likely specific to your build **
+    build_command: make
+    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
+    # Take care in resource usage, and consider the build frequency allowances per
+    #   https://scan.coverity.com/faq#frequency
+    branch_pattern: coverity_scan
