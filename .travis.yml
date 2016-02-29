@@ -7,4 +7,5 @@ before_install:
 script:
   - qmake -qt=qt4 -v ./src/kouets.pro
   - qmake -qt=qt4 ./src/kouets.pro
+  - ./src/gen_git_hash.sh
   - make
