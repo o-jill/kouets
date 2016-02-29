@@ -1,0 +1,10 @@
+language: cpp
+compiler: gcc
+before_install:
+  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq g++ qt4-qmake libqt4-dev
+script:
+  - qmake -qt=qt4 -v ./src/kouets.pro
+  - qmake -qt=qt4 ./src/kouets.pro
+  - make
