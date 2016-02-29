@@ -4,6 +4,9 @@
 
 [![Coverity Scan Build Status](https://img.shields.io/coverity/scan/6519.svg)](https://scan.coverity.com/projects/o-jill-kouets)
 
+master:[![Build Status](https://travis-ci.org/o-jill/kouets.svg?branch=master)](https://travis-ci.org/o-jill/kouets)
+dev:[![Build Status](https://travis-ci.org/o-jill/kouets.svg?branch=dev)](https://travis-ci.org/o-jill/kouets)
+
 [![downloads](https://img.shields.io/github/downloads/o-jill/kouets/latest/total.svg)](https://github.com/o-jill/kouets/)
 [![release](https://img.shields.io/github/release/o-jill/kouets.svg)](https://github.com/o-jill/kouets/)
 

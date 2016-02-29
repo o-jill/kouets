@@ -9,7 +9,9 @@
 #include <QApplication>
 #include <QString>
 
+#ifdef _WINDOWS
 #include <windows.h>
+#endif
 
 class KouetsApp : public QApplication
 {
