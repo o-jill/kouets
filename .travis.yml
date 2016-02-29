@@ -28,7 +28,10 @@ addons:
     notification_email: nobaokix@gmail.com
     # Commands to prepare for build_command
     # ** likely specific to your build **
-    build_command_prepend: qmake -qt=qt4 ./src/kouets.pro
+    build_command_prepend:
+        - ./src/gen_git_hash.sh H kouetshash
+        - ./src/gen_git_hash.sh CPP kouetshash
+        - qmake -qt=qt4 ./src/kouets.pro
     # The command that will be added as an argument to "cov-build" to compile your project for analysis,
     # ** likely specific to your build **
     build_command: make
