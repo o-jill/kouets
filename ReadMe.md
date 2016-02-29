@@ -2,8 +2,6 @@
 
 :octocat: [![custom](https://img.shields.io/badge/github-watch-blue.svg?style=social&label=GitHub)](https://github.com/o-jill/kouets/)
 
-[![Coverity Scan Build Status](https://img.shields.io/coverity/scan/6519.svg)](https://scan.coverity.com/projects/o-jill-kouets)
-
 master:[![Build Status](https://travis-ci.org/o-jill/kouets.svg?branch=master)](https://travis-ci.org/o-jill/kouets)
 dev:[![Build Status](https://travis-ci.org/o-jill/kouets.svg?branch=dev)](https://travis-ci.org/o-jill/kouets)
 
