@@ -51,9 +51,9 @@ KouetsApp::KouetsApp(int &argc, char**argv)
 
 #ifdef _DEBUG
 #if QT_VERSION >= 0x050000
-    qInstallMessageHandler(KouetsApp::myMessageHandler);
+    qInstallMessageHandler(KouetsApp::myMessageHandler5);
 #else
-    qInstallMsgHandler(KouetsApp::myMessageHandler);
+    qInstallMsgHandler(KouetsApp::myMessageHandler4);
 #endif
 #endif
     qDebug() << "Launch on " << QDateTime::currentDateTime();
@@ -150,12 +150,65 @@ bool hatApp::winEventFilter(MSG *message, long *result)
 /**
  * put text by qDebug() to a log file and debug-console.
  *
+ * @param type    message type.
+ * @param context log information such as file name.
+ * @param msg     debug message.
+ *
+ * @note file name is "debug_YYYY-MM-DD.log".
+ * @note for Qt5
+ */
+void  KouetsApp::myMessageHandler5(
+        QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    QString txt;
+    switch (type) {
+    case QtDebugMsg:
+        // txt = QString("Debug: %1").arg(msg);
+        txt = msg;
+        break;
+    case QtWarningMsg:
+        txt = "Warning: " + msg;
+        break;
+    case QtCriticalMsg:
+        txt = "Critical: " + msg;
+        break;
+    case QtFatalMsg:
+        txt = "Fatal: " + msg;
+    }
+
+    // put to a log file.
+    KouetsApp *pApp = reinterpret_cast<KouetsApp*>(qApp);
+    if (pApp != NULL) {
+        QString fn = QString(pApp->logPath_);
+        QFile outFile(fn);
+        outFile.open(QIODevice::Text|QIODevice::Append);
+        QTextStream ts(&outFile);
+        ts << txt << endl;
+    }
+
+    // put to QtCreator.
+#ifdef _WINDOWS
+    OutputDebugStringA(txt.toLocal8Bit().data());
+    OutputDebugStringA("\n");
+#else
+    std::cerr << txt.toLocal8Bit().data() << std::endl;
+#endif
+
+    if (type == QtFatalMsg) {
+        abort();
+    }
+}
+
+/**
+ * put text by qDebug() to a log file and debug-console.
+ *
  * @param type message type.
  * @param msg  debug message.
  *
  * @note file name is "debug_YYYY-MM-DD.log".
+ * @note for Qt4.8
  */
-void KouetsApp::myMessageHandler(QtMsgType type, const char *msg)
+void KouetsApp::myMessageHandler4(QtMsgType type, const char *msg)
 {
     QString txt;
     switch (type) {
