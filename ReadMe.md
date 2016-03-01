@@ -35,4 +35,14 @@ Please use dev branch for your development as possible.
 * Visual C++ 2012 Express Edition
 * Qt 4.8.6
 
+# Build environment on CI service
+* Travis CI
+ * Linux(Ubuntu 12.04 LTS Server Edition 64 bit)
+ * gcc 4.6.3
+ * Qt 4.8.1
+* AppVeyor
+ * Windows Server 2012 R2 (x64)
+ * Visual C++ 2013
+ * Qt 5.5.1
+
 ----------------
