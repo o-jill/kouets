@@ -147,6 +147,7 @@ bool hatApp::winEventFilter(MSG *message, long *result)
 }
 #endif
 
+#if QT_VERSION >= 0x050000
 /**
  * put text by qDebug() to a log file and debug-console.
  *
@@ -198,7 +199,7 @@ void  KouetsApp::myMessageHandler5(
         abort();
     }
 }
-
+#else
 /**
  * put text by qDebug() to a log file and debug-console.
  *
@@ -248,6 +249,7 @@ void KouetsApp::myMessageHandler4(QtMsgType type, const char *msg)
         abort();
     }
 }
+#endif
 
 int KouetsApp::ParseCmdLine(char *str)
 {
