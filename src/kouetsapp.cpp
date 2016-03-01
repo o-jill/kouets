@@ -12,6 +12,7 @@
 #include <iostream>
 #endif
 
+#include <QtGlobal>
 #include <QtCore>
 
 
@@ -25,7 +26,12 @@ KouetsApp::KouetsApp(int &argc, char**argv)
     prepareAppDataPath();
 
     // CoInitialize(0);
+#if QT_VERSION >= 0x050000
+    QTextCodec::setCodecForLocale(QTextCodec::codecForLocale());
+    // QTextCodec::setCodecForLocale(QTextCodec::codecForName("SHIFT-JIS"));
+#else
     QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
+#endif
 
     for (int i = 1 ; i < argc ; ++i) {
         int ret = ParseCmdLine(argv[i]);
@@ -44,7 +50,11 @@ KouetsApp::KouetsApp(int &argc, char**argv)
                              QDate::currentDate().toString(Qt::ISODate));
 
 #ifdef _DEBUG
-    qInstallMsgHandler(KouetsApp::myMessageHandler);
+#if QT_VERSION >= 0x050000
+    qInstallMessageHandler(KouetsApp::myMessageHandler5);
+#else
+    qInstallMsgHandler(KouetsApp::myMessageHandler4);
+#endif
 #endif
     qDebug() << "Launch on " << QDateTime::currentDateTime();
 }
@@ -137,6 +147,59 @@ bool hatApp::winEventFilter(MSG *message, long *result)
 }
 #endif
 
+#if QT_VERSION >= 0x050000
+/**
+ * put text by qDebug() to a log file and debug-console.
+ *
+ * @param type    message type.
+ * @param context log information such as file name.
+ * @param msg     debug message.
+ *
+ * @note file name is "debug_YYYY-MM-DD.log".
+ * @note for Qt5
+ */
+void  KouetsApp::myMessageHandler5(
+        QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    QString txt;
+    switch (type) {
+    case QtDebugMsg:
+        // txt = QString("Debug: %1").arg(msg);
+        txt = msg;
+        break;
+    case QtWarningMsg:
+        txt = "Warning: " + msg;
+        break;
+    case QtCriticalMsg:
+        txt = "Critical: " + msg;
+        break;
+    case QtFatalMsg:
+        txt = "Fatal: " + msg;
+    }
+
+    // put to a log file.
+    KouetsApp *pApp = reinterpret_cast<KouetsApp*>(qApp);
+    if (pApp != NULL) {
+        QString fn = QString(pApp->logPath_);
+        QFile outFile(fn);
+        outFile.open(QIODevice::Text|QIODevice::Append);
+        QTextStream ts(&outFile);
+        ts << txt << endl;
+    }
+
+    // put to QtCreator.
+#ifdef _WINDOWS
+    OutputDebugStringA(txt.toLocal8Bit().data());
+    OutputDebugStringA("\n");
+#else
+    std::cerr << txt.toLocal8Bit().data() << std::endl;
+#endif
+
+    if (type == QtFatalMsg) {
+        abort();
+    }
+}
+#else
 /**
  * put text by qDebug() to a log file and debug-console.
  *
@@ -144,8 +207,9 @@ bool hatApp::winEventFilter(MSG *message, long *result)
  * @param msg  debug message.
  *
  * @note file name is "debug_YYYY-MM-DD.log".
+ * @note for Qt4.8
  */
-void KouetsApp::myMessageHandler(QtMsgType type, const char *msg)
+void KouetsApp::myMessageHandler4(QtMsgType type, const char *msg)
 {
     QString txt;
     switch (type) {
@@ -185,6 +249,7 @@ void KouetsApp::myMessageHandler(QtMsgType type, const char *msg)
         abort();
     }
 }
+#endif
 
 int KouetsApp::ParseCmdLine(char *str)
 {

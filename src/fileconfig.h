@@ -12,10 +12,15 @@
 class FileConfig
 {
 public:
+    enum {
+        False = 0,
+        True = 1
+    };
+public:
     FileConfig()
-        :bapppath_(FALSE), bcmdline_(FALSE), bparser_(FALSE) {}
+        :bapppath_(False), bcmdline_(False), bparser_(False) {}
     FileConfig(const FileConfig &rhs)
-        :bapppath_(FALSE), bcmdline_(FALSE), bparser_(FALSE) {
+        :bapppath_(False), bcmdline_(False), bparser_(False) {
         filename_ = rhs.filename_;
         abspath_ = rhs.abspath_;
 
@@ -41,9 +46,9 @@ public:
     ~FileConfig() {}
 
     void Init() {
-        bapppath_ = FALSE;
-        bcmdline_ = FALSE;
-        bparser_ = FALSE;
+        bapppath_ = False;
+        bcmdline_ = False;
+        bparser_ = False;
         filename_.clear();
         abspath_.clear();
         apppath_.clear();
@@ -70,7 +75,7 @@ public:
     }
     void SetAppPath(const QString &str) {
         apppath_ = str;
-        bapppath_ = TRUE;
+        bapppath_ = True;
     }
     bool IsDefaultAppPath() {
         return bapppath_;
@@ -80,7 +85,7 @@ public:
     }
     void SetCmdLine(const QString &str) {
         cmdline_ = str;
-        bcmdline_ = TRUE;
+        bcmdline_ = True;
     }
     bool IsDefaultCmdLine() {
         return bcmdline_;
@@ -90,7 +95,7 @@ public:
     }
     void SetParser(const QString &str) {
         parser_ = str;
-        bparser_ = TRUE;
+        bparser_ = True;
     }
     bool IsDefaultParser() {
         return bparser_;

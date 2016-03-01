@@ -77,7 +77,12 @@ public:
     QString FileName2Open() {return filename2Open_;}
 private:
     void prepareAppDataPath();
-    static void myMessageHandler(QtMsgType type, const char *msg);
+#if QT_VERSION >= 0x050000
+    static void  myMessageHandler5(
+        QtMsgType type, const QMessageLogContext &context, const QString &msg);
+#else
+    static void myMessageHandler4(QtMsgType type, const char *msg);
+#endif
 
 protected:
     // bool winEventFilter(MSG *message, long *result);

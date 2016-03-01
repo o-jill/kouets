@@ -9,6 +9,10 @@ class ProjectFile
 {
 public:
     enum {
+        False = 0,
+        True = 1
+    };
+    enum {
         FORMAT_UNKNOWN = 0,
         FORMAT_PLAIN,
         FORMAT_XML,
@@ -16,7 +20,7 @@ public:
     };
 public:
     ProjectFile()
-        :bapppath_(TRUE), bcmdline_(TRUE), bparser_(TRUE) {}
+        :bapppath_(True), bcmdline_(True), bparser_(True) {}
     ~ProjectFile() {}
 
     void Add(QString path) {
