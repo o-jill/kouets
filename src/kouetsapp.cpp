@@ -12,6 +12,7 @@
 #include <iostream>
 #endif
 
+#include <QtGlobal>
 #include <QtCore>
 
 
@@ -25,7 +26,12 @@ KouetsApp::KouetsApp(int &argc, char**argv)
     prepareAppDataPath();
 
     // CoInitialize(0);
+#if QT_VERSION >= 0x050000
+    QTextCodec::setCodecForLocale(QTextCodec::codecForLocale());
+    // QTextCodec::setCodecForLocale(QTextCodec::codecForName("SHIFT-JIS"));
+#else
     QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
+#endif
 
     for (int i = 1 ; i < argc ; ++i) {
         int ret = ParseCmdLine(argv[i]);
@@ -44,7 +50,11 @@ KouetsApp::KouetsApp(int &argc, char**argv)
                              QDate::currentDate().toString(Qt::ISODate));
 
 #ifdef _DEBUG
+#if QT_VERSION >= 0x050000
+    qInstallMessageHandler(KouetsApp::myMessageHandler);
+#else
     qInstallMsgHandler(KouetsApp::myMessageHandler);
+#endif
 #endif
     qDebug() << "Launch on " << QDateTime::currentDateTime();
 }
