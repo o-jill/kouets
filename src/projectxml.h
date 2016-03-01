@@ -14,6 +14,10 @@
 class ProjectXML : public QXmlDefaultHandler
 {
     enum {
+        False = 0,
+        True = 1
+    };
+    enum {
         TAG_BIT_KOUETS  = 0x80000000u,
         TAG_BIT_CONFIG  = 0x40000000u,
         TAG_BIT_ITEM    = 0x20000000u,
