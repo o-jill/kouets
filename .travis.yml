@@ -20,15 +20,19 @@ script:
   - ./gen_git_hash.sh H kouetshash
   - ./gen_git_hash.sh CPP kouetshash
   - qmake -qt=qt4 kouets.pro
-  - popd
-  - make
-  - echo let us TEST !!
+  - make debug
   - make clean
   - make mocclean
-  - qmake -qt=qt4 ./src/test/test.pro
-  - make
-  - ls
+  - make release
+  - echo let us TEST !!
+  - cd test
+  - qmake -qt=qt4 ./test.pro
+  - make debug
+  - make clean
+  - make mocclean
+  - make release
   - ./test
+  - popd
 
 addons:
   coverity_scan:

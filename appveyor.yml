@@ -148,6 +148,7 @@ before_build:
 
 build_script:
   - pushd . && cd \qt\5.5\ && dir /w && popd
+  - pushd .
   - cd src
   - gen_git_hash.bat H kouetshash
   - gen_git_hash.bat CPP kouetshash
@@ -155,7 +156,6 @@ build_script:
   - qmake kouets.pro
   - nmake debug
   - nmake mocclean
-#  - nmake distclean
   - nmake release
   - echo let's TEST !!
   - cd test
@@ -164,9 +164,8 @@ build_script:
   - nmake mocclean
   - nmake clean
   - nmake release
-  - ls
   - release\test.exe
-
+  - popd
 
 # scripts to run after build
 after_build:
