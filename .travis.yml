@@ -18,9 +18,9 @@ script:
   - ./src/gen_git_hash.sh H kouetshash
   - ./src/gen_git_hash.sh CPP kouetshash
   - make
-  - echo let's TEST !!
+  - echo let uss TEST !!
   - make clean
-  - qmake -qt=qt4 -v ./src/test/test.pro
+  - qmake -qt=qt4 ./src/test/test.pro
   - make
   - ls
   - ./test
