@@ -6,8 +6,8 @@
 #ifndef __FILECONFIG_H__
 # define __FILECONFIG_H__
 
-#include <QString>
-#include <QDebug>
+#include <QtCore>
+
 
 class FileConfig
 {

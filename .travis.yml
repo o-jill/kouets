@@ -14,10 +14,21 @@ before_install:
   - sudo apt-get install -qq g++ qt4-qmake libqt4-dev
 script:
   - qmake -qt=qt4 -v ./src/kouets.pro
-  - qmake -qt=qt4 ./src/kouets.pro
+#  - qmake -qt=qt4 ./src/kouets.pro
+#  - pushd .
+#  - cd src
   - ./src/gen_git_hash.sh H kouetshash
   - ./src/gen_git_hash.sh CPP kouetshash
+  - qmake -qt=qt4 ./src/kouets.pro
   - make
+  - echo let us TEST !!
+  - cd src/test
+  - qmake -qt=qt4 ./test.pro
+  - make clean
+  - make mocclean
+  - make
+  - ./test
+#  - popd
 
 addons:
   coverity_scan:
