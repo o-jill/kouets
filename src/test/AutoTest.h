@@ -73,7 +73,7 @@ public:
 #define TEST_MAIN \
     int main(int argc, char *argv[]) \
     { \
-      return AutoTest::run(argc, argv); \
-  }
+        return AutoTest::run(argc, argv); \
+    }
 
 #endif  // __AUTOTEST_H__

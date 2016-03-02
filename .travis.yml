@@ -15,11 +15,15 @@ before_install:
 script:
   - qmake -qt=qt4 -v ./src/kouets.pro
   - qmake -qt=qt4 ./src/kouets.pro
-  - ./src/gen_git_hash.sh H kouetshash
-  - ./src/gen_git_hash.sh CPP kouetshash
+  - pushd .
+  - cd src
+  - ./gen_git_hash.sh H kouetshash
+  - ./gen_git_hash.sh CPP kouetshash
+  - popd
   - make
-  - echo let uss TEST !!
+  - echo let us TEST !!
   - make clean
+  - make mocclean
   - qmake -qt=qt4 ./src/test/test.pro
   - make
   - ls

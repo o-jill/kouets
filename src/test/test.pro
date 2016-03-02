@@ -11,4 +11,4 @@ HEADERS += AutoTest.h \
            ../fileconfig.h
 
 SOURCES += testmain.cpp \
-           fileconfig_test.h
+           fileconfig_test.cpp

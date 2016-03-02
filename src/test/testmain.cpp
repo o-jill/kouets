@@ -1,4 +1,6 @@
 #include "AutoTest.h"
+
+#include <QTest>
 #include <QDebug>
 
 #if 1

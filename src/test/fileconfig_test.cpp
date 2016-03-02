@@ -1,5 +1,7 @@
 #include "fileconfig_test.h"
 
+#include <QString>
+
 #include "../fileconfig.h"
 
 void TestFileConfig::test()
