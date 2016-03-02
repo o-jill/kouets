@@ -165,7 +165,7 @@ build_script:
   - nmake clean
   - nmake release
   - release\test.exe
-  - popd
+#  - popd
 
 # scripts to run after build
 after_build:
