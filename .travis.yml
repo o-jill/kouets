@@ -14,11 +14,12 @@ before_install:
   - sudo apt-get install -qq g++ qt4-qmake libqt4-dev
 script:
   - qmake -qt=qt4 -v ./src/kouets.pro
-  - qmake -qt=qt4 ./src/kouets.pro
+#  - qmake -qt=qt4 ./src/kouets.pro
   - pushd .
   - cd src
   - ./gen_git_hash.sh H kouetshash
   - ./gen_git_hash.sh CPP kouetshash
+  - qmake -qt=qt4 kouets.pro
   - popd
   - make
   - echo let us TEST !!
