@@ -165,7 +165,7 @@ build_script:
   - nmake clean
   - nmake release
   - ls
-  - release/test.exe
+  - release\test.exe
 
 
 # scripts to run after build
