@@ -18,6 +18,12 @@ script:
   - ./src/gen_git_hash.sh H kouetshash
   - ./src/gen_git_hash.sh CPP kouetshash
   - make
+  - echo let's TEST !!
+  - make clean
+  - qmake -qt=qt4 -v ./src/test/test.pro
+  - make
+  - ls
+  - ./test
 
 addons:
   coverity_scan:

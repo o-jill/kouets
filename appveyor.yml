@@ -152,11 +152,22 @@ build_script:
   - cd src
   - gen_git_hash.bat H kouetshash
   - gen_git_hash.bat CPP kouetshash
-  - qmake kouets.pro
+  - qmake -v kouets.pro
   - nmake debug
   - nmake mocclean
 #  - nmake distclean
   - nmake release
+  - echo let's TEST !!
+  - nmake mocclean
+  - nmake clean
+  - qmake -v ./src/test/test.pro
+  - nmake debug
+  - nmake mocclean
+  - nmake clean
+  - nmake release
+  - ls
+  - release/test.exe
+
 
 # scripts to run after build
 after_build:
