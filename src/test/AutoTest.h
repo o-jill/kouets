@@ -5,6 +5,7 @@
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
+#include <QApplication>
 
 namespace AutoTest
 {
@@ -45,6 +46,7 @@ namespace AutoTest
     inline int run(int argc, char *argv[])
     {
 	int ret = 0;
+    QApplication app(argc, argv);
 
 	foreach (QObject* test, testList())
 	{

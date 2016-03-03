@@ -27,7 +27,9 @@ script:
   - make clean
   - make mocclean
   - make
-  - ./test
+  - mkdir debug
+  - copy test debug/
+  - ./debug/test
 #  - popd
 
 addons:
