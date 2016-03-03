@@ -127,6 +127,7 @@ void TestProjectFile::test()
 
         FileConfig&fc = pf.at(1);
         QVERIFY(fc.Filename() == "test.pro");
+        QEXPECT_FAIL("", "this test depends on your environment", Continue);
         QVERIFY(fc.AbsPath() == "D:/programing/QT/kouets/src/test/test.pro");
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
