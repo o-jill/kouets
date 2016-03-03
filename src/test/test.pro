@@ -2,9 +2,9 @@
 # test suite
 #
 
-QT += testlib xml # core # gui network opengl phonon sql svg webkit qt3support
+QT += testlib core gui xml # network opengl phonon sql svg webkit qt3support
 
-# greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 HEADERS += AutoTest.h \
            fileconfig_test.h \
