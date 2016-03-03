@@ -146,12 +146,23 @@ int ProjectFile::Remove(QString path)
     return -1;
 }
 
-bool ProjectFile::isUpdated(int idx)
+/**
+ * check if the file is updated or not. and update latest modified time.
+ *
+ * @param  idx index of the items. index must be less than size().
+ *
+ * @retval  0 no updated.
+ * @retval  1 updated.
+ * @retval -1 the file does not exists.
+ */
+int ProjectFile::isUpdated(int idx)
 {
     QString fname = atFilename(idx);
     QFileInfo fi(fname);
+    if (fi.exists() == false)
+        return -1;
     QDateTime before = updatedlist_[idx];
-    bool ret = (fi.lastModified() != before);
+    int ret = (fi.lastModified() != before);
     updatedlist_[idx] = fi.lastModified();
     return ret;
 }
