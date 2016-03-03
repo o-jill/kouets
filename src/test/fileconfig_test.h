@@ -7,7 +7,7 @@ class TestFileConfig :  public QObject
 {
     Q_OBJECT
 private slots:
-    void initTestCase(){}
+    void initTestCase();
     void test();
     void cleanupTestCase(){}
 };

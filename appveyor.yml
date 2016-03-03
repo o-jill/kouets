@@ -164,7 +164,7 @@ build_script:
   - nmake mocclean
   - nmake clean
   - nmake release
-  - release\test.exe
+  - debug\test.exe
 #  - popd
 
 # scripts to run after build

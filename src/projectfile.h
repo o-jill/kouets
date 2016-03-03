@@ -84,7 +84,7 @@ public:
         pathlist_.sort();
     }*/
 
-    bool isUpdated(int idx);
+    int isUpdated(int idx);
     void resetUpdated(int idx);
     void resetUpdated(const QString&path);
     int Find(const QString&path);
