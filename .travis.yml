@@ -28,7 +28,7 @@ script:
   - make mocclean
   - make
   - mkdir debug
-  - copy test debug/
+  - cp test debug/
   - ./debug/test
 #  - popd
 
