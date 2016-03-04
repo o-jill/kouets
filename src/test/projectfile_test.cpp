@@ -6,6 +6,7 @@
 #include <QtCore>
 
 #include "../projectfile.h"
+#include "../fileconfig.h"
 
 void TestProjectFile::initTestCase()
 {
@@ -45,9 +46,9 @@ void TestProjectFile::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.IsDefaultAppPath() == FileConfig::True);
+        QVERIFY(fc.IsDefaultCmdLine() == FileConfig::True);
+        QVERIFY(fc.IsDefaultParser() == FileConfig::True);
     }
 
     QVERIFY(pf.Remove("path") == -1);
@@ -91,9 +92,9 @@ void TestProjectFile::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.IsDefaultAppPath() == FileConfig::True);
+        QVERIFY(fc.IsDefaultCmdLine() == FileConfig::True);
+        QVERIFY(fc.IsDefaultParser() == FileConfig::True);
     }
 
     QDir dir;
@@ -145,9 +146,9 @@ void TestProjectFile::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.IsDefaultAppPath() == FileConfig::True);
+        QVERIFY(fc.IsDefaultCmdLine() == FileConfig::True);
+        QVERIFY(fc.IsDefaultParser() == FileConfig::True);
     }
 
     QVERIFY(pf.Find("path") == 0);
@@ -186,9 +187,9 @@ void TestProjectFile::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.IsDefaultAppPath() == FileConfig::True);
+        QVERIFY(fc.IsDefaultCmdLine() == FileConfig::True);
+        QVERIFY(fc.IsDefaultParser() == FileConfig::True);
     }
 }
 
@@ -247,9 +248,9 @@ void TestProjectFile::test3()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.IsDefaultAppPath() == FileConfig::True);
+        QVERIFY(fc.IsDefaultCmdLine() == FileConfig::True);
+        QVERIFY(fc.IsDefaultParser() == FileConfig::True);
     }
 
     if (pf.size() < 11) {

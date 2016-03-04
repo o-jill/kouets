@@ -2,7 +2,7 @@
  * this file is for testing ProjectFile class.
  */
 #ifndef __PROJECT_FILE_TEST_H__
-#define __PROJECT_FILE_TEST_H__
+# define __PROJECT_FILE_TEST_H__
 
 #include "AutoTest.h"
 
