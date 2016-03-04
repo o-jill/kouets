@@ -29,7 +29,7 @@ void TestProjectXML::test()
         // out of bound access is not allowed!!
         QWARN("this test requires some elements.");
     } else {
-        FileConfig&fc = xml.at(0);
+        FileConfig fc = xml.at(0);
         QVERIFY(fc.Filename() == "");
         QVERIFY(fc.AbsPath() == "");
         QVERIFY(fc.AppPath() == "");
@@ -68,7 +68,7 @@ void TestProjectXML::test()
         // out of bound access is not allowed!!
         QFAIL("# of element was changed unintentionally!!");
     } else {
-        FileConfig&fc = xml.at(0);
+        FileConfig fc = xml.at(0);
         QVERIFY(fc.Filename() == "kouetsapp.cpp");
         QCOMPARE(fc.AbsPath(), QDir::currentPath()+"/kouetsapp.cpp");
         QVERIFY(fc.AppPath() == "");
@@ -78,7 +78,7 @@ void TestProjectXML::test()
         QVERIFY(fc.IsDefaultCmdLine() == FileConfig::True);
         QVERIFY(fc.IsDefaultParser() == FileConfig::True);
 
-        FileConfig&fc2 = xml.at(1);
+        FileConfig fc2 = xml.at(1);
         QVERIFY(fc2.Filename() == "kouetsapp.h");
         QCOMPARE(fc2.AbsPath(), QDir::currentPath()+"/kouetsapp.h");
         QVERIFY(fc2.AppPath() == "C:/speci/alpat/htoan/application.exe");
