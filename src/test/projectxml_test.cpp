@@ -51,7 +51,7 @@ void TestProjectXML::test()
     QVERIFY(xml.ItemSize() == 0);
 
     QDir dir;
-    dir.cd("..");
+    // dir.cdUp();
     QDir::setCurrent(dir.absolutePath());
     qDebug() << "currentPath:" << QDir::currentPath();
 

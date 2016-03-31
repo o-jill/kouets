@@ -98,7 +98,7 @@ void TestProjectFile::test()
     }
 
     QDir dir;
-    dir.cd("..");
+    dir.cdUp();
     QDir::setCurrent(dir.absolutePath());
 
     pf.Add("test.pro");
@@ -221,11 +221,11 @@ void TestProjectFile::test3()
     ProjectFile pf;
 
     QDir dir;
-    dir.cd("..");
+    dir.cdUp();
     QDir::setCurrent(dir.absolutePath());
     qDebug() << "currentPath:" << QDir::currentPath();
 
-    QVERIFY(pf.Open(QDir::currentPath()+"../kouets.kouets") == 12);
+    QVERIFY(pf.Open(QDir::currentPath()+"/kouets.kouets") == 12);
     QVERIFY(pf.size() == 12);
 
     if (pf.size() < 1) {
