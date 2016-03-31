@@ -219,7 +219,13 @@ void TestProjectFile::test2()
 void TestProjectFile::test3()
 {
     ProjectFile pf;
-    QVERIFY(pf.Open("../kouets.kouets") == 12);
+
+    QDir dir;
+    dir.cd("..");
+    QDir::setCurrent(dir.absolutePath());
+    qDebug() << "currentPath:" << QDir::currentPath();
+
+    QVERIFY(pf.Open("QDir::currentPath()+"../kouets.kouets") == 12);
     QVERIFY(pf.size() == 12);
 
     if (pf.size() < 1) {
