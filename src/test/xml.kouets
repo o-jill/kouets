@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<kouets version="1.0">
+ <config>
+  <apppath> C:/path/to/default.exe </apppath> <!-- specify default value -->
+  <cmdline> --some --default --command --option </cmdline> <!-- specify default value -->
+  <!-- activatetab> FALSE </activatetab -->
+  <!-- wrapline> TRUE </wrapline -->
+  <!-- color1> #FF0000 </color1 -->
+ </config>
+ <item>
+  <file>kouetsapp.cpp</file>
+  <!-- default program(apppath) and cmdline  will be used -->
+ </item>
+ <item>
+  <file> kouetsapp.h </file>
+  <apppath> C:/speci/alpat/htoan/application.exe </apppath> <!-- only for kouetsapp.h -->
+  <cmdline> --some --command --option </cmdline> <!-- only for kouetsapp.h -->
+  <parser> cpplint.py_VS7 </parser>
+ </item>
+</kouets>
