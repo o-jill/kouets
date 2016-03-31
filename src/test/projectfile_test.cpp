@@ -98,7 +98,7 @@ void TestProjectFile::test()
     }
 
     QDir dir;
-    dir.cdUp();
+    dir.cdUp();dir.cdUp();
     QDir::setCurrent(dir.absolutePath());
 
     pf.Add("test.pro");
@@ -221,7 +221,7 @@ void TestProjectFile::test3()
     ProjectFile pf;
 
     QDir dir;
-    dir.cdUp();
+    dir.cdUp();dir.cdUp();
     QDir::setCurrent(dir.absolutePath());
     qDebug() << "currentPath:" << QDir::currentPath();
 
