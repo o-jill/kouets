@@ -53,8 +53,9 @@ void TestProjectXML::test()
     QDir dir;
     dir.cd("..");
     QDir::setCurrent(dir.absolutePath());
+    QDebug() << "currentPath:" << QDir::currentPath();
 
-    QVERIFY(xml.readFile("xml.kouets") == true);
+    QVERIFY(xml.readFile(QDir::currentPath()+"./xml.kouets") == true);
     QVERIFY(xml.AppPath() == "C:/path/to/default.exe");
     QVERIFY(xml.IsDefaultAppPath() == ProjectXML::False);
     QVERIFY(xml.CmdLine() == "--some --default --command --option");
