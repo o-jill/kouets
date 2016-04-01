@@ -9,6 +9,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 HEADERS += AutoTest.h \
            fileconfig_test.h \
            projectfile_test.h \
+           projectxml_test.h \
            ../fileconfig.h \
            ../projectfile.h \
            ../projectxml.h
@@ -17,5 +18,6 @@ HEADERS += AutoTest.h \
 SOURCES += testmain.cpp \
            fileconfig_test.cpp \
            projectfile_test.cpp \
+           projectxml_test.cpp \
            ../projectfile.cpp \
            ../projectxml.cpp

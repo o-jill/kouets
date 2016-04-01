@@ -13,10 +13,12 @@
 
 class ProjectXML : public QXmlDefaultHandler
 {
+public:
     enum {
         False = 0,
         True = 1
     };
+private:
     enum {
         TAG_BIT_KOUETS  = 0x80000000u,
         TAG_BIT_CONFIG  = 0x40000000u,

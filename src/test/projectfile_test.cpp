@@ -6,10 +6,15 @@
 #include <QtCore>
 
 #include "../projectfile.h"
+#include "../fileconfig.h"
 
 void TestProjectFile::initTestCase()
 {
-    QDir::setCurrent(qApp->applicationDirPath());
+    // QDir::setCurrent(qApp->applicationDirPath());
+    QDir dir(qApp->applicationDirPath());
+    dir.cdUp();
+    QDir::setCurrent(dir.absolutePath());
+//    qDebug() << "currentPath:" << QDir::currentPath();
 }
 
 void TestProjectFile::test()
@@ -45,9 +50,9 @@ void TestProjectFile::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.HasAppPath() == FileConfig::True);
+        QVERIFY(fc.HasCmdLine() == FileConfig::True);
+        QVERIFY(fc.HasParser() == FileConfig::True);
     }
 
     QVERIFY(pf.Remove("path") == -1);
@@ -91,14 +96,10 @@ void TestProjectFile::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.HasAppPath() == FileConfig::False);
+        QVERIFY(fc.HasCmdLine() == FileConfig::False);
+        QVERIFY(fc.HasParser() == FileConfig::False);
     }
-
-    QDir dir;
-    dir.cd("..");
-    QDir::setCurrent(dir.absolutePath());
 
     pf.Add("test.pro");
     QVERIFY(pf.AppPath() == "");
@@ -116,13 +117,14 @@ void TestProjectFile::test()
         QCOMPARE(pf.atFilename(0), QString("path"));
         QCOMPARE(pf.atName(0), QString("path"));
         // QEXPECT_FAIL("", "this test depends on your environment", Continue);
-        QCOMPARE(pf.atPath(0), QDir::currentPath()+"/debug/path");
+        QCOMPARE(pf.atPath(0), QDir::currentPath()+"/path");
         QCOMPARE(pf.lastUpdated(0), QDateTime());
         QCOMPARE(pf.isUpdated(0), -1);
 
         QCOMPARE(pf.atFilename(1), QString("test.pro"));
         QCOMPARE(pf.atName(1), QString("test.pro"));
         // QEXPECT_FAIL("", "this test depends on your environment", Continue);
+        // qDebug() << pf.atPath(1) << "   " << QDir::currentPath()+"/test.pro";
         QCOMPARE(pf.atPath(1), QDir::currentPath()+"/test.pro");
         QCOMPARE(pf.lastUpdated(1), QDateTime());
         QCOMPARE(pf.isUpdated(1), 1);
@@ -145,9 +147,9 @@ void TestProjectFile::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.HasAppPath() == FileConfig::False);
+        QVERIFY(fc.HasCmdLine() == FileConfig::False);
+        QVERIFY(fc.HasParser() == FileConfig::False);
     }
 
     QVERIFY(pf.Find("path") == 0);
@@ -186,9 +188,9 @@ void TestProjectFile::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.HasAppPath() == FileConfig::False);
+        QVERIFY(fc.HasCmdLine() == FileConfig::False);
+        QVERIFY(fc.HasParser() == FileConfig::False);
     }
 }
 
@@ -205,7 +207,7 @@ void TestProjectFile::test2()
     QVERIFY(pf.Parser() == "");
     QVERIFY(pf.isUseDefaultParser() == ProjectFile::True);
 
-    QCOMPARE(pf.Open("projectfile_test.cpp"), -2);
+    QCOMPARE(pf.Open(QDir::currentPath()+"/projectfile_test.cpp"), -2);
     QVERIFY(pf.size() == 0);
     QVERIFY(pf.AppPath() == "");
     QVERIFY(pf.isUseDefaultAppPath() == ProjectFile::True);
@@ -218,7 +220,13 @@ void TestProjectFile::test2()
 void TestProjectFile::test3()
 {
     ProjectFile pf;
-    QVERIFY(pf.Open("../kouets.kouets") == 12);
+
+    QDir dir(qApp->applicationDirPath());
+    dir.cdUp();dir.cdUp();
+    QDir::setCurrent(dir.absolutePath());
+    // qDebug() << "currentPath:" << QDir::currentPath();
+
+    QVERIFY(pf.Open(QDir::currentPath()+"/kouets.kouets") == 12);
     QVERIFY(pf.size() == 12);
 
     if (pf.size() < 1) {
@@ -247,9 +255,9 @@ void TestProjectFile::test3()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == false);
-        QVERIFY(fc.IsDefaultCmdLine() == false);
-        QVERIFY(fc.IsDefaultParser() == false);
+        QVERIFY(fc.HasAppPath() == FileConfig::False);
+        QVERIFY(fc.HasCmdLine() == FileConfig::False);
+        QVERIFY(fc.HasParser() == FileConfig::False);
     }
 
     if (pf.size() < 11) {

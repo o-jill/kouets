@@ -131,19 +131,19 @@ void ProjectXML::dump()
     for (int i = 0 ; i < count ; ++i) {
         qDebug() << QString("item[%1]:filename:").arg(i)
                  << items_[i].Filename();
-        if (items_[i].IsDefaultAppPath()) {
+        if (items_[i].HasAppPath()) {
             qDebug() << QString("item[%1]:AppPath:default").arg(i);
         } else {
             qDebug() << QString("item[%1]:AppPath:").arg(i)
                      << items_[i].AppPath();
         }
-        if (items_[i].IsDefaultCmdLine()) {
+        if (items_[i].HasCmdLine()) {
             qDebug() << QString("item[%1]:cmdline:default").arg(i);
         } else {
             qDebug() << QString("item[%1]:cmdline:").arg(i)
                      << items_[i].CmdLine();
         }
-        if (items_[i].IsDefaultParser()) {
+        if (items_[i].HasParser()) {
             qDebug() << QString("item[%1]:Parser:default").arg(i);
         } else {
             qDebug() << QString("item[%1]:Parser:").arg(i)

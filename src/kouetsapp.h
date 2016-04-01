@@ -9,7 +9,7 @@
 #include <QApplication>
 #include <QString>
 
-#ifdef _WINDOWS
+#ifdef WINDOWS
 #include <windows.h>
 #endif
 
