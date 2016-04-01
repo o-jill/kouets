@@ -206,7 +206,11 @@ void TestProjectFile::test2()
     QVERIFY(pf.Parser() == "");
     QVERIFY(pf.isUseDefaultParser() == ProjectFile::True);
 
-    QCOMPARE(pf.Open("projectfile_test.cpp"), -2);
+    QDir dir(qApp->applicationDirPath());
+    dir.cdUp();
+    QDir::setCurrent(dir.absolutePath());
+    qDebug() << "currentPath:" << QDir::currentPath();
+    QCOMPARE(pf.Open(QDir::currentPath()+"/projectfile_test.cpp"), -2);
     QVERIFY(pf.size() == 0);
     QVERIFY(pf.AppPath() == "");
     QVERIFY(pf.isUseDefaultAppPath() == ProjectFile::True);
@@ -220,7 +224,7 @@ void TestProjectFile::test3()
 {
     ProjectFile pf;
 
-    QDir dir;
+    QDir dir(qApp->applicationDirPath());
     dir.cdUp();dir.cdUp();
     QDir::setCurrent(dir.absolutePath());
     qDebug() << "currentPath:" << QDir::currentPath();
