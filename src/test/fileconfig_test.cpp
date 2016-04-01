@@ -18,9 +18,9 @@ void TestFileConfig::test()
     QVERIFY(fc.AppPath() == "");
     QVERIFY(fc.CmdLine() == "");
     QVERIFY(fc.Parser() == "");
-    QVERIFY(fc.IsDefaultAppPath() == false);
-    QVERIFY(fc.IsDefaultCmdLine() == false);
-    QVERIFY(fc.IsDefaultParser() == false);
+    QVERIFY(fc.HasAppPath() == false);
+    QVERIFY(fc.HasCmdLine() == false);
+    QVERIFY(fc.HasParser() == false);
 
     QDir dir;
     dir.cd("..");
@@ -33,9 +33,9 @@ void TestFileConfig::test()
     QVERIFY(fc.AppPath() == "");
     QVERIFY(fc.CmdLine() == "");
     QVERIFY(fc.Parser() == "");
-    QVERIFY(fc.IsDefaultAppPath() == false);
-    QVERIFY(fc.IsDefaultCmdLine() == false);
-    QVERIFY(fc.IsDefaultParser() == false);
+    QVERIFY(fc.HasAppPath() == false);
+    QVERIFY(fc.HasCmdLine() == false);
+    QVERIFY(fc.HasParser() == false);
 
     fc.SetAppPath("path/to/executable/file");
     QVERIFY(fc.Filename() == "fileconfig_test.h");
@@ -44,9 +44,9 @@ void TestFileConfig::test()
     QVERIFY(fc.AppPath() == "path/to/executable/file");
     QVERIFY(fc.CmdLine() == "");
     QVERIFY(fc.Parser() == "");
-    QVERIFY(fc.IsDefaultAppPath() == true);
-    QVERIFY(fc.IsDefaultCmdLine() == false);
-    QVERIFY(fc.IsDefaultParser() == false);
+    QVERIFY(fc.HasAppPath() == true);
+    QVERIFY(fc.HasCmdLine() == false);
+    QVERIFY(fc.HasParser() == false);
 
     fc.SetCmdLine("arg1 arg2");
     QVERIFY(fc.Filename() == "fileconfig_test.h");
@@ -55,9 +55,9 @@ void TestFileConfig::test()
     QVERIFY(fc.AppPath() == "path/to/executable/file");
     QVERIFY(fc.CmdLine() == "arg1 arg2");
     QVERIFY(fc.Parser() == "");
-    QVERIFY(fc.IsDefaultAppPath() == true);
-    QVERIFY(fc.IsDefaultCmdLine() == true);
-    QVERIFY(fc.IsDefaultParser() == false);
+    QVERIFY(fc.HasAppPath() == true);
+    QVERIFY(fc.HasCmdLine() == true);
+    QVERIFY(fc.HasParser() == false);
 
     fc.SetParser("cpplint.py_VS7");
     QVERIFY(fc.Filename() == "fileconfig_test.h");
@@ -66,20 +66,20 @@ void TestFileConfig::test()
     QVERIFY(fc.AppPath() == "path/to/executable/file");
     QVERIFY(fc.CmdLine() == "arg1 arg2");
     QVERIFY(fc.Parser() == "cpplint.py_VS7");
-    QVERIFY(fc.IsDefaultAppPath() == true);
-    QVERIFY(fc.IsDefaultCmdLine() == true);
-    QVERIFY(fc.IsDefaultParser() == true);
+    QVERIFY(fc.HasAppPath() == true);
+    QVERIFY(fc.HasCmdLine() == true);
+    QVERIFY(fc.HasParser() == true);
 
     FileConfig fc2 = fc;
     QVERIFY(fc2.Filename() == "fileconfig_test.h");
     // QEXPECT_FAIL("", "this will be fail because of environment dependency.", Continue);
     QCOMPARE(fc2.AbsPath(), QDir::currentPath()+"/fileconfig_test.h");
-    QVERIFY(fc2.AppPath() == "path/to/executable/file");
+    QCOMPARE(fc2.AppPath(), QString("path/to/executable/file"));
     QVERIFY(fc2.CmdLine() == "arg1 arg2");
     QVERIFY(fc2.Parser() == "cpplint.py_VS7");
-    QVERIFY(fc2.IsDefaultAppPath() == true);
-    QVERIFY(fc2.IsDefaultCmdLine() == true);
-    QVERIFY(fc2.IsDefaultParser() == true);
+    QVERIFY(fc2.HasAppPath() == true);
+    QVERIFY(fc2.HasCmdLine() == true);
+    QVERIFY(fc2.HasParser() == true);
 
     fc.Init();
     QVERIFY(fc.Filename() == "");
@@ -87,9 +87,9 @@ void TestFileConfig::test()
     QVERIFY(fc.AppPath() == "");
     QVERIFY(fc.CmdLine() == "");
     QVERIFY(fc.Parser() == "");
-    QVERIFY(fc.IsDefaultAppPath() == false);
-    QVERIFY(fc.IsDefaultCmdLine() == false);
-    QVERIFY(fc.IsDefaultParser() == false);
+    QVERIFY(fc.HasAppPath() == false);
+    QVERIFY(fc.HasCmdLine() == false);
+    QVERIFY(fc.HasParser() == false);
 }
 
 /* -- -- -- -- sandbox

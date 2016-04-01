@@ -35,9 +35,9 @@ void TestProjectXML::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == FileConfig::True);
-        QVERIFY(fc.IsDefaultCmdLine() == FileConfig::True);
-        QVERIFY(fc.IsDefaultParser() == FileConfig::True);
+        QVERIFY(fc.HasAppPath() == FileConfig::True);
+        QVERIFY(fc.HasCmdLine() == FileConfig::True);
+        QVERIFY(fc.HasParser() == FileConfig::True);
     }
 
     QVERIFY(xml.readFile("file_not_exist") == false);
@@ -75,9 +75,9 @@ void TestProjectXML::test()
         QVERIFY(fc.AppPath() == "");
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
-        QVERIFY(fc.IsDefaultAppPath() == FileConfig::False);
-        QVERIFY(fc.IsDefaultCmdLine() == FileConfig::True);
-        QVERIFY(fc.IsDefaultParser() == FileConfig::True);
+        QVERIFY(fc.HasAppPath() == FileConfig::False);
+        QVERIFY(fc.HasCmdLine() == FileConfig::True);
+        QVERIFY(fc.HasParser() == FileConfig::True);
 
         FileConfig fc2 = xml.at(1);
         QVERIFY(fc2.Filename() == "kouetsapp.h");
@@ -85,18 +85,18 @@ void TestProjectXML::test()
         QVERIFY(fc2.AppPath() == "C:/speci/alpat/htoan/application.exe");
         QVERIFY(fc2.CmdLine() == "--some --command --option");
         QVERIFY(fc2.Parser() == "cpplint.py_VS7");
-        QVERIFY(fc2.IsDefaultAppPath() == FileConfig::False);
-        QVERIFY(fc2.IsDefaultCmdLine() == FileConfig::False);
-        QVERIFY(fc2.IsDefaultParser() == FileConfig::False);
+        QVERIFY(fc2.HasAppPath() == FileConfig::False);
+        QVERIFY(fc2.HasCmdLine() == FileConfig::False);
+        QVERIFY(fc2.HasParser() == FileConfig::False);
     }
 }
 
 #if 0  // -- -- sandbox -- --
     bool readFile(const QString &fileName);
     bool readFile(QFile *pfile);
-    bool IsDefaultAppPath() {return bapppath_;}
-    bool IsDefaultCmdLine() {return bcmdline_;}
-    bool IsDefaultParser() {return bparser_;}
+    bool HasAppPath() {return bapppath_;}
+    bool HasCmdLine() {return bcmdline_;}
+    bool HasParser() {return bparser_;}
     QString AppPath() {return apppath_;}
     QString CmdLine() {return cmdline_;}
     QString Parser() {return parser_;}

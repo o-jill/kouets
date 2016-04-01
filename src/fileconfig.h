@@ -77,7 +77,10 @@ public:
         apppath_ = str;
         bapppath_ = True;
     }
-    bool IsDefaultAppPath() {
+    /**
+     * @return True, if it has some application path text.
+     */
+    bool HasAppPath() {
         return bapppath_;
     }
     QString& AppPath() {
@@ -87,7 +90,10 @@ public:
         cmdline_ = str;
         bcmdline_ = True;
     }
-    bool IsDefaultCmdLine() {
+    /**
+     * @return True, if it has some command line text.
+     */
+    bool HasCmdLine() {
         return bcmdline_;
     }
     QString& CmdLine() {
@@ -97,7 +103,10 @@ public:
         parser_ = str;
         bparser_ = True;
     }
-    bool IsDefaultParser() {
+    /**
+     * @return True, if it has some parser.
+     */
+    bool HasParser() {
         return bparser_;
     }
     QString& Parser() {

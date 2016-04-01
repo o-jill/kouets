@@ -117,13 +117,13 @@ int ProjectFile::SaveXML(const QString &path)
         file.write(QString(" <item number='%1'>\n").arg(i+1).toUtf8());
         file.write(QString("  <file>%1</file>\n")
                     .arg(dir.relativeFilePath(atPath(i))).toUtf8());
-        if (fc_[i].IsDefaultAppPath())
+        if (fc_[i].HasAppPath())
             file.write(QString("  <apppath>%1</apppath>\n")
                     .arg(fc_[i].AppPath()).toUtf8());
-        if (fc_[i].IsDefaultCmdLine())
+        if (fc_[i].HasCmdLine())
             file.write(QString("  <cmdline>%1</cmdline>\n")
                     .arg(fc_[i].CmdLine()).toUtf8());
-        if (fc_[i].IsDefaultParser())
+        if (fc_[i].HasParser())
             file.write(QString("  <parser>%1</parser>\n")
                     .arg(fc_[i].Parser()).toUtf8());
         file.write(" </item>\n");
