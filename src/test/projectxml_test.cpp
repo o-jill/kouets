@@ -10,7 +10,10 @@
 
 void TestProjectXML::initTestCase()
 {
-    QDir::setCurrent(qApp->applicationDirPath());
+    //QDir::setCurrent(qApp->applicationDirPath());
+    QDir dir(qApp->applicationDirPath());
+    dir.cdUp();
+    QDir::setCurrent(dir.absolutePath());
 }
 
 void TestProjectXML::test()
@@ -50,10 +53,10 @@ void TestProjectXML::test()
     QVERIFY(xml.Files() != NULL);
     QVERIFY(xml.ItemSize() == 0);
 
-    QDir dir;
+    /*QDir dir;
     dir.cdUp();
     QDir::setCurrent(dir.absolutePath());
-    qDebug() << "currentPath:" << QDir::currentPath();
+    qDebug() << "currentPath:" << QDir::currentPath();*/
 
     QVERIFY(xml.readFile(QDir::currentPath()+"/xml.kouets") == true);
     QVERIFY(xml.AppPath() == "C:/path/to/default.exe");
@@ -76,8 +79,8 @@ void TestProjectXML::test()
         QVERIFY(fc.CmdLine() == "");
         QVERIFY(fc.Parser() == "");
         QVERIFY(fc.HasAppPath() == FileConfig::False);
-        QVERIFY(fc.HasCmdLine() == FileConfig::True);
-        QVERIFY(fc.HasParser() == FileConfig::True);
+        QVERIFY(fc.HasCmdLine() == FileConfig::False);
+        QVERIFY(fc.HasParser() == FileConfig::False);
 
         FileConfig fc2 = xml.at(1);
         QVERIFY(fc2.Filename() == "kouetsapp.h");
@@ -85,9 +88,9 @@ void TestProjectXML::test()
         QVERIFY(fc2.AppPath() == "C:/speci/alpat/htoan/application.exe");
         QVERIFY(fc2.CmdLine() == "--some --command --option");
         QVERIFY(fc2.Parser() == "cpplint.py_VS7");
-        QVERIFY(fc2.HasAppPath() == FileConfig::False);
-        QVERIFY(fc2.HasCmdLine() == FileConfig::False);
-        QVERIFY(fc2.HasParser() == FileConfig::False);
+        QVERIFY(fc2.HasAppPath() == FileConfig::True);
+        QVERIFY(fc2.HasCmdLine() == FileConfig::True);
+        QVERIFY(fc2.HasParser() == FileConfig::True);
     }
 }
 
