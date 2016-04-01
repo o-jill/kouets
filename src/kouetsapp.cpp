@@ -6,7 +6,7 @@
 
 #include "kouetsapp.h"
 
-#ifdef _WINDOWS
+#ifdef WINDOWS
 #include <Windows.h>
 #else
 #include <iostream>
@@ -36,7 +36,7 @@ KouetsApp::KouetsApp(int &argc, char**argv)
     for (int i = 1 ; i < argc ; ++i) {
         int ret = ParseCmdLine(argv[i]);
     }
-#ifdef _WINDOWS
+#ifdef WINDOWS
     wchar_t temp[MAX_PATH] = L"";
     ExpandEnvironmentStringsW(L"%TEMP%\\", temp, _countof(temp));
 
@@ -126,7 +126,7 @@ int KouetsApp::SaveIni()
  */
 void KouetsApp::prepareAppDataPath()
 {
-#ifdef _WINDOWS
+#ifdef WINDOWS
     wchar_t appdatapath[0x1000];
     ExpandEnvironmentStringsW(L"%APPDATA%\\Kouets\\",
                               appdatapath, _countof(appdatapath));
@@ -188,7 +188,7 @@ void  KouetsApp::myMessageHandler5(
     }
 
     // put to QtCreator.
-#ifdef _WINDOWS
+#ifdef WINDOWS
     OutputDebugStringA(txt.toLocal8Bit().data());
     OutputDebugStringA("\n");
 #else
@@ -238,7 +238,7 @@ void KouetsApp::myMessageHandler4(QtMsgType type, const char *msg)
     }
 
     // put to QtCreator.
-#ifdef _WINDOWS
+#ifdef WINDOWS
     OutputDebugStringA(msg);
     OutputDebugStringA("\n");
 #else

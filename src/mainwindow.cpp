@@ -4,7 +4,7 @@
 #include <QtGui>
 #include <QtCore>
 
-#ifdef _WINDOWS
+#ifdef WINDOWS
 #include <windows.h>
 #endif
 
@@ -242,7 +242,7 @@ void MainWindow::onProcessFinished(int code)
 void MainWindow::onProcessError(QProcess::ProcessError err)
 {
     qDebug() << "onProcessError:" << err << process_->errorString();
-#ifdef _WINDOWS
+#ifdef WINDOWS
     qDebug() << "GetLastErrorError:" << GetLastError();
 #endif
     ptimer_update_->stop();
@@ -341,7 +341,7 @@ void MainWindow::onTimerUpdate()
 
     // qDebug() << "program:" << apppath;
     // qDebug() << "cmdline:" << cmdline;
-#ifdef _WINDOWS
+#ifdef WINDOWS
     process_->setNativeArguments(cmdline);
 #else
     QStringList args = cmdline.split(" ");
@@ -396,7 +396,7 @@ void MainWindow::onTimerUpdate()
     pdeco_ = decomgr_.find(deconame);
     nerrors_ = -1;
     result_.clear();
-#ifdef _WINDOWS
+#ifdef WINDOWS
     process_->start(apppath);
 #else
     process_->start(apppath, args);
