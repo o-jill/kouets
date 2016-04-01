@@ -10,6 +10,8 @@ HEADERS += AutoTest.h \
            fileconfig_test.h \
            projectfile_test.h \
            projectxml_test.h \
+           decorate_test.h \
+           ../decorate.h \
            ../fileconfig.h \
            ../projectfile.h \
            ../projectxml.h
@@ -19,5 +21,7 @@ SOURCES += testmain.cpp \
            fileconfig_test.cpp \
            projectfile_test.cpp \
            projectxml_test.cpp \
+           decorate_test.cpp \
+           ../decorate.cpp \
            ../projectfile.cpp \
            ../projectxml.cpp
