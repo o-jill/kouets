@@ -14,8 +14,8 @@
 #include "decorate.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), pte_(NULL), process_(NULL), pitem_(NULL),
-    curfile_(0), nrunning_(RUN_INIT), initfinished_(false),
+    QMainWindow(parent), nrunning_(RUN_INIT), process_(NULL), pte_(NULL), pitem_(NULL),
+    curfile_(0), nerrors_(-1), initfinished_(false),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
