@@ -26,6 +26,28 @@ void TestDecorate::testNone()
     QString result = dn.decorate(inputtest);
     QString correct_answer = "( &gt; &lt; ) &lt;&lt;&&& ===[abc]<BR>";
     QCOMPARE(result, correct_answer);
+
+    QStringList sl;
+    sl << "( > < ) <<" << "&&& ===[abc]";
+    result = dn.Decorate(&sl);
+    QString correct_answer2 = "( &gt; &lt; ) &lt;&lt;<BR>";
+    QCOMPARE(result, correct_answer2);
+    sl << "";
+    result = dn.Decorate(&sl);
+    QString correct_answer3 = "( &gt; &lt; ) &lt;&lt;<BR>&&& ===[abc]<BR>";
+    QCOMPARE(result, correct_answer3);
+
+    QString str1("( > < ) <<\n" "&&& ===[abc]");
+    QTextStream ts1(&str1);
+    result = dn.Decorate(&ts1);
+    QString correct_answer4 = "( &gt; &lt; ) &lt;&lt;<BR>&&& ===[abc]<BR>";
+    QCOMPARE(result, correct_answer4);
+
+    QString str2("( > < ) <<\n" "&&& ===[abc]\n");
+    QTextStream ts2(&str2);
+    result = dn.Decorate(&ts2);
+    QString correct_answer5 = "( &gt; &lt; ) &lt;&lt;<BR>&&& ===[abc]<BR>";
+    QCOMPARE(result, correct_answer5);
 }
 
 void TestDecorate::testGCppVs7()
