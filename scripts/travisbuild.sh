@@ -12,7 +12,7 @@ if [ "${TRAVIS_BUILD_TYPE}" = "test" ]; then
     mkdir debug
     cp test debug/test
     ./debug/test
-    if [$? = 0]; then
+    if [ ${?} = 0 ]; then
         echo "ALL tests finished successfully!! (${?})"
     else
         echo "some tests failed ... (${?})"
