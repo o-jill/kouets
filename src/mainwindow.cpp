@@ -691,3 +691,14 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
     app->SetDecoration(arg1);
     app->SaveIni();
 }
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == 'W' && e->modifiers() == Qt::ControlModifier) {  // Ctrl-W
+        int idxtab = ui->tabWidget->currentIndex();
+        QString str = ui->tabWidget->tabText(idxtab);
+        if (str.startsWith(":"))
+            return;
+        ui->tabWidget->removeTab(idxtab);
+    }
+}
