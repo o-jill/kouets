@@ -12,11 +12,13 @@ if [ "${TRAVIS_BUILD_TYPE}" = "test" ]; then
     mkdir debug
     cp test debug/test
     ./debug/test
-    if [ ${?} = 0 ]; then
+    exitcode=$?
+    if [ ${exitcode} = 0 ]; then
         echo "ALL tests finished successfully!! (${?})"
     else
         echo "some tests failed ... (${?})"
     fi
+    exit ${exitcode}
 else
     echo "normal  build"
     qmake -qt=qt4 -v ./src/kouets.pro
@@ -25,3 +27,4 @@ else
     qmake -qt=qt4 ./src/kouets.pro
     make
 fi
+
