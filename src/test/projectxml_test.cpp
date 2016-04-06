@@ -10,7 +10,7 @@
 
 void TestProjectXML::initTestCase()
 {
-    //QDir::setCurrent(qApp->applicationDirPath());
+    // QDir::setCurrent(qApp->applicationDirPath());
     QDir dir(qApp->applicationDirPath());
     dir.cdUp();
     QDir::setCurrent(dir.absolutePath());
@@ -52,11 +52,6 @@ void TestProjectXML::test()
     QVERIFY(xml.IsDefaultParser() == ProjectXML::True);
     QVERIFY(xml.Files() != NULL);
     QVERIFY(xml.ItemSize() == 0);
-
-    /*QDir dir;
-    dir.cdUp();
-    QDir::setCurrent(dir.absolutePath());
-    qDebug() << "currentPath:" << QDir::currentPath();*/
 
     QVERIFY(xml.readFile(QDir::currentPath()+"/xml.kouets") == true);
     QVERIFY(xml.AppPath() == "C:/path/to/default.exe");

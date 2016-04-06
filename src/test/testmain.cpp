@@ -11,13 +11,10 @@ TEST_MAIN
 int main(int argc, char *argv[])
 {
     int failures = AutoTest::run(argc, argv);
-    if (failures == 0)
-    {
-	qDebug() << "ALL TESTS PASSED";
-    }
-    else
-    {
-	qDebug() << failures << " TESTS FAILED!";
+    if (failures == 0) {
+        qDebug() << QString("ALL TESTS PASSED.(%1)").arg(failures);
+    } else {
+        qDebug() << QString("TESTS FAILED!(%1)").arg(failures);
     }
     return failures;
 }
