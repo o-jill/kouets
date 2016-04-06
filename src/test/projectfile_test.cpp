@@ -222,7 +222,7 @@ void TestProjectFile::test3()
     ProjectFile pf;
 
     QDir dir(qApp->applicationDirPath());
-    dir.cdUp();dir.cdUp();
+    dir.cdUp(); dir.cdUp();
     QDir::setCurrent(dir.absolutePath());
     // qDebug() << "currentPath:" << QDir::currentPath();
 
@@ -273,7 +273,9 @@ void TestProjectFile::test3()
 }
 
 #if 0  // sandbox
-    // @return -2:unknown format, -1:open error, 0:no content, more than zero:number of files.
+    // @return -2:unknown format,
+               -1:open error,
+                0:no content, more than zero:number of files.
     int Open(const QString &path);
     int Save(const QString &path);
     int SavePlainText(const QString &path);

@@ -28,7 +28,6 @@ void TestFileConfig::test()
 
     fc.SetFilename("fileconfig_test.h");
     QVERIFY(fc.Filename() == "fileconfig_test.h");
-    // QEXPECT_FAIL("", "this will be fail because of environment dependency.", Continue);
     QCOMPARE(fc.AbsPath(), QDir::currentPath()+"/fileconfig_test.h");
     QVERIFY(fc.AppPath() == "");
     QVERIFY(fc.CmdLine() == "");
@@ -39,7 +38,6 @@ void TestFileConfig::test()
 
     fc.SetAppPath("path/to/executable/file");
     QVERIFY(fc.Filename() == "fileconfig_test.h");
-    // QEXPECT_FAIL("", "this will be fail because of environment dependency.", Continue);
     QCOMPARE(fc.AbsPath(), QDir::currentPath()+"/fileconfig_test.h");
     QVERIFY(fc.AppPath() == "path/to/executable/file");
     QVERIFY(fc.CmdLine() == "");
@@ -50,7 +48,6 @@ void TestFileConfig::test()
 
     fc.SetCmdLine("arg1 arg2");
     QVERIFY(fc.Filename() == "fileconfig_test.h");
-    // QEXPECT_FAIL("", "this will be fail because of environment dependency.", Continue);
     QCOMPARE(fc.AbsPath(), QDir::currentPath()+"/fileconfig_test.h");
     QVERIFY(fc.AppPath() == "path/to/executable/file");
     QVERIFY(fc.CmdLine() == "arg1 arg2");
@@ -61,7 +58,6 @@ void TestFileConfig::test()
 
     fc.SetParser("cpplint.py_VS7");
     QVERIFY(fc.Filename() == "fileconfig_test.h");
-    // QEXPECT_FAIL("", "this will be fail because of environment dependency.", Continue);
     QCOMPARE(fc.AbsPath(), QDir::currentPath()+"/fileconfig_test.h");
     QVERIFY(fc.AppPath() == "path/to/executable/file");
     QVERIFY(fc.CmdLine() == "arg1 arg2");
@@ -72,7 +68,6 @@ void TestFileConfig::test()
 
     FileConfig fc2 = fc;
     QVERIFY(fc2.Filename() == "fileconfig_test.h");
-    // QEXPECT_FAIL("", "this will be fail because of environment dependency.", Continue);
     QCOMPARE(fc2.AbsPath(), QDir::currentPath()+"/fileconfig_test.h");
     QCOMPARE(fc2.AppPath(), QString("path/to/executable/file"));
     QVERIFY(fc2.CmdLine() == "arg1 arg2");

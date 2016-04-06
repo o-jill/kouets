@@ -10,8 +10,8 @@
 #include <QDebug>
 
 ProjectXML::ProjectXML()
-    :QXmlDefaultHandler(), state_(TAG_NONE), bapppath_(True), bcmdline_(True),
-      bparser_(True)
+    :QXmlDefaultHandler(), bapppath_(True), bcmdline_(True), bparser_(True),
+    state_(TAG_NONE)
 {
 }
 

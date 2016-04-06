@@ -1,0 +1,11 @@
+# files for test.
+AutoTest.h
+decorate_test.cpp
+decorate_test.h
+fileconfig_test.cpp
+fileconfig_test.h
+projectfile_test.cpp
+projectfile_test.h
+projectxml_test.cpp
+projectxml_test.h
+testmain.cpp

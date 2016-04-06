@@ -20,8 +20,8 @@
  * constructor
  */
 KouetsApp::KouetsApp(int &argc, char**argv)
-    :QApplication(argc, argv), updated_(0), bactivateprocessedtab_(1),
-    blinewrap_(0)
+    :QApplication(argc, argv), bactivateprocessedtab_(1), blinewrap_(0),
+    updated_(0)
 {
     prepareAppDataPath();
 

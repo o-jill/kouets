@@ -4,3 +4,10 @@ release
 src/kouets.pro.user
 src/kouetshash.cpp
 src/kouetshash.h
+*.o
+Makefile
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+*~
+*#

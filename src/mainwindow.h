@@ -93,7 +93,6 @@ private:
     QTimer *ptimer_update_;
     int nrunning_;
     QProgressBar *pprgs_;
-    bool initated_;
     QProcess *process_;
     QTextEdit *pte_;
     QTreeWidgetItem *pitem_;

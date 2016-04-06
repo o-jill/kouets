@@ -1,7 +1,7 @@
-#include "mainwindow.h"
 #include <QApplication>
 
 #include "kouetsapp.h"
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
