@@ -354,11 +354,17 @@ void MainWindow::onTimerUpdate()
     pitem_ = NULL;
     for (int idx = 0 ; idx < count ; ++idx) {
         QTreeWidgetItem *pi = ui->treeWidget->topLevelItem(idx);
-        if (pi->text(TREE_COLUMN_PATH) == fi.absoluteFilePath()) {
+        QString path = pi->text(TREE_COLUMN_PATH);
+        path.replace(QChar('\\'), QChar('/'));
+        if (path == fi.absoluteFilePath()) {
             pitem_ = pi;
             pi->setText(TREE_COLUMN_STATE, "running");
             break;
         }
+    }
+
+    if (pitem_ == NULL) {
+        return;
     }
 
     if (!fi.exists()) {
