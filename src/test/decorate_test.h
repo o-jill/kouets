@@ -10,6 +10,7 @@ private slots:
     void initTestCase();
     void testNone();
     void testGCppVs7();
+    void testGCpp();
     void testDMgr();
     void cleanupTestCase(){}
 };
