@@ -354,11 +354,17 @@ void MainWindow::onTimerUpdate()
     pitem_ = NULL;
     for (int idx = 0 ; idx < count ; ++idx) {
         QTreeWidgetItem *pi = ui->treeWidget->topLevelItem(idx);
-        if (pi->text(TREE_COLUMN_PATH) == fi.absoluteFilePath()) {
+        QString path = pi->text(TREE_COLUMN_PATH);
+        path.replace(QChar('\\'), QChar('/'));
+        if (path == fi.absoluteFilePath()) {
             pitem_ = pi;
             pi->setText(TREE_COLUMN_STATE, "running");
             break;
         }
+    }
+
+    if (pitem_ == NULL) {
+        return;
     }
 
     if (!fi.exists()) {
@@ -690,4 +696,15 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
     KouetsApp*app = reinterpret_cast<KouetsApp*>(qApp);
     app->SetDecoration(arg1);
     app->SaveIni();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == 'W' && e->modifiers() == Qt::ControlModifier) {  // Ctrl-W
+        int idxtab = ui->tabWidget->currentIndex();
+        QString str = ui->tabWidget->tabText(idxtab);
+        if (str.startsWith(":"))
+            return;
+        ui->tabWidget->removeTab(idxtab);
+    }
 }

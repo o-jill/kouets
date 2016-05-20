@@ -51,6 +51,17 @@ public:
     virtual QString decorate(QString str);
 };
 
+/**
+ * Google C++ style checker
+ * (python cpplint.py)
+ */
+class DecorateGCpp : public DecorateBase
+{
+public:
+    DecorateGCpp() :DecorateBase() {name_ = "cpplint.py";}
+
+    virtual QString decorate(QString str);
+};
 
 class DecorationManager
 {
@@ -58,6 +69,7 @@ public:
     DecorationManager() {
         lib_.push_back(new DecorateNone());
         lib_.push_back(new DecorateGCppVs7());
+        lib_.push_back(new DecorateGCpp());
     }
     DecorateBase*find(QString name) {
         for (QVector<DecorateBase*>::iterator itr = lib_.begin();

@@ -54,6 +54,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
     void closeEvent(QCloseEvent *e);
+    void keyPressEvent(QKeyEvent *);
 
 private slots:
     void on_toolButton_clicked();

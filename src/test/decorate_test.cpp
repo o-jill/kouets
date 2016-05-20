@@ -58,6 +58,14 @@ void TestDecorate::testGCppVs7()
     QVERIFY(dgcv7.ErrorNum() == -1);
 }
 
+void TestDecorate::testGCpp()
+{
+    DecorateGCpp dgc;
+
+    QVERIFY(dgc.Name() == "cpplint.py");
+    QVERIFY(dgc.ErrorNum() == -1);
+}
+
 void TestDecorate::testDMgr()
 {
     DecorationManager dm;
