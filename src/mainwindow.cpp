@@ -200,11 +200,17 @@ void MainWindow::onProcessFinished(int code)
     if (output.length() <= 0) {
         // nerrors = 0;
     } else {
-        DecorateGCppVs7 dec;
         QStringList sl = output.split("\n");
-        result_ += dec.Decorate(&sl);
-        if (nerrors_ < 0)
-            nerrors_ = dec.ErrorNum();
+        if (pdeco_ == NULL) {
+            DecorateNone dec;
+            result_ += dec.Decorate(&sl);
+            if (nerrors_ < 0)
+                nerrors_ = dec.ErrorNum();
+        } else {
+            result_ += pdeco_->Decorate(&sl);
+            if (nerrors_ < 0)
+                nerrors_ = pdeco_->ErrorNum();
+        }
 
         pte_->setHtml(result_);
 
