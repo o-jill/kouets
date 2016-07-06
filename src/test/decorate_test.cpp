@@ -48,6 +48,12 @@ void TestDecorate::testNone()
     result = dn.Decorate(&ts2);
     QString correct_answer5 = "( &gt; &lt; ) &lt;&lt;<BR>&&& ===[abc]<BR>";
     QCOMPARE(result, correct_answer5);
+
+    QVERIFY(dn.ErrorNum() == -1);
+    dn.testtweak(10);
+    QVERIFY(dn.ErrorNum() == 10);
+    dn.Reset();
+    QVERIFY(dn.ErrorNum() == -1);
 }
 
 void TestDecorate::testGCppVs7()

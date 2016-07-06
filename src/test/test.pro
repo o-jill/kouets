@@ -25,3 +25,5 @@ SOURCES += testmain.cpp \
            ../decorate.cpp \
            ../projectfile.cpp \
            ../projectxml.cpp
+
+DEFINES += __KOUETS_TEST__
