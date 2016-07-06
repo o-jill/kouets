@@ -195,7 +195,7 @@ void MainWindow::onProcessFinished(int code)
         return;
     }
 
-    QString output = remainingtext_ + process_->readAllStandardError();
+    QString output = remainingtext_ + process_->readAllStandardOutput();
 
     if (output.length() <= 0) {
         // nerrors = 0;
@@ -228,9 +228,8 @@ void MainWindow::onProcessFinished(int code)
         if (nerrors_ < 0) {
             pitem_->setText(TREE_COLUMN_ERROR, "error...");
         } else {
-            if (pitem_) {
+            if (pitem_)
                 pitem_->setText(TREE_COLUMN_ERROR, QString("%1").arg(nerrors_));
-            }
         }
     }
 
@@ -400,6 +399,7 @@ void MainWindow::onTimerUpdate()
                 prj_.lastUpdated(curfile_).toString("yyyy/MM/dd hh:mm:ss"));
 
     pdeco_ = decomgr_.find(deconame);
+    pdeco_->Reset();
     nerrors_ = -1;
     result_.clear();
 #ifdef WINDOWS

@@ -23,9 +23,18 @@ public:
 
     QString Name() const {return name_;}
     int ErrorNum() {return nerror_;}
+    void Reset() {nerror_ = -1;}
+
 protected:
     QString name_;
     int nerror_;
+
+#ifdef __KOUETS_TEST__
+public:
+    void testtweak(int n) {
+        nerror_ = n;
+    }
+#endif
 };
 
 /**
