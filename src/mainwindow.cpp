@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->checkBox_LineWrap->setChecked(app->LineWrap());
 
     ptimer_update_ = new QTimer(this);
-    ptimer_update_->setInterval(1000);
+    ptimer_update_->setInterval(MSEC_UPDATE);
     connect(ptimer_update_, SIGNAL(timeout()), this, SLOT(onTimerUpdate()));
 
     process_ = new QProcess(this);

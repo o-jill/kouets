@@ -37,6 +37,9 @@ public:
         RUN_RUNONCE = 2,
         RUN_MAX
     };
+    enum {
+        MSEC_UPDATE = 500
+    };
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
