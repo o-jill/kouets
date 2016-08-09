@@ -324,7 +324,11 @@ void MainWindow::onTimerUpdate()
     QString deconame;
 
     if (prj_.isUseDefaultAppPath()) {
+#ifdef WINDOWS
         apppath = "\"" + app->GetProgramPath() + "\"";
+#else
+        apppath = app->GetProgramPath();
+#endif
     } else {
         apppath = "\"" + prj_.AppPath() + "\"";
     }
@@ -334,9 +338,14 @@ void MainWindow::onTimerUpdate()
     } else {
         cmdline = prj_.CmdLine();
     }
+#ifdef WINDOWS
     cmdline += " \"";
     cmdline += path;
     cmdline += "\"";
+#else
+    cmdline += " ";
+    cmdline += path;
+#endif
 
     if (prj_.isUseDefaultParser()) {
         deconame = app->GetDecoration();

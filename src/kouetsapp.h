@@ -13,6 +13,9 @@
 #include <windows.h>
 #endif
 
+#define TRUE  true
+#define FALSE false
+
 class KouetsApp : public QApplication
 {
 public:

@@ -132,7 +132,7 @@ void KouetsApp::prepareAppDataPath()
                               appdatapath, _countof(appdatapath));
     appDataPath_ = QString::fromWCharArray(appdatapath);
 #else
-    appDataPath_ = "~/.Kouets/";
+    appDataPath_ = ".Kouets/";
 #endif
 }
 
