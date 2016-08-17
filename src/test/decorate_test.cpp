@@ -72,6 +72,18 @@ void TestDecorate::testGCpp()
     QVERIFY(dgc.ErrorNum() == -1);
 }
 
+void TestDecorate::testCppCheck()
+{
+    DecorateCppCheck dcc;
+
+    QVERIFY(dcc.Name() == "cppcheck");
+    QVERIFY(dcc.ErrorNum() == -1);
+    QString str1("[projectfile.cpp:80]: (style) The function 'SavePlainText' is never used.");
+    QString correct_answer1 = "[<B>projectfile.cpp</B>:<FONT COLOR='RED'>80</FONT>]: (<FONT COLOR='BLUE'>style</FONT>) <STRONG>The function 'SavePlainText' is never used.</STRONG><BR>";
+    QString result = dcc.decorate(str1);
+    QCOMPARE(result, correct_answer1);
+}
+
 void TestDecorate::testDMgr()
 {
     DecorationManager dm;
@@ -84,6 +96,12 @@ void TestDecorate::testDMgr()
     QVERIFY(pdb->ErrorNum() == -1);
     QVERIFY((pdb = dm.find("cpplint.py_VS7")) != NULL);
     QVERIFY(pdb->Name() == "cpplint.py_VS7");
+    QVERIFY(pdb->ErrorNum() == -1);
+    QVERIFY((pdb = dm.find("cpplint.py")) != NULL);
+    QVERIFY(pdb->Name() == "cpplint.py");
+    QVERIFY(pdb->ErrorNum() == -1);
+    QVERIFY((pdb = dm.find("cppcheck")) != NULL);
+    QVERIFY(pdb->Name() == "cppcheck");
     QVERIFY(pdb->ErrorNum() == -1);
 }
 

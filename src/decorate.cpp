@@ -112,6 +112,35 @@ QString DecorateGCpp::decorate(QString str)
 }
 
 // == == == == == == == ==
+// DecorateCppCheck
+// == == == == == == == ==
+
+QString DecorateCppCheck::decorate(QString str)
+{
+    QString result;
+
+// [projectfile.cpp:80]: (style) The function 'SavePlainText' is never used.
+//  111111111111111 22    33333  4444444444444444444444444444444444444444444
+    QRegExp reg1("\\[(.+):(\\d+)\\]: \\(([a-z]+)\\) (.+)");
+
+    str.replace("<", "&lt;");
+    str.replace(">", "&gt;");
+    // str.replace("&", "&amp;");  // it may not be needed...
+
+    if (reg1.indexIn(str) >= 0) {
+        result += "[<B>" + reg1.cap(1) + "</B>:";
+        result += "<FONT COLOR='RED'>" + reg1.cap(2) + "</FONT>]: (";
+        result += "<FONT COLOR='BLUE'>" + reg1.cap(3) + "</FONT>) ";
+        result += "<STRONG>" + reg1.cap(4) + "</STRONG><BR>";
+    } else {
+        result += str;
+        result += "<BR>";
+    }
+
+    return result;
+}
+
+// == == == == == == == ==
 // DecorateNone
 // == == == == == == == ==
 

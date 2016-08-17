@@ -72,6 +72,18 @@ public:
     virtual QString decorate(QString str);
 };
 
+/**
+ * Cppcheck
+ * A tool for static C/C++ code analysis
+ */
+class DecorateCppCheck : public DecorateBase
+{
+public:
+    DecorateCppCheck() :DecorateBase() {name_ = "cppcheck";}
+
+    virtual QString decorate(QString str);
+};
+
 class DecorationManager
 {
 public:
@@ -79,6 +91,7 @@ public:
         lib_.push_back(new DecorateNone());
         lib_.push_back(new DecorateGCppVs7());
         lib_.push_back(new DecorateGCpp());
+        lib_.push_back(new DecorateCppCheck());
     }
     DecorateBase*find(QString name) {
         for (QVector<DecorateBase*>::iterator itr = lib_.begin();

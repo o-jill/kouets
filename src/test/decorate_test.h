@@ -11,6 +11,7 @@ private slots:
     void testNone();
     void testGCppVs7();
     void testGCpp();
+    void testCppCheck();
     void testDMgr();
     void cleanupTestCase(){}
 };
